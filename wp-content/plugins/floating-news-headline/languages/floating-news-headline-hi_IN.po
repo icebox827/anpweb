@@ -1,0 +1,209 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2018-08-10 15:06+0530\n"
+"PO-Revision-Date: 2018-08-10 15:07+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hi_IN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: floating-headline-setting.php:44
+msgid "Floating Headline Settings"
+msgstr "फ़्लोटिंग हेडलाइन सेटिंग्स"
+
+#: floating-headline-setting.php:47
+msgid "Headline Text"
+msgstr "शीर्षक टेक्स्ट"
+
+#: floating-headline-setting.php:51
+msgid "Set headline text here."
+msgstr "यहाँ शीर्षक शीर्षक सेट करें।"
+
+#: floating-headline-setting.php:56
+msgid "Headline Width"
+msgstr "शीर्षक चौड़ाई"
+
+#: floating-headline-setting.php:61
+msgid "Set headline text width."
+msgstr "शीर्षक टेक्स्ट चौड़ाई सेट करें।"
+
+#: floating-headline-setting.php:66
+msgid "Style"
+msgstr "शैली"
+
+#: floating-headline-setting.php:68
+msgid "Headline Text Size"
+msgstr "शीर्षक टेक्स्ट आकार"
+
+#: floating-headline-setting.php:71
+msgid "&nbsp; 12px"
+msgstr ""
+
+#: floating-headline-setting.php:72
+msgid "&nbsp; 14px"
+msgstr ""
+
+#: floating-headline-setting.php:73
+msgid "&nbsp; 16px"
+msgstr ""
+
+#: floating-headline-setting.php:74
+msgid "&nbsp; 18px"
+msgstr ""
+
+#: floating-headline-setting.php:75
+msgid "&nbsp; 20px"
+msgstr ""
+
+#: floating-headline-setting.php:76
+msgid "&nbsp; 22px"
+msgstr ""
+
+#: floating-headline-setting.php:77
+msgid "&nbsp; 24px"
+msgstr ""
+
+#: floating-headline-setting.php:79
+msgid "Set the font size of the text."
+msgstr "शीर्षक का फ़ॉन्ट आकार सेट करें।"
+
+#: floating-headline-setting.php:82
+msgid "Headline Text Background Color"
+msgstr "शीर्षक टेक्स्ट पृष्ठभूमि रंग"
+
+#: floating-headline-setting.php:85
+msgid "You can change color of text background."
+msgstr "आप टेक्स्ट पृष्ठभूमि का रंग बदल सकते हैं।"
+
+#: floating-headline-setting.php:89
+msgid "Headline Text Color"
+msgstr "शीर्षक टेक्स्ट रंग"
+
+#: floating-headline-setting.php:92
+msgid "You can change color of headline text."
+msgstr "आप शीर्षक टेक्स्ट का रंग बदल सकते हैं।"
+
+#: floating-headline-setting.php:97
+msgid "Link"
+msgstr "संपर्क"
+
+#: floating-headline-setting.php:101
+msgid "Set link on headline/none."
+msgstr "शीर्षक / कोई भी लिंक सेट करें।"
+
+#: floating-headline-setting.php:106
+msgid "Close Button"
+msgstr "बंद बटन"
+
+#: floating-headline-setting.php:110
+msgid "Hide"
+msgstr "छिपाना"
+
+#: floating-headline-setting.php:112
+msgid "Show"
+msgstr "दिखाना"
+
+#: floating-headline-setting.php:114
+msgid "You can hide / show title on headline."
+msgstr "आप शीर्षक पर शीर्षक छुपा सकते / दिखा सकते हैं।"
+
+#: floating-headline-setting.php:121
+msgid "Floating-Speed"
+msgstr "फ्लोटिंग स्पीड"
+
+#: floating-headline-setting.php:124
+msgid "You can set the roatating speed headline."
+msgstr "आप घूर्णन गति शीर्षक सेट कर सकते हैं।"
+
+#: floating-headline-setting.php:128
+msgid "Repeat"
+msgstr "दोहराना"
+
+#: floating-headline-setting.php:132
+msgid "Yes"
+msgstr "हाँ"
+
+#: floating-headline-setting.php:134
+msgid "No"
+msgstr "नहीं"
+
+#: floating-headline-setting.php:136
+msgid "Set headline repeatation."
+msgstr "शीर्षक दोहराव सेट करें।"
+
+#: floating-news-headlines.php:32
+msgid "Floating News Headline"
+msgstr "फ़्लोटिंग न्यूज़ हेडलाइन"
+
+#: floating-news-headlines.php:80
+msgid "Docs"
+msgstr "दस्तावेज़"
+
+#: floating-news-headlines.php:81
+msgid "Our Theme"
+msgstr "हमारी थीम"
+
+#: floating-news-headlines.php:93 floating-news-headlines.php:94
+#: floating-news-headlines.php:99 floating-news-headlines.php:107
+#: floating-news-headlines.php:155
+msgid "Floating Headline"
+msgstr "फ़्लोटिंग हेडलाइन"
+
+#: floating-news-headlines.php:95
+msgid "Parent Item:"
+msgstr "अभिभावक आइटम:"
+
+#: floating-news-headlines.php:96
+msgid "All Floating Headline"
+msgstr "सभी फ़्लोटिंग हेडलाइन"
+
+#: floating-news-headlines.php:97 floating-news-headlines.php:98
+msgid "Add Floating Headline"
+msgstr "फ़्लोटिंग हेडलाइन जोड़ें"
+
+#: floating-news-headlines.php:100
+msgid "Edit Floating Headline"
+msgstr "फ़्लोटिंग हेडलाइन संपादित करें"
+
+#: floating-news-headlines.php:101
+msgid "Update Floating Headline"
+msgstr "फ़्लोटिंग हेडलाइन अपडेट करें"
+
+#: floating-news-headlines.php:102
+msgid "Search Floating Headline"
+msgstr "फ़्लोटिंग हेडलाइन खोजें"
+
+#: floating-news-headlines.php:103
+msgid "Floating Headline Not found"
+msgstr "फ़्लोटिंग हेडलाइन नहीं मिली"
+
+#: floating-news-headlines.php:104
+msgid "Floating Headline Not found in Trash"
+msgstr "ट्रैश में फ़्लोटिंग हेडलाइन नहीं मिली"
+
+#: floating-news-headlines.php:108
+msgid "Custom Post Type For Floating Headline"
+msgstr "फ़्लोटिंग हेडलाइन के लिए कस्टम पोस्ट प्रकार"
+
+#: floating-news-headlines.php:133
+msgid "Add Headline"
+msgstr "शीर्षक जोड़ें"
+
+#: floating-news-headlines.php:147
+msgid "Copy Floating Headline Shortcode"
+msgstr "फ़्लोटिंग हेडलाइन शोर्ट कॉपी करें"
+
+#: floating-news-headlines.php:150
+msgid ""
+"Copy & Embed shotcode into any Page/ Post / Text Widget to display your Headline on site."
+msgstr ""
+"साइट पर अपना शीर्षक प्रदर्शित करने के लिए किसी भी पेज / पोस्ट / टेक्स्ट विजेट में शॉटकोड कॉपी और एम्बेड "
+"करें।"
