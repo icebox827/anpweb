@@ -104,49 +104,96 @@
     'font_family' => 'Roboto:700',
     'font_size' => 13,
   ),
-  'fonts-big_size' => 15,
-  'fonts-big_size_line_height' => 27,
+  'fonts-big_size' => 
+  array (
+    'font_size' => '15px',
+    'line_height' => '27px',
+  ),
   'fonts-font_family' => 'Roboto',
   'fonts-h1-typography' => 
   array (
     'font_family' => 'Roboto:700',
-    'font_size' => 44,
-    'line_height' => 54,
+    'responsive_font_size' => 
+    array (
+      'desktop' => '44px',
+      'tablet' => '34px',
+      'mobile' => '34px',
+    ),
+    'responsive_line_height' => 
+    array (
+      'desktop' => '54px',
+    ),
   ),
   'fonts-h2-typography' => 
   array (
     'font_family' => 'Roboto:700',
-    'font_size' => 34,
-    'line_height' => 44,
+    'responsive_font_size' => 
+    array (
+      'desktop' => '34px',
+    ),
+    'responsive_line_height' => 
+    array (
+      'desktop' => '44px',
+    ),
   ),
   'fonts-h3-typography' => 
   array (
     'font_family' => 'Roboto:700',
-    'font_size' => 24,
-    'line_height' => 34,
+    'responsive_font_size' => 
+    array (
+      'desktop' => '24px',
+    ),
+    'responsive_line_height' => 
+    array (
+      'desktop' => '34px',
+    ),
   ),
   'fonts-h4-typography' => 
   array (
     'font_family' => 'Roboto:700',
-    'font_size' => 20,
-    'line_height' => 30,
+    'responsive_font_size' => 
+    array (
+      'desktop' => '20px',
+    ),
+    'responsive_line_height' => 
+    array (
+      'desktop' => '30px',
+    ),
   ),
   'fonts-h5-typography' => 
   array (
     'font_family' => 'Roboto:700',
-    'font_size' => 16,
-    'line_height' => 26,
+    'responsive_font_size' => 
+    array (
+      'desktop' => '16px',
+    ),
+    'responsive_line_height' => 
+    array (
+      'desktop' => '26px',
+    ),
   ),
   'fonts-h6-typography' => 
   array (
     'font_family' => 'Roboto:700',
-    'font_size' => 14,
-    'line_height' => 24,
+    'responsive_font_size' => 
+    array (
+      'desktop' => '14px',
+    ),
+    'responsive_line_height' => 
+    array (
+      'desktop' => '24px',
+    ),
   ),
-  'fonts-normal_size' => 14,
-  'fonts-normal_size_line_height' => 25,
-  'fonts-small_size' => 13,
-  'fonts-small_size_line_height' => 23,
+  'fonts-normal_size' => 
+  array (
+    'font_size' => '14px',
+    'line_height' => '25px',
+  ),
+  'fonts-small_size' => 
+  array (
+    'font_size' => '13px',
+    'line_height' => '23px',
+  ),
   'footer-accent_text_color' => '',
   'footer-bg_color' => 'rgba(26,28,32,1)',
   'footer-bg_image' => 

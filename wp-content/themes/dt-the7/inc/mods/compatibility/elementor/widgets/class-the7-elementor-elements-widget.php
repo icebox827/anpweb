@@ -23,9 +23,11 @@ use Elementor\Icons_Manager;
 use Elementor\Core\Schemes;
 use The7\Adapters\Elementor\With_Post_Excerpt;
 use The7_Query_Builder;
+use The7_Related_Query_Builder;
 use The7_Categorization_Request;
 use The7\Adapters\Elementor\The7_Elementor_Widget_Base;
 use The7\Adapters\Elementor\With_Pagination;
+use The7\Adapters\Elementor\Posts_Masonry_Style;
 use The7\Adapters\Elementor\The7_Elementor_Less_Vars_Decorator_Interface;
 
 defined( 'ABSPATH' ) || exit;
@@ -34,8 +36,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 	use With_Pagination;
 	use With_Post_Excerpt;
-
-	protected $has_img_preload_me_filter = false;
+	use Posts_Masonry_Style;
 
 	/**
 	 * Get element name.
@@ -54,7 +55,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 	 * @return string
 	 */
 	public function get_title() {
-		return __( 'Masonry & Grid', 'the7mk2' );
+		return __( 'Posts Masonry & Grid', 'the7mk2' );
 	}
 
 	/**
@@ -66,18 +67,8 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		return 'eicon-posts-grid the7-widget';
 	}
 
-
-
 	public function get_script_depends() {
-		wp_register_script(
-			'the7-elementor-masonry',
-			PRESSCORE_THEME_URI . '/js/compatibility/elementor/the7-masonry-widget.js',
-			[],
-			THE7_VERSION,
-			true
-		);
-
-		$scripts = [ 'the7-elementor-masonry' ];
+		$scripts = [];
 
 		if ( $this->is_preview_mode() ) {
 			wp_register_script(
@@ -90,6 +81,16 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 			$scripts[] = 'the7-elements-widget-preview';
 		}
+
+		wp_register_script(
+			'the7-elementor-masonry',
+			PRESSCORE_THEME_URI . '/js/compatibility/elementor/the7-masonry-widget.js',
+			[],
+			THE7_VERSION,
+			true
+		);
+
+		$scripts[] = 'the7-elementor-masonry';
 
 		return $scripts;
 	}
@@ -134,16 +135,11 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		if ( $settings['post_type'] !== 'current_query' && ! post_type_exists( $settings['post_type'] ) ) {
+		if ( ! in_array( $settings['post_type'], [ 'current_query', 'related' ] ) && ! post_type_exists( $settings['post_type'] ) ) {
 			echo the7_elementor_get_message_about_disabled_post_type();
 
 			return;
 		}
-
-		$this->remove_image_hooks();
-		$this->print_inline_css();
-
-		echo '<div ' . $this->container_class() . $this->get_container_data_atts() . '>';
 
 		$loading_mode = $this->get_loading_mode();
 
@@ -153,7 +149,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		}
 
 		$request = null;
-		if ( $settings['post_type'] !== 'current_query' && $loading_mode === 'standard' ) {
+		if ( $settings['post_type'] !== 'current_query' && $this->use_filter_request() ) {
 			$request = new The7_Categorization_Request();
 
 			if ( isset( $terms[0] ) && ! $this->filter_show_all() && ! $request->get_first_term() ) {
@@ -161,99 +157,86 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 			}
 		}
 
+		$query = $this->get_query( $request );
+
+		if ( ! $query->have_posts() ) {
+			return;
+		}
+
+		$this->remove_image_hooks();
+		$this->print_inline_css();
+
+		echo '<div ' . $this->container_class() . $this->get_container_data_atts() . '>';
+
 		// Posts filter.
 		$this->display_filter( $terms, $request );
 
-		echo '<div class="' . esc_attr( $this->is_masonry_layout() ? 'iso-container dt-isotope custom-iso-columns' : 'dt-css-grid custom-pagination-handler' ) . '">';
+		echo '<div class="' . esc_attr( $this->is_masonry_layout( $settings ) ? 'iso-container dt-isotope custom-iso-columns' : 'dt-css-grid custom-pagination-handler' ) . '">';
 
 		$data_post_limit        = $this->get_pagination_posts_limit();
-		$show_image             = in_array( $settings['classic_image_visibility'], [ null, 'show' ], true );
-		$is_overlay_post_layout = in_array(
-			$settings['post_layout'],
-			[ 'gradient_rollover', 'gradient_overlay' ],
-			true
-		);
-		$query = $this->get_query( $request );
+		$is_overlay_post_layout = $this->is_overlay_post_layout( $settings );
 
-		if ( $query->have_posts() ) {
-			while ( $query->have_posts() ) {
-				$query->the_post();
+		while ( $query->have_posts() ) {
+			$query->the_post();
 
-				// Post is visible on the first page.
-				$visibility = 'visible';
-				if ( $data_post_limit >= 0 && $query->current_post >= $data_post_limit ) {
-					$visibility = 'hidden';
-				}
-
-				$post_class_array = [
-					'post',
-					'visible',
-				];
-
-				if ( ! has_post_thumbnail() ) {
-					$post_class_array[] = 'no-img';
-				}
-
-				$icons_html = $this->get_hover_icons_html_template();
-				if ( ! $icons_html && $is_overlay_post_layout ) {
-					$post_class_array[] = 'forward-post';
-				}
-
-				echo '<div ' . $this->masonry_item_wrap_class( $visibility ) . presscore_tpl_masonry_item_wrap_data_attr() . '>';
-				echo '<article class="' . esc_attr( implode( ' ', get_post_class( $post_class_array ) ) ) . '" data-name="' . esc_attr( get_the_title() ) . '" data-date="' . esc_attr( get_the_date( 'c' ) ) . '">';
-
-				$details_btn = '';
-				if ( $settings['show_read_more_button'] ) {
-					$details_btn = $this->get_details_btn();
-				}
-
-				$post_meta_types    = [
-					'terms',
-					'author',
-					'date',
-					'comments',
-				];
-				$required_post_meta = [];
-				foreach ( $post_meta_types as $post_meta_type ) {
-					if ( ! empty( $settings["post_{$post_meta_type}"] ) ) {
-						$required_post_meta[] = [
-							'type' => $post_meta_type,
-							'link' => ! empty( $settings["post_{$post_meta_type}_link"] ),
-						];
-					}
-				}
-
-				$post_title = '';
-				if ( $settings['show_post_title'] ) {
-					$post_title = $this->get_post_title( $settings['title_tag'] );
-				}
-
-				$post_excerpt = '';
-				if ( $settings['post_content'] === 'show_excerpt' ) {
-					$post_excerpt = $this->get_post_excerpt( $settings['excerpt_words_limit'] );
-				}
-
-				$link_attributes = $this->get_link_attributes();
-
-				presscore_get_template_part(
-					'elementor',
-					'the7-elements/tpl-layout',
-					$settings['post_layout'],
-					[
-						'settings'     => $settings,
-						'post_title'   => $post_title,
-						'post_media'   => $this->get_post_image( $show_image, $is_overlay_post_layout ),
-						'post_meta'    => $this->get_post_meta( $required_post_meta ),
-						'details_btn'  => $details_btn,
-						'post_excerpt' => $post_excerpt,
-						'icons_html'   => $icons_html,
-						'follow_link'  => $link_attributes['href'],
-					]
-				);
-
-				echo '</article>';
-				echo '</div>';
+			// Post is visible on the first page.
+			$visibility = 'visible';
+			if ( $data_post_limit >= 0 && $query->current_post >= $data_post_limit ) {
+				$visibility = 'hidden';
 			}
+
+			$post_class_array = [
+				'post',
+				'visible',
+			];
+
+			if ( ! has_post_thumbnail() ) {
+				$post_class_array[] = 'no-img';
+			}
+
+			$icons_html = $this->get_hover_icons_html_template( $settings );
+			if ( ! $icons_html && $is_overlay_post_layout ) {
+				$post_class_array[] = 'forward-post';
+			}
+
+			echo '<div ' . $this->masonry_item_wrap_class( $visibility ) . presscore_tpl_masonry_item_wrap_data_attr() . '>';
+			echo '<article class="' . esc_attr( implode( ' ', get_post_class( $post_class_array ) ) ) . '" data-name="' . esc_attr( get_the_title() ) . '" data-date="' . esc_attr( get_the_date( 'c' ) ) . '">';
+
+			$details_btn = '';
+			if ( $settings['show_read_more_button'] ) {
+				$details_btn = $this->get_details_btn( $settings );
+			}
+
+			$post_title = '';
+			if ( $settings['show_post_title'] ) {
+				$post_title = $this->get_post_title( $settings, $settings['title_tag'] );
+			}
+
+			$post_excerpt = '';
+			if ( $settings['post_content'] === 'show_excerpt' ) {
+				$post_excerpt = $this->get_post_excerpt( $settings['excerpt_words_limit'] );
+			}
+
+			$link_attributes = $this->get_link_attributes( $settings );
+
+			presscore_get_template_part(
+				'elementor',
+				'the7-elements/tpl-layout',
+				$settings['post_layout'],
+				[
+					'settings'     => $settings,
+					'post_title'   => $post_title,
+					'post_media'   => $this->get_post_image( $settings ),
+					'post_meta'    => $this->get_post_meta_html_based_on_settings( $settings ),
+					'details_btn'  => $details_btn,
+					'post_excerpt' => $post_excerpt,
+					'icons_html'   => $icons_html,
+					'follow_link'  => $link_attributes['href'],
+				]
+			);
+
+			echo '</article>';
+			echo '</div>';
 		}
 
 		wp_reset_postdata();
@@ -265,199 +248,6 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		echo '</div>';
 
 		$this->add_image_hooks();
-	}
-
-	protected function remove_image_hooks() {
-		$this->has_img_preload_me_filter = has_filter( 'dt_get_thumb_img-args', 'presscore_add_preload_me_class_to_images' );
-		remove_filter( 'dt_get_thumb_img-args', 'presscore_add_preload_me_class_to_images' );
-	}
-
-	protected function add_image_hooks() {
-		$this->has_img_preload_me_filter && add_filter(
-			'dt_get_thumb_img-args',
-			'presscore_add_preload_me_class_to_images',
-			15
-		);
-	}
-
-	protected function get_hover_icons_html_template() {
-		$settings = $this->get_settings_for_display();
-
-		if ( ! $settings['show_details_icon'] ) {
-			return '';
-		}
-
-		$a_atts               = $this->get_escaped_link_attributes();
-		$a_atts['class']      = 'project-details';
-		$a_atts['aria-label'] = __( 'Details link', 'the7mk2' );
-		$a_atts['rel']        = 'nofollow';
-
-		return sprintf(
-			'<a %s>%s</a>',
-			the7_get_html_attributes_string( $a_atts ),
-			$this->get_elementor_icon_html( $settings['project_link_icon'], 'span' )
-		);
-	}
-
-	/**
-	 * @param string $tag
-	 *
-	 * @return string
-	 */
-	protected function get_post_title( $tag = 'h4' ) {
-		$title_link = $this->get_escaped_link_attributes();
-		$title_link['title'] = esc_attr( the_title_attribute( 'echo=0' ) );
-		if ( ! empty( $title_link['href'] ) ) {
-			$title_link['rel']  = 'bookmark';
-		}
-
-		$output = '';
-		$output .= '<h3 class="entry-title ' . $tag . '-size">';
-		$output .= '<a ' . the7_get_html_attributes_string( $title_link ) . '>' . get_the_title() . '</a>';
-		$output .= '</h3>';
-
-		return $output;
-	}
-
-	protected function get_post_image( $show_image, $is_overlay_post_layout ) {
-		$settings        = $this->get_settings_for_display();
-		$post_media      = '';
-
-		if ( $show_image && has_post_thumbnail() ) {
-			$link_attridutes = $this->get_link_attributes();
-			$thumb_args = [
-				'img_id' => get_post_thumbnail_id(),
-				'class'  => 'post-thumbnail-rollover',
-				'href'   => $link_attridutes['href'],
-				'custom' => the7_get_html_attributes_string(
-					array_filter(
-						[
-							'aria-label' => __( 'Post image', 'the7mk2' ),
-							'rel'        => 'nofollow',
-							'target'     => $link_attridutes['target'],
-						]
-					)
-				),
-				'wrap'   => '<a %HREF% %CLASS% %CUSTOM%><img %IMG_CLASS% %SRC% %ALT% %IMG_TITLE% %SIZE% /></a>',
-				'echo'   => false,
-			];
-
-			$thumb_args['img_class'] = 'preload-me';
-
-			if ( $settings['item_ratio']['size'] !== '' ) {
-				$thumb_args['prop'] = $settings['item_ratio']['size'];
-			}
-
-			if ( 'browser_width_based' === $settings['responsiveness'] ) {
-				$thumb_args['options'] = the7_calculate_bwb_image_resize_options(
-					[
-						'desktop'  => $settings['widget_columns'],
-						'v_tablet' => $settings['widget_columns_tablet'],
-						'h_tablet' => $settings['widget_columns_tablet'],
-						'phone'    => $settings['widget_columns_mobile'],
-					],
-					$settings['gap_between_posts'],
-					$this->current_post_is_wide()
-				);
-			} else {
-				$thumb_args['options'] = the7_calculate_columns_based_image_resize_options(
-					$settings['pwb_column_min_width']['size'],
-					of_get_option( 'general-content_width' ),
-					$settings['pwb_columns'],
-					$this->current_post_is_wide()
-				);
-			}
-
-			if ( presscore_lazy_loading_enabled() ) {
-				$thumb_args['lazy_loading'] = true;
-				if ( $this->is_masonry_layout() ) {
-					$thumb_args['lazy_class'] = 'iso-lazy-load';
-				}
-			}
-
-			$post_media = dt_get_thumb_img( $thumb_args );
-		} elseif ( $is_overlay_post_layout ) {
-			$image = sprintf(
-				'<img class="%s" src="%s" width="%s" height="%s">',
-				'preload-me',
-				get_template_directory_uri() . '/images/gray-square.svg',
-				1500,
-				1500
-			);
-
-			$link_atts               = $this->get_escaped_link_attributes();
-			$link_atts['class']      = 'post-thumbnail-rollover';
-			$link_atts['aria-label'] = __( 'Post image', 'the7mk2' );
-
-			$post_media = sprintf( '<a %s>%s</a>', the7_get_html_attributes_string( $link_atts ), $image );
-		}
-
-		return $post_media;
-	}
-
-	protected function get_details_btn() {
-		$settings = $this->get_settings_for_display();
-
-		$icon = '';
-		if ( $settings['show_read_more_button_icon'] ) {
-			$icon = $this->get_elementor_icon_html( $settings['read_more_button_icon'] );
-		}
-
-		$link_attributes = $this->get_link_attributes();
-
-		ob_start();
-		presscore_get_template_part(
-			'elementor',
-			'the7-elements/read-more-button',
-			null,
-			[
-				'settings'      => $settings,
-				'follow_link'   => $link_attributes['href'],
-				'target'        => $link_attributes['target'],
-				'caption'       => $settings['read_more_button_text'],
-				'icon_position' => $settings['read_more_button_icon_position'],
-				'icon'          => $icon,
-				'aria_label'    => the7_get_read_more_aria_label(),
-			]
-		);
-
-		return ob_get_clean();
-	}
-
-	protected function get_elementor_icon_html( $icon, $tag = 'i' ) {
-		ob_start();
-		Icons_Manager::render_icon( $icon, [ 'aria-hidden' => 'true' ], $tag );
-
-		return ob_get_clean();
-	}
-
-	protected function get_post_meta( $required_meta = [] ) {
-		$parts = [];
-		foreach ( $required_meta as $meta ) {
-			$with_link = ! empty( $meta['link'] );
-			switch ( $meta['type'] ) {
-				case 'terms':
-					$terms   = the7_get_post_terms( null, null, ', ', $with_link );
-					$parts[] = $terms ? '<span class="meta-item category-link">' . $terms . '</span>' : '';
-					break;
-				case 'author':
-					$parts[] = the7_get_post_author( null, $with_link );
-					break;
-				case 'date':
-					$parts[] = the7_get_post_date( null, $with_link );
-					break;
-				case 'comments':
-					$parts[] = the7_get_post_comments( null, $with_link );
-					break;
-			}
-		}
-
-		$html = '';
-		if ( $parts ) {
-			$html = '<div class="entry-meta">' . implode( '', $parts ) . '</div>';
-		}
-
-		return apply_filters( 'presscore_posted_on_html', $html, [] );
 	}
 
 	/**
@@ -529,66 +319,6 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		return implode( ' ', array_filter( $wrap_class ) );
 	}
 
-	protected function get_link_attributes() {
-		if ( ! $this->get_settings_for_display( 'article_links' ) ) {
-			return [
-				'href'   => '',
-				'target' => '',
-			];
-		}
-
-		$links_goes_to = $this->get_settings_for_display( 'article_links_goes_to' );
-		if ( $links_goes_to ) {
-			$external_link = (string) get_post_meta( get_the_ID(), '_dt_project_options_link', true );
-			$link_target   = (string) get_post_meta( get_the_ID(), '_dt_project_options_link_target', true );
-
-			if ( $links_goes_to === 'external_or_posts' ) {
-				return [
-					'href'   => $external_link ?: get_the_permalink(),
-					'target' => $link_target,
-				];
-			}
-
-			if ( $links_goes_to === 'external_or_disabled' ) {
-				return [
-					'href'   => $external_link ?: '',
-					'target' => $external_link ? $link_target : '',
-				];
-			}
-		}
-
-		return [
-			'href'   => get_the_permalink(),
-			'target' => '',
-		];
-	}
-
-	protected function get_escaped_link_attributes() {
-		$link_atts         = $this->get_link_attributes();
-		$link_atts['href'] = esc_url( $link_atts['href'] );
-
-		return array_filter( $link_atts );
-	}
-
-	protected function current_post_is_wide() {
-		global $post;
-
-		if ( $this->get_settings_for_display( 'all_posts_the_same_width' ) ) {
-			return false;
-		}
-
-		switch ( get_post_type( $post ) ) {
-			case 'post':
-				return get_post_meta( $post->ID, '_dt_post_options_preview', true ) === 'wide';
-			case 'dt_gallery':
-				return get_post_meta( $post->ID, '_dt_album_options_preview', true ) === 'wide';
-			case 'dt_portfolio':
-				return get_post_meta( $post->ID, '_dt_project_options_preview', true ) === 'wide';
-		}
-
-		return false;
-	}
-
 	protected function masonry_item_wrap_class( $class = array() ) {
 		global $post;
 
@@ -600,11 +330,11 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 		$class[] = 'wf-cell';
 
-		if ( $this->current_post_is_wide() ) {
+		if ( $this->current_post_is_wide( $settings ) ) {
 			$class[] = 'double-width';
 		}
 
-		if ( $this->is_masonry_layout() ) {
+		if ( $this->is_masonry_layout( $settings ) ) {
 			$class[] = 'iso-item';
 		}
 
@@ -638,7 +368,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 		$settings = $this->get_settings_for_display();
 
-		$class[] = $this->is_masonry_layout() ? 'mode-masonry' : 'mode-grid dt-css-grid-wrap';
+		$class[] = $this->is_masonry_layout( $settings ) ? 'mode-masonry' : 'mode-grid dt-css-grid-wrap';
 
 		$layout_classes = array(
 			'classic'           => 'classic-layout-list',
@@ -657,19 +387,6 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 			$class[] = 'description-on-hover';
 		} else {
 			$class[] = 'description-under-image';
-		}
-
-		$loading_mode = $settings['loading_mode'];
-		if ( 'standard' !== $loading_mode ) {
-			$class[] = 'jquery-filter';
-		}
-
-		if ( 'js_lazy_loading' === $loading_mode ) {
-			$class[] = 'lazy-loading-mode';
-		}
-
-		if ( $loading_mode === 'js_pagination' && $settings['show_all_pages'] ) {
-			$class[] = 'show-all-pages';
 		}
 
 		if ( $settings['image_scale_animation_on_hover'] === 'quick_scale' ) {
@@ -705,6 +422,19 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 		if ( 'gradient_overlay' === $settings['post_layout'] ) {
 			$class[] = presscore_tpl_get_hover_anim_class( $settings['go_animation'] );
+		}
+
+		$loading_mode = $settings['loading_mode'];
+		if ( 'standard' !== $loading_mode ) {
+			$class[] = 'jquery-filter';
+		}
+
+		if ( 'js_lazy_loading' === $loading_mode ) {
+			$class[] = 'lazy-loading-mode';
+		}
+
+		if ( $loading_mode === 'js_pagination' && $settings['show_all_pages'] ) {
+			$class[] = 'show-all-pages';
 		}
 
 		return sprintf( ' class="%s" ', esc_attr( implode( ' ', $class ) ) );
@@ -759,11 +489,15 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		$loading_mode = $this->get_loading_mode();
 		$filter_class = [ 'iso-filter', 'filter-decorations' ];
 
+		if ( $settings['allow_filter_navigation_by_url'] ) {
+			$filter_class[] = 'allow-navigation-by-url';
+		}
+
 		if ( $loading_mode === 'standard' ) {
 			$filter_class[] = 'without-isotope';
 		}
 
-		if ( ! $this->is_masonry_layout() ) {
+		if ( ! $this->is_masonry_layout( $settings ) ) {
 			$filter_class[] = 'css-grid-filter';
 		}
 
@@ -797,18 +531,26 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 		$current_term = 'all';
 		$sorting_args = [
-			'show_order'   => $settings['show_order_filter'],
-			'show_orderby' => $settings['show_orderby_filter'],
-			'order'        => $settings['order'],
-			'orderby'      => $settings['orderby'],
-			'select'       => 'all',
-			'term_id'      => 'none',
+			'show_order'      => $settings['show_order_filter'],
+			'show_orderby'    => $settings['show_orderby_filter'],
+			'order'           => $settings['order'],
+			'orderby'         => $settings['orderby'],
+			'default_order'   => $settings['order'],
+			'default_orderby' => $settings['orderby'],
+			'select'          => 'all',
+			'term_id'         => 'none',
 		];
 
-		if ( $loading_mode === 'standard' && is_object( $request ) && $request->not_empty() ) {
+		if ( is_object( $request ) && $request->not_empty() && $this->use_filter_request() ) {
+			if ( $request->order ) {
+				$sorting_args['order']   = $request->order;
+			}
+
+			if ( $request->orderby ) {
+				$sorting_args['orderby'] = $request->orderby;
+			}
+
 			$sorting_args['select']  = 'only';
-			$sorting_args['order']   = $request->order;
-			$sorting_args['orderby'] = $request->orderby;
 			$sorting_args['term_id'] = $request->get_first_term();
 			$current_term            = $request->get_first_term();
 		}
@@ -830,6 +572,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					'all_count'   => false,
 					'other_count' => false,
 				],
+				'hash'       => [ 'term' => '%TERM_SLUG%' ],
 				'class'      => implode( ' ', $filter_class ),
 				'item_class' => 'filter-item',
 				'all_class'  => 'show-all filter-item',
@@ -899,7 +642,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		}
 
 		$dynamic_import_bottom = [];
-		if ( ! $this->is_masonry_layout() ) {
+		if ( ! $this->is_masonry_layout( $settings ) ) {
 			$dynamic_import_bottom[] = 'grid.less';
 		}
 
@@ -933,7 +676,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 			}
 		}
 
-		$less_vars->add_keyword( 'post-content-bg', $settings['custom_content_bg_color'] );
+		//$less_vars->add_rgba_color( 'post-content-bg', $settings['custom_content_bg_color'] );
 
 		$less_vars->add_pixel_number( 'grid-posts-gap', $settings['gap_between_posts'] );
 		$less_vars->add_pixel_number( 'grid-post-min-width', $settings['pwb_column_min_width'] );
@@ -988,26 +731,32 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 
 	protected function get_query( $request ) {
 		$settings = $this->get_settings_for_display();
+		$post_type    = $settings['post_type'];
 
-		if ( $settings['post_type'] === 'current_query' ) {
+		if ( $post_type === 'current_query' ) {
 			return $GLOBALS['wp_query'];
 		}
 
 		$loading_mode = $settings['loading_mode'];
+		$taxonomy     = $settings['taxonomy'];
+		$terms        = $settings['terms'];
 
 		// Loop query.
 		$query_args = [
 			'posts_offset'   => $settings['posts_offset'],
-			'post_type'      => $settings['post_type'],
+			'post_type'      => $post_type,
 			'order'          => $settings['order'],
 			'orderby'        => $settings['orderby'],
 			'posts_per_page' => $this->get_posts_per_page( $loading_mode, $settings ),
 		];
 
-		$query_builder = ( new The7_Query_Builder( $query_args ) )->from_terms(
-			$settings['taxonomy'],
-			$settings['terms']
-		);
+		if ( $post_type === 'related' ) {
+			$query_builder = new The7_Related_Query_Builder( $query_args );
+		} else {
+			$query_builder = new The7_Query_Builder( $query_args );
+		}
+
+		$query_builder->from_terms( $taxonomy, $terms );
 
 		if ( $loading_mode === 'standard' ) {
 			$query_builder->with_categorizaition( $request );
@@ -1033,15 +782,10 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 	/**
 	 * @return bool
 	 */
-	protected function is_masonry_layout() {
-		return $this->get_settings_for_display( 'layout' ) === 'masonry';
-	}
+	protected function use_filter_request() {
+		$settings = $this->get_settings_for_display();
 
-	/**
-	 * @return bool
-	 */
-	protected function is_preview_mode() {
-		return Plugin::$instance->preview->is_preview_mode();
+		return $settings['loading_mode'] === 'standard' || $settings['allow_filter_navigation_by_url'];
 	}
 
 	protected function add_filter_bar_content_controls() {
@@ -1051,7 +795,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label'     => __( 'Filter Bar', 'the7mk2' ),
 				'tab'       => Controls_Manager::TAB_CONTENT,
 				'condition' => [
-					'post_type!' => 'current_query',
+					'post_type!' => [ 'current_query', 'related' ],
 				],
 			]
 		);
@@ -1059,7 +803,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		$this->add_control(
 			'show_categories_filter',
 			[
-				'label'        => __( 'Categories Filter', 'the7mk2' ),
+				'label'        => __( 'Taxonomy Filter', 'the7mk2' ),
 				'type'         => Controls_Manager::SWITCHER,
 				'label_on'     => __( 'Show', 'the7mk2' ),
 				'label_off'    => __( 'Hide', 'the7mk2' ),
@@ -1118,6 +862,49 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label_off'    => __( 'Hide', 'the7mk2' ),
 				'return_value' => 'y',
 				'default'      => '',
+			]
+		);
+
+		$this->add_control(
+			'allow_filter_navigation_by_url',
+			[
+				'label'        => __( 'Allow Navigation By Url', 'the7mk2' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'Yes', 'the7mk2' ),
+				'label_off'    => __( 'No', 'the7mk2' ),
+				'return_value' => 'y',
+				'default'      => '',
+				'separator'    => 'before',
+				'conditions'   => [
+					'relation' => 'and',
+					'terms'    => [
+						[
+							'name'     => 'loading_mode',
+							'operator' => '!=',
+							'value'    => 'standard',
+						],
+						[
+							'relation' => 'or',
+							'terms'    => [
+								[
+									'name'     => 'show_categories_filter',
+									'operator' => '==',
+									'value'    => 'y',
+								],
+								[
+									'name'     => 'show_orderby_filter',
+									'operator' => '==',
+									'value'    => 'y',
+								],
+								[
+									'name'     => 'show_order_filter',
+									'operator' => '==',
+									'value'    => 'y',
+								],
+							],
+						],
+					],
+				],
 			]
 		);
 
@@ -1423,7 +1210,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label'   => __( 'Source', 'the7mk2' ),
 				'type'    => Controls_Manager::SELECT2,
 				'default' => 'post',
-				'options' => the7_elementor_elements_widget_post_types(),
+				'options' => the7_elementor_elements_widget_post_types() + [ 'related' => __( 'Related', 'the7mk2' ) ],
 				'classes' => 'select2-medium-width',
 			]
 		);
@@ -1453,7 +1240,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'classes'   => 'select2-medium-width',
 				'condition' => [
 					'taxonomy!'  => '',
-					'post_type!' => 'current_query',
+					'post_type!' => [ 'current_query', 'related' ],
 				],
 			]
 		);
@@ -1591,7 +1378,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					'h5'   => 'H5',
 					'h6'   => 'H6',
 				],
-				'default'   => 'h4',
+				'default'   => 'h3',
 				'condition' => [
 					'show_post_title' => 'y',
 				],
@@ -2310,6 +2097,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				],
 				'selectors'  => [
 					'{{WRAPPER}} .project-links-container a > span:before' => 'font-size: {{SIZE}}{{UNIT}}',
+					'{{WRAPPER}} .project-links-container a > svg' => 'max-width: {{SIZE}}{{UNIT}}; max-height: {{SIZE}}{{UNIT}}',
 				],
 			]
 		);
@@ -2416,8 +2204,9 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'alpha'     => true,
 				'default'   => '',
 				'selectors' => [
-					'{{WRAPPER}} .project-links-container a:not(:hover) > span' => 'color: {{VALUE}};',
-					'{{WRAPPER}} .project-links-container a > span'             => 'color: {{VALUE}};',
+					'{{WRAPPER}} .project-links-container a:not(:hover) > span'     => 'color: {{VALUE}};',
+					'{{WRAPPER}} .project-links-container a > span'                 => 'color: {{VALUE}};',
+					'{{WRAPPER}} .project-links-container a > svg path'             => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -2462,12 +2251,13 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 		$this->add_control(
 			'project_icon_color_hover',
 			[
-				'label'       => __( 'Icon Color', 'the7mk2' ),
-				'type'        => Controls_Manager::COLOR,
-				'alpha'       => true,
-				'default'     => '',
-				'selectors'   => [
-					'{{WRAPPER}} .project-links-container a:hover > span' => 'color: {{VALUE}};',
+				'label'     => __( 'Icon Color', 'the7mk2' ),
+				'type'      => Controls_Manager::COLOR,
+				'alpha'     => true,
+				'default'   => '',
+				'selectors' => [
+					'{{WRAPPER}} .project-links-container a:hover > span'     => 'color: {{VALUE}};',
+					'{{WRAPPER}} .project-links-container a:hover > svg path' => 'fill: {{VALUE}};',
 				],
 			]
 		);
@@ -2480,8 +2270,9 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'alpha'       => true,
 				'default'     => '',
 				'selectors'   => [
-					'{{WRAPPER}} .project-links-container a:after'  => 'border-color: {{VALUE}}; transition: opacity 0.150s linear;',
-					'{{WRAPPER}} .project-links-container a:before' => 'transition: opacity 0.150s linear;',
+					'{{WRAPPER}} .project-links-container a:before, {{WRAPPER}} .project-links-container a:after { transition: opacity 0.150s linear;}
+					{{WRAPPER}} .project-links-container a:after'  => 'border-color: {{VALUE}};',
+					
 				],
 			]
 		);
@@ -2494,8 +2285,9 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'alpha'     => true,
 				'default'   => '',
 				'selectors' => [
-					'{{WRAPPER}} .project-links-container a:after'  => 'background: {{VALUE}}; box-shadow: none; transition: opacity 0.150s linear;',
-					'{{WRAPPER}} .project-links-container a:before' => 'transition: opacity 0.150s linear;',
+					'{{WRAPPER}} .project-links-container a:before, {{WRAPPER}} .project-links-container a:after { transition: opacity 0.150s linear;}
+					{{WRAPPER}} .project-links-container a:after'  => 'background: {{VALUE}}; box-shadow: none;',
+					
 				],
 			]
 		);
@@ -2619,6 +2411,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				',
 			]
 		);
+
 		$this->add_control(
 			'thumbnail_opacity',
 			[
@@ -2638,7 +2431,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				],
 				'selectors'  => [
 					'{{WRAPPER}} .description-under-image .post-thumbnail-wrap .post-thumbnail img,
-				{{WRAPPER}} .description-on-hover article .post-thumbnail img'               => 'opacity: {{SIZE}}{{UNIT}}',
+					{{WRAPPER}} .description-on-hover article .post-thumbnail img' => 'opacity: calc({{SIZE}}/100)',
 				],
 			]
 		);
@@ -2664,26 +2457,20 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					],
 					'color' => [
 						'selectors' => [
-
 							'{{SELECTOR}}' => 'background: {{VALUE}}; transition: opacity 0.25s;',
-							
 							'{{WRAPPER}} .description-under-image .post-thumbnail-wrap .post-thumbnail > .post-thumbnail-rollover:before,
 							{{WRAPPER}} .gradient-overlap-layout-list article .post-thumbnail > .post-thumbnail-rollover:before,
 							{{WRAPPER}} .description-on-hover article .post-thumbnail > .post-thumbnail-rollover:before' => ' transition: opacity 0.25s;',
 							'{{WRAPPER}} .post-thumbnail:hover > .post-thumbnail-rollover:before,
 							{{WRAPPER}} .post-thumbnail:not(:hover) > .post-thumbnail-rollover:after ' => 'transition-delay: 0.15s;',
-							
 						],
 					],
-
 				],
 				'selector'       => '
-				{{WRAPPER}} .description-under-image .post-thumbnail-wrap .post-thumbnail > .post-thumbnail-rollover:after,
-				{{WRAPPER}} .gradient-overlap-layout-list article .post-thumbnail > .post-thumbnail-rollover:after,
-				{{WRAPPER}} .description-on-hover article .post-thumbnail > .post-thumbnail-rollover:after
-
+					{{WRAPPER}} .description-under-image .post-thumbnail-wrap .post-thumbnail > .post-thumbnail-rollover:after,
+					{{WRAPPER}} .gradient-overlap-layout-list article .post-thumbnail > .post-thumbnail-rollover:after,
+					{{WRAPPER}} .description-on-hover article .post-thumbnail > .post-thumbnail-rollover:after
 				',
-
 			]
 		);
 
@@ -2730,7 +2517,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				],
 				'selectors'  => [
 					'{{WRAPPER}} .description-under-image .post-thumbnail-wrap:hover .post-thumbnail img,
-				{{WRAPPER}} .description-on-hover article:hover .post-thumbnail img'               => 'opacity: {{SIZE}}{{UNIT}}',
+					{{WRAPPER}} .description-on-hover article:hover .post-thumbnail img'               => 'opacity: calc({{SIZE}}/100)',
 				],
 			]
 		);
@@ -2758,6 +2545,9 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'type'    => Controls_Manager::COLOR,
 				'alpha'   => true,
 				'default' => '',
+				'selectors'  =>  [
+					'{{WRAPPER}}' => '--content-bg-color:{{VALUE}}'
+				]
 			]
 		);
 
@@ -2783,8 +2573,8 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					],
 				],
 				'selectors'  => [
-					'{{WRAPPER}} .description-under-image .post-entry-content'               => 'width: {{SIZE}}{{UNIT}}',
-					'{{WRAPPER}} .description-on-hover .post-entry-content .post-entry-body' => 'width: {{SIZE}}{{UNIT}}',
+					'{{WRAPPER}} .description-under-image .post-entry-content'               => 'max-width: {{SIZE}}{{UNIT}}',
+					'{{WRAPPER}} .description-on-hover .post-entry-content .post-entry-body' => 'max-width: {{SIZE}}{{UNIT}}',
 				],
 			]
 		);
@@ -2866,7 +2656,8 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .post-entry-content' => 'text-align: {{VALUE}};',
+					'{{WRAPPER}} .post-entry-content'                       => 'text-align: {{VALUE}};',
+					'{{WRAPPER}} .classic-layout-list .post-thumbnail-wrap' => 'text-align: {{VALUE}};',
 				],
 			]
 		);
@@ -2891,7 +2682,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 			[
 				'name'           => 'post_title',
 				'label'          => __( 'Typography', 'the7mk2' ),
-				'selector'       => '{{WRAPPER}} .entry-title',
+				'selector'       => '{{WRAPPER}} .ele-entry-title',
 				'fields_options' => [
 					'font_family' => [
 						'default' => '',
@@ -2932,8 +2723,8 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'alpha'     => true,
 				'default'   => '',
 				'selectors' => [
-					'#page {{WRAPPER}} article:not(.keep-custom-css) .entry-title a'       => 'color: {{VALUE}}',
-					'#page {{WRAPPER}} article:not(.keep-custom-css) .entry-title a:hover' => 'color: {{VALUE}};',
+					'#page {{WRAPPER}} article:not(.class-1):not(.keep-custom-css) .ele-entry-title a'       => 'color: {{VALUE}}',
+					'#page {{WRAPPER}} article:not(.class-1):not(.keep-custom-css) .ele-entry-title a:hover' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -2955,7 +2746,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'alpha'     => true,
 				'default'   => '',
 				'selectors' => [
-					'#page {{WRAPPER}} article:not(.keep-custom-css) .entry-title a:hover' => 'color: {{VALUE}};',
+					'#page {{WRAPPER}} article:not(.class-1):not(.keep-custom-css) .ele-entry-title a:hover' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -2982,7 +2773,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					],
 				],
 				'selectors'  => [
-					'{{WRAPPER}} .entry-title'                                                    => 'margin-bottom: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .ele-entry-title'                                                    => 'margin-bottom: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .content-rollover-layout-list.meta-info-off .post-entry-wrapper' => 'bottom: -{{SIZE}}{{UNIT}};',
 				],
 			]
@@ -3213,7 +3004,6 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 			Group_Control_Typography::get_type(),
 			[
 				'name'      => 'button_typography',
-				'scheme'    => Schemes\Typography::TYPOGRAPHY_4,
 				'selector'  => '{{WRAPPER}} .post-details',
 			]
 		);
@@ -3249,9 +3039,9 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 					'value' => Schemes\Color::COLOR_4,
 				],
 				'selectors' => [
-					'{{WRAPPER}} article .post-entry-content .post-details.dt-btn'       => 'background: {{VALUE}};',
-					'{{WRAPPER}} article .post-entry-content .post-details.dt-btn:hover' => 'background: {{VALUE}};',
-					'{{WRAPPER}} article .post-entry-content .post-details.dt-btn:focus' => 'background: {{VALUE}};',
+					'{{WRAPPER}} article .post-entry-content .post-details.dt-btn:not(.class-1)'       => 'background: {{VALUE}};',
+					'{{WRAPPER}} article .post-entry-content .post-details.dt-btn:not(.class-1):hover' => 'background: {{VALUE}};',
+					'{{WRAPPER}} article .post-entry-content .post-details.dt-btn:not(.class-1):focus' => 'background: {{VALUE}};',
 				],
 			]
 		);
@@ -3283,8 +3073,8 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label'     => __( 'Background Color', 'the7mk2' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} article .post-entry-content .post-details.details-type-btn.dt-btn:hover' => 'background: {{VALUE}};',
-					'{{WRAPPER}} article .post-entry-content .post-details.details-type-btn.dt-btn:focus' => 'background: {{VALUE}};',
+					'{{WRAPPER}} article .post-entry-content .post-details.details-type-btn.dt-btn:not(.class-1):hover' => 'background: {{VALUE}};',
+					'{{WRAPPER}} article .post-entry-content .post-details.details-type-btn.dt-btn:not(.class-1):focus' => 'background: {{VALUE}};',
 				],
 			]
 		);
@@ -3295,8 +3085,9 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label'     => __( 'Border Color', 'elementor' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .post-entry-content .post-details:hover' => 'border-color: {{VALUE}} !important;',
-					'{{WRAPPER}} .post-entry-content .post-details:focus' => 'border-color: {{VALUE}} !important;',
+					'{{WRAPPER}} .post-entry-content .post-details:hover' => 'border-color: {{VALUE}};',
+					'{{WRAPPER}} .post-entry-content .post-details:not(.class-1):not(.class-2):not(.class-3):hover' => 'border-color: {{VALUE}}',
+					'{{WRAPPER}} .post-entry-content .post-details:not(.class-1):not(.class-2):not(.class-3):focus' => 'border-color: {{VALUE}} !important;',
 				],
 				'condition' => [
 					'button_border_border!' => '',
@@ -3342,6 +3133,29 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 			]
 		);
 
+		$this->add_control(
+			'button_bottom_margin',
+			[
+				'label'      => __( 'Spacing', 'the7mk2' ),
+				'type'       => Controls_Manager::SLIDER,
+				'default'    => [
+					'unit' => 'px',
+					'size' => '',
+				],
+				'size_units' => [ 'px' ],
+				'range'      => [
+					'px' => [
+						'min'  => 0,
+						'max'  => 200,
+						'step' => 1,
+					],
+				],
+				'selectors'  => [
+					'#page {{WRAPPER}} .post-details' => 'margin-bottom: {{SIZE}}{{UNIT}}',
+				],
+			]
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -3352,7 +3166,7 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label'      => __( 'Filter Bar', 'the7mk2' ),
 				'tab'        => Controls_Manager::TAB_STYLE,
 				'condition'  => [
-					'post_type!' => 'current_query',
+					'post_type!' => [ 'current_query', 'related' ],
 				],
 				'conditions' => [
 					'relation' => 'or',
@@ -3918,7 +3732,6 @@ class The7_Elementor_Elements_Widget extends The7_Elementor_Widget_Base {
 				'label'    => __( 'Typography', 'the7mk2' ),
 				'selector' => '{{WRAPPER}} .paginator a, {{WRAPPER}} .paginator .button-load-more',
 				'exclude'  => [
-					'text_transform',
 					'text_decoration',
 				],
 			]

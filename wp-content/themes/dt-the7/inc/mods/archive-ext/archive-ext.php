@@ -162,6 +162,7 @@ if ( ! class_exists( 'Presscore_Modules_ArchiveExtModule', false ) ) :
 				case 'dt_portfolio_masonry':
 				case 'dt_team_masonry':
 				case 'dt_testimonials_masonry':
+				case 'dt_albums_masonry':
 					if ( isset( $atts['loading_mode'] ) ) {
 						$mode    = $atts['loading_mode'];
 						$ppp_map = array(

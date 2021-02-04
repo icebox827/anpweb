@@ -96,6 +96,20 @@ return [
 		],
 	],
 	'controls' => [
+		'the7_document_show_header' => [
+			'meta' => '_dt_header_show',
+			'args' => [
+				'label'        => __( 'Header', 'the7mk2' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => '1',
+				'prefix_class' => 'elementor-',
+				'label_on'     => __( 'Show', 'the7mk2' ),
+				'label_off'    => __( 'Hide', 'the7mk2' ),
+				'return_value' => '1',
+				'empty_value'  => '0',
+				'separator'    => 'none',
+			],
+		],
 		'the7_document_title'                  => [
 			'meta' => '_dt_header_title',
 			'args' => [
@@ -178,6 +192,7 @@ return [
 				'separator' => 'before',
 				'condition' => [
 					'the7_document_title' => 'disabled',
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -194,6 +209,7 @@ return [
 				],
 				'condition' => [
 					'the7_document_title' => 'disabled',
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -211,6 +227,7 @@ return [
 				'condition' => [
 					'the7_document_title'                 => 'disabled',
 					'the7_document_disabled_header_style' => 'transparent',
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -236,6 +253,7 @@ return [
 				'condition' => [
 					'the7_document_title'                 => 'disabled',
 					'the7_document_disabled_header_style' => 'transparent',
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -261,6 +279,7 @@ return [
 				'condition' => [
 					'the7_document_title'                 => 'disabled',
 					'the7_document_disabled_header_style' => 'transparent',
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -273,6 +292,7 @@ return [
 				'separator' => 'before',
 				'condition' => [
 					'the7_document_title' => [ 'slideshow' ],
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -286,6 +306,7 @@ return [
 				'default'      => '',
 				'condition'    => [
 					'the7_document_title' => 'slideshow',
+					'the7_document_show_header' => '1',
 				],
 			],
 		],
@@ -303,6 +324,7 @@ return [
 				],
 				'condition' => [
 					'the7_document_title' => [ 'slideshow' ],
+					'the7_document_show_header' => '1',
 				],
 			],
 		],

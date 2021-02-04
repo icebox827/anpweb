@@ -20,7 +20,7 @@ class The7_Remote_API {
 
 	const LICENSE_URL = 'https://themeforest.net/licenses/standard';
 
-	const PURCHASE_CODES_MANAGE_URL = 'https://repo.the7.io/manage/';
+	const PURCHASE_CODES_MANAGE_URL = 'https://my.the7.io';
 
 	/**
 	 * @var string
@@ -101,14 +101,16 @@ class The7_Remote_API {
 
 		$this->code = $code;
 
-		$this->strings['fs_unavailable'] = __( 'Could not access filesystem.', 'the7mk2' );
-		$this->strings['fs_error']       = __( 'Filesystem error.', 'the7mk2' );
+		$this->strings['fs_unavailable'] = __(
+			'Failed to access the file system. You may try adjusting the permissions for the uploads folder.',
+			'the7mk2'
+		);
 		/* translators: %s: directory name */
-		$this->strings['fs_no_folder']         = __( 'Unable to locate needed folder (%s).', 'the7mk2' );
-		$this->strings['download_failed']      = __( 'Download failed.', 'the7mk2' );
-		$this->strings['incompatible_archive'] = __( 'The package could not be installed.', 'the7mk2' );
-		$this->strings['bad_request']          = __( 'Bad request.', 'the7mk2' );
-		$this->strings['invalid_response']     = __( 'Invalid response.', 'the7mk2' );
+		$this->strings['fs_no_folder'] = __( 'Unable to find cache folder (%s).', 'the7mk2' );
+		/* translators: %s: the7 server http responce code */
+		$this->strings['download_failed'] = __( 'Download failed. The7 server http responce code is %s.', 'the7mk2' );
+		$this->strings['bad_request'] = __( 'Bad request.', 'the7mk2' );
+		$this->strings['invalid_response'] = __( 'Invalid response.', 'the7mk2' );
 	}
 
 	/**
@@ -323,7 +325,7 @@ class The7_Remote_API {
 		}
 
 		if ( is_wp_error( $wp_filesystem->errors ) && $wp_filesystem->errors->get_error_code() ) {
-			return new WP_Error( 'fs_error', $this->strings['fs_error'], $wp_filesystem->errors );
+			return $wp_filesystem->errors;
 		}
 
 		$request_url_args = array(
@@ -347,7 +349,9 @@ class The7_Remote_API {
 		$response_code = (int) wp_remote_retrieve_response_code( $remote_response );
 
 		if ( ! is_array( $remote_response ) || 200 !== $response_code ) {
-			return new WP_Error( 'download_failed', $this->strings['download_failed'] );
+			return new WP_Error(
+				'download_failed', sprintf( $this->strings['download_failed'], $response_code )
+			);
 		}
 
 		wp_mkdir_p( $target_dir );
@@ -358,7 +362,7 @@ class The7_Remote_API {
 
 		$unzip_result = unzip_file( $zip_file_name, $target_dir );
 		if ( is_wp_error( $unzip_result ) ) {
-			return new WP_Error( 'incompatible_archive', $this->strings['incompatible_archive'], $unzip_result );
+			return $unzip_result;
 		}
 
 		$dummy_dir = trailingslashit( $target_dir ) . $id;

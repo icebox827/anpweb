@@ -69,6 +69,17 @@ class The7_Less_Vars_Manager implements The7_Less_Vars_Manager_Interface {
 		$this->storage->set( $var, $this->factory->number( $value )->wrap( $wrap )->get_percents() );
 	}
 
+	public function add_unitized_number( $var, $value, $wrap = null ) {
+		$number_obj = $this->factory->number( $value )->wrap( $wrap );
+		if ( ! $number_obj->get_units() ) {
+			$number = $number_obj->get_pixels();
+		} else {
+			$number = $number_obj->get();
+		}
+
+		$this->storage->set( $var, $number );
+	}
+
 	public function add_number( $var, $value, $wrap = null ) {
 		$this->storage->set( $var, $this->factory->number( $value )->wrap( $wrap )->get() );
 	}
@@ -111,20 +122,25 @@ class The7_Less_Vars_Manager implements The7_Less_Vars_Manager_Interface {
 	 * @param string|null $wrap
 	 * @param string      $units
 	 */
-	public function add_paddings( $vars, $value, $units = 'px', $wrap = null ) {
+	public function add_paddings( $vars, $value, $units = '', $wrap = null ) {
 		if ( ! is_array( $value ) ) {
 			$value = explode( ' ', $value );
 		}
 
 		for ( $i = 0; $i < 4; $i ++ ) {
 			$value[ $i ] = ( isset( $value[ $i ] ) ? $value[ $i ] : '0' );
+			$first_char = isset( $value[ $i ][0] ) ? $value[ $i ][0] : '';
+			if ( $first_char !== '-' && ! is_numeric( $first_char ) ) {
+				$value[ $i ] = '';
+			}
 		}
 
 		$value = array_slice( $value, 0, 4 );
 
 		foreach ( $vars as $i => $var ) {
-			if ( ! isset( $value[ $i ] ) ) {
-				$this->add_keyword( $var, '~""', $wrap );
+			if ( ! isset( $value[ $i ] ) || $value[ $i ] === '' ) {
+				$this->add_keyword( $var, '', $wrap );
+				continue;
 			}
 
 			switch ( $units ) {

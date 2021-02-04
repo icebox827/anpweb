@@ -18,41 +18,41 @@ class Products_Query extends Query_Interface {
 		];
 
 		$query_args['meta_query'] = WC()->query->get_meta_query();
-		$query_args['tax_query'] = [];
+		$query_args['tax_query']  = [];
 
 		// Visibility.
 		$this->set_visibility_query_args( $query_args );
 
-		//Featured.
+		// Featured.
 		$this->set_featured_query_args( $query_args );
 
-		//Sale.
+		// Sale.
 		$this->set_sale_products_query_args( $query_args );
 
-		//Best sellings
+		// Best sellings.
 		$this->set_best_sellings_products_query_args( $query_args );
 
-		//Top rated
+		// Top rated.
 		$this->set_top_rated_products_query_args( $query_args );
 
 		// IDs.
 		$this->set_ids_query_args( $query_args );
 
-		// Categories & Tags
+		// Categories & Tags.
 		$this->set_terms_query_args( $query_args );
 
-		//Exclude.
+		// Exclude.
 		$this->set_exclude_query_args( $query_args );
 
-		$loading_mode = $this->get_att( 'loading_mode', 'disabled' );
-		$query_args['posts_per_page'] = intval( $this->get_posts_per_page( $loading_mode, $this->atts ) );
-		if ( 'standard' == $loading_mode ) {
+		$loading_mode                 = $this->get_att( 'loading_mode', 'disabled' );
+		$query_args['posts_per_page'] = (int) $this->get_posts_per_page( $loading_mode, $this->atts );
+		if ( 'standard' === $loading_mode ) {
 			$query_args['paged'] = the7_get_paged_var();
 		}
 
 		$query_args = apply_filters( 'the7_woocommerce_widget_products_query', $query_args );
 
-		// load only id and post types fileds
+		// load only id and post types fileds.
 		$query_args['fields'] = [ 'ids', 'post_types' ];
 
 		return $query_args;
@@ -110,8 +110,8 @@ class Products_Query extends Query_Interface {
 
 		$terms = [];
 		foreach ( $this->get_att( $this->query_prefix . 'include_term_ids' ) as $id ) {
-			$term_data = get_term_by( 'term_taxonomy_id', $id );
-			$taxonomy = $term_data->taxonomy;
+			$term_data            = get_term_by( 'term_taxonomy_id', $id );
+			$taxonomy             = $term_data->taxonomy;
 			$terms[ $taxonomy ][] = $id;
 		}
 		$tax_query = [];
@@ -158,7 +158,7 @@ class Products_Query extends Query_Interface {
 		if ( in_array( 'terms', $this->get_att( $this->query_prefix . 'exclude' ) ) && ! empty( $this->get_att( $this->query_prefix . 'exclude_term_ids' ) ) ) {
 			$terms = [];
 			foreach ( $this->get_att( $this->query_prefix . 'exclude_term_ids' ) as $to_exclude ) {
-				$term_data = get_term_by( 'term_taxonomy_id', $to_exclude );
+				$term_data                       = get_term_by( 'term_taxonomy_id', $to_exclude );
 				$terms[ $term_data->taxonomy ][] = $to_exclude;
 			}
 			$tax_query = [];
@@ -174,7 +174,7 @@ class Products_Query extends Query_Interface {
 				$query_args['tax_query'] = $tax_query;
 			} else {
 				$query_args['tax_query']['relation'] = 'AND';
-				$query_args['tax_query'][] = $tax_query;
+				$query_args['tax_query'][]           = $tax_query;
 			}
 		}
 	}
@@ -182,7 +182,7 @@ class Products_Query extends Query_Interface {
 	protected function set_best_sellings_products_query_args( &$query_args ) {
 		if ( 'best_selling' === $this->get_att( $this->query_prefix . 'post_type' ) ) {
 			$query_args['meta_key'] = 'total_sales';
-			$query_args['orderby'] = 'meta_value_num';
+			$query_args['orderby']  = 'meta_value_num';
 		}
 	}
 

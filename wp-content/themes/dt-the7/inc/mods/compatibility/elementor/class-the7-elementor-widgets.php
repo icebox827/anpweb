@@ -28,10 +28,6 @@ class The7_Elementor_Widgets {
 	protected $unregister_widgets_collection = [];
 
 	public static function add_global_dynamic_css( \Elementor\Core\Files\CSS\Base $css_file ) {
-		if ( ! The7_Elementor_Compatibility::instance()->scheme_manager_control->is_elementor_schemes_disabled() ) {
-			return;
-		}
-
 		$global_styles = new \The7\Adapters\Elementor\Widgets\The7_Elementor_Style_Global_Widget();
 		$css = $global_styles->generate_inline_css();
 
@@ -47,9 +43,7 @@ class The7_Elementor_Widgets {
 		if ( ! Plugin::$instance->preview->is_preview_mode() ) {
 			return;
 		}
-		if ( ! The7_Elementor_Compatibility::instance()->scheme_manager_control->is_elementor_schemes_disabled() ) {
-			return;
-		}
+
 		$global_styles = new \The7\Adapters\Elementor\Widgets\The7_Elementor_Style_Global_Widget();
 		$css = $global_styles->generate_inline_css();
 		if ( $css ) {
@@ -61,17 +55,21 @@ class The7_Elementor_Widgets {
 	 * Bootstrap widgets.
 	 */
 	public function bootstrap() {
-		add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets_before' ], 5 ); //init our widgets before elementor
-		add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets_after' ], 50 ); //init our widgets before elementor
+		add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets_before' ], 5 );
+		add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets_after' ], 50 );
 		add_action( 'elementor/init', [ $this, 'elementor_add_custom_category' ] );
 		add_action( 'elementor/init', [ $this, 'load_dependencies' ] );
+		add_action( 'elementor/init', [ $this, 'register_assets' ] );
 		add_action( 'elementor/preview/init', [ $this, 'turn_off_lazy_loading' ] );
 		add_action( 'elementor/editor/init', [ $this, 'turn_off_lazy_loading' ] );
-
-		add_action( 'wp_head', [ $this, 'display_inline_global_styles' ], 1000 );
-		presscore_template_manager()->add_path( 'elementor', array( 'template-parts/elementor' ) );
 		add_action( 'elementor/element/parse_css', [ $this, 'add_widget_css' ], 10, 2 );
-		add_action( "elementor/css-file/global/parse", [ $this, 'add_global_dynamic_css' ] );
+
+		if ( the7_is_elementor_schemes_disabled() ) {
+			add_action( 'elementor/css-file/global/parse', [ $this, 'add_global_dynamic_css' ] );
+			add_action( 'wp_head', [ $this, 'display_inline_global_styles' ], 1000 );
+		}
+
+		presscore_template_manager()->add_path( 'elementor', array( 'template-parts/elementor' ) );
 	}
 
 	public function add_widget_css( $post_css, $element ) {
@@ -122,6 +120,7 @@ class The7_Elementor_Widgets {
 		require_once __DIR__ . '/class-the7-elementor-widget-terms-selector-mutator.php';
 		require_once __DIR__ . '/trait-with-pagination.php';
 		require_once __DIR__ . '/trait-with-post-excerpt.php';
+		require_once __DIR__ . '/trait-posts-masonry-style.php';
 		require_once __DIR__ . '/class-the7-elementor-widget-base.php';
 		require_once __DIR__ . '/the7-elementor-less-vars-decorator-interface.php';
 		require_once __DIR__ . '/class-the7-elementor-less-vars-decorator.php';
@@ -136,9 +135,6 @@ class The7_Elementor_Widgets {
 
 		require_once __DIR__ . '/widgets/class-the7-elementor-style-global-widget.php';
 
-		require_once __DIR__ . '/widgets/class-the7-elementor-photo-scroller-widget.php';
-		require_once __DIR__ . '/widgets/class-the7-elementor-nav-menu.php';
-
 		new The7_Query_Control_Module();
 
 		$terms_selector_mutator = new The7_Elementor_Widget_Terms_Selector_Mutator();
@@ -146,11 +142,14 @@ class The7_Elementor_Widgets {
 
 		$init_widgets = [
 			'class-the7-elementor-elements-widget' => ['position' => 'before'],
-			'class-the7-elementor-elements-carousel-widget' => ['position' => 'before'],
+			'class-the7-elementor-posts-carousel-widget' => ['position' => 'before'],
 			'class-the7-elementor-elements-breadcrumbs-widget'=> ['position' => 'before'],
 			'class-the7-elementor-photo-scroller-widget' => ['position' => 'before'],
 			'class-the7-elementor-nav-menu' => ['position' => 'before'],
+			'class-the7-elementor-text-and-icon-carousel-widget' => ['position' => 'before'],
+			'class-the7-elementor-testimonials-carousel-widget' => ['position' => 'before'],
 		];
+
 
 		if ( class_exists( 'DT_Shortcode_Products_Carousel', false ) ) {
 			$init_widgets['class-the7-elementor-elements-woocommerce-carousel-widget'] = ['position' => 'before'];
@@ -203,6 +202,29 @@ class The7_Elementor_Widgets {
 			}
 			$this->collection_add_widget( $widget, $widget_params['position']);
 		}
+	}
+
+	/**
+	 * Register common widgets assets.
+	 */
+	public function register_assets() {
+		the7_register_style(
+			'the7-carousel-widget',
+			PRESSCORE_THEME_URI . '/css/compatibility/elementor/the7-carousel-widget'
+		);
+
+		the7_register_style(
+			'the7-carousel-text-and-icon-widget',
+			PRESSCORE_THEME_URI . '/css/compatibility/elementor/the7-carousel-text-and-icon-widget'
+		);
+
+		wp_register_script(
+			'the7-carousel-widget-preview',
+			PRESSCORE_ADMIN_URI . '/assets/js/elementor/elements-carousel-widget-preview.js',
+			[],
+			THE7_VERSION,
+			true
+		);
 	}
 
 	protected function collection_add_widget( $widget, $widget_position ) {

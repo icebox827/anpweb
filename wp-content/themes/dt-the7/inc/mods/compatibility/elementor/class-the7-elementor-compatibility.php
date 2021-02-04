@@ -74,6 +74,7 @@ class The7_Elementor_Compatibility {
 		require_once __DIR__ . '/upgrade/class-the7-elementor-updater.php';
 		require_once __DIR__ . '/upgrade/class-the7-elementor-widget-migrations.php';
 		require_once __DIR__ . '/upgrade/widgets/class-the7-elementor-masonry-migrations.php';
+		require_once __DIR__ . '/upgrade/widgets/class-the7-elementor-photo-scroller-migrations.php';
 
 		$this->page_settings = new The7_Elementor_Page_Settings();
 		$this->page_settings->bootstrap();
@@ -93,8 +94,7 @@ class The7_Elementor_Compatibility {
 			$this->kit_manager_control->bootstrap();
 		}
 
-		if ( true )//todo add option dependency
-		{
+		if ( the7_is_elementor2() ) {
 			$this->scheme_manager_control = new The7_Schemes_Manager_Control();
 			$this->scheme_manager_control->bootstrap();
 		}
@@ -105,6 +105,14 @@ class The7_Elementor_Compatibility {
 
 		add_action( 'wp_enqueue_scripts',   [ $this, 'enqueue_elementor_global_style_css'], 30  );
 		add_filter( 'presscore_localized_script', [ $this, 'extract_elementor_settings_to_js' ] );
+		add_action( 'elementor/editor/before_enqueue_styles', function() {
+			wp_enqueue_style(
+				'the7-broccoli-icons',
+				PRESSCORE_ADMIN_URI . '/assets/fonts/the7-broccoli-editor-fonts-v1.0/style.min.css',
+				[],
+				THE7_VERSION
+			);
+		} );
 	}
 
 	/**
@@ -127,7 +135,7 @@ class The7_Elementor_Compatibility {
 	 */
 	public static function get_elementor_settings( $key = null ) {
 		// TODO: Remove after elementor 3.4.0
-		if ( version_compare( ELEMENTOR_VERSION, '3.0.0', '<' ) ) {
+		if ( the7_is_elementor2() ) {
 			return Settings_Manager::get_settings_managers( 'general' )->get_model()->get_settings( 'elementor_' . $key );
 		}
 
@@ -139,7 +147,7 @@ class The7_Elementor_Compatibility {
 
 		$this->theme_builder_adapter = new \The7\Adapters\Elementor\Pro\The7_Elementor_Theme_Builder_Adapter();
 		$this->theme_builder_adapter->bootstrap();
-		if ( dt_is_woocommerce_enabled() ) {
+		if ( the7_is_woocommerce_enabled() ) {
 			require_once __DIR__ . '/pro/modules/woocommerce/class-the7-woocommerce-support.php';
 			new \The7\Adapters\Elementor\Pro\WoocommerceSupport\Woocommerce_Support();
 		}

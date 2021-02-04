@@ -213,6 +213,25 @@ if ( ! function_exists( 'presscore_themeoptions_get_stripes_list' ) ) :
 
 endif; // presscore_themeoptions_get_stripes_list
 
+if ( ! function_exists( 'presscore_options_get_web_fonts' ) ) :
+
+	function presscore_options_filter_font_names($fonts) {
+		$filtered_fonts = array();
+		foreach ( $fonts as $key => $font_name ) {
+			$font_parts = explode( ':', $key );
+			$clear_font_name = $font_parts[0];
+			if ( array_key_exists( $clear_font_name, $filtered_fonts ) ) {
+				continue;
+			}
+			if ( array_key_exists( $clear_font_name, $fonts ) && $key != $clear_font_name){
+				continue;
+			}
+			$filtered_fonts[ $clear_font_name ] = $font_name;
+		}
+		return $filtered_fonts;
+	}
+endif;
+
 if ( ! function_exists( 'presscore_options_get_safe_fonts' ) ) :
 
 	/**
@@ -221,44 +240,26 @@ if ( ! function_exists( 'presscore_options_get_safe_fonts' ) ) :
 	 * @return array
 	 */
 	function presscore_options_get_safe_fonts() {
-		return apply_filters( 'presscore_options_get_safe_fonts', array(
+		  $fonts = array(
 			'Andale Mono'                   => 'Andale Mono',
 			'Arial'                         => 'Arial',
-			'Arial:600'                     => 'Arial Bold',
-			'Arial:400italic'               => 'Arial Italic',
-			'Arial:600italic'               => 'Arial Bold Italic',
 			'Arial Black'                   => 'Arial Black',
 			'Comic Sans MS'                 => 'Comic Sans MS',
-			'Comic Sans MS:600'             => 'Comic Sans MS Bold',
 			'Courier New'                   => 'Courier New',
-			'Courier New:600'               => 'Courier New Bold',
-			'Courier New:400italic'         => 'Courier New Italic',
-			'Courier New:600italic'         => 'Courier New Bold Italic',
 			'Georgia'                       => 'Georgia',
-			'Georgia:600'                   => 'Georgia Bold',
-			'Georgia:400italic'             => 'Georgia Italic',
-			'Georgia:600italic'             => 'Georgia Bold Italic',
 			'Impact Lucida Console'         => 'Impact Lucida Console',
 			'Lucida Sans Unicode'           => 'Lucida Sans Unicode',
 			'Marlett'                       => 'Marlett',
 			'Minion Web'                    => 'Minion Web',
 			'Symbol'                        => 'Symbol',
 			'Times New Roman'               => 'Times New Roman',
-			'Times New Roman:600'           => 'Times New Roman Bold',
-			'Times New Roman:400italic'     => 'Times New Roman Italic',
-			'Times New Roman:600italic'     => 'Times New Roman Bold Italic',
 			'Tahoma'                        => 'Tahoma',
-			'Tahoma:600'                    => 'Tahoma Bold',
 			'Trebuchet MS'                  => 'Trebuchet MS',
-			'Trebuchet MS:600'              => 'Trebuchet MS Bold',
-			'Trebuchet MS:400italic'        => 'Trebuchet MS Italic',
-			'Trebuchet MS:600italic'        => 'Trebuchet MS Bold Italic',
 			'Verdana'                       => 'Verdana',
-			'Verdana:600'                   => 'Verdana Bold',
-			'Verdana:400italic'             => 'Verdana Italic',
-			'Verdana:600italic'             => 'Verdana Bold Italic',
 			'Webdings'                      => 'Webdings',
-		) );
+		  );
+		  $fonts = apply_filters( 'presscore_options_get_safe_fonts', $fonts);
+		  return presscore_options_filter_font_names( $fonts );
 	}
 
 endif;
@@ -276,8 +277,8 @@ if ( ! function_exists( 'presscore_options_get_web_fonts' ) ) :
 			$web_fonts_list = include trailingslashit( PRESSCORE_EXTENSIONS_DIR ) . 'web-fonts.php';
 			wp_cache_add( 'web_fonts', $web_fonts_list, 'presscore', 60 );
 		}
-
-		return apply_filters( 'presscore_options_get_web_fonts', $web_fonts_list );
+		$web_fonts_list = apply_filters( 'presscore_options_get_web_fonts', $web_fonts_list );
+		return presscore_options_filter_font_names( $web_fonts_list );
 	}
 
 endif;

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 Plugin Name: Floating News Headline 
 Plugin URI: http://awplife.com/
 Description: Floating news headline plugin with preview for Wordpress
-Version: 1.1.4
+Version: 1.2
 Author: A WP Life
 Author URI: http://awplife.com/
 Text Domain: floating-news-headline
@@ -23,7 +23,7 @@ if ( ! class_exists( 'Floating_Headline' ) ) {
 		
 		protected function _constants() {
 			//Plugin Version
-			define( 'FH_PLUGIN_VER', '1.1.4' );
+			define( 'FH_PLUGIN_VER', '1.2' );
 			
 			//Plugin Text Domain
 			define("FHP_TXTDM", "floating-news-headline" );

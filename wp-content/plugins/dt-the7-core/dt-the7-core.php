@@ -7,7 +7,7 @@
  * @wordpress-plugin
  * Plugin Name:       The7 Elements
  * Description:       This plugin contains The7 custom post types, elements for WPBakery Page Builder and Elementor, theme builder, and other advanced features.
- * Version:           2.5.3.1
+ * Version:           2.5.5.2
  * Author:            Dream-Theme
  * Author URI:        http://dream-theme.com/
  * Text Domain:       dt-the7-core
@@ -52,7 +52,7 @@ if ( ! class_exists( 'The7PT_Core' ) ) :
 		 *
 		 * @var string
 		 */
-		private $version = '2.5.3.1';
+		private $version = '2.5.5.2';
 
 		/**
 		 * The single instance of the class.

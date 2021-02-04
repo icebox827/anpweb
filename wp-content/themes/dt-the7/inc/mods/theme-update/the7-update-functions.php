@@ -763,10 +763,7 @@ function the7_update_890_elementor_the7_elements() {
 }
 
 function the7_update_912_elementor_the7_elements() {
-	if (
-		! the7_elementor_is_active()
-		|| version_compare( ELEMENTOR_VERSION, '3.0.0', '<' )
-	) {
+	if ( ! the7_elementor_is_active() || the7_is_elementor2() ) {
 		return false;
 	}
 
@@ -835,4 +832,59 @@ function the7_update_elementor_get_upgrade_callbacks($function_names) {
 	}
 
 	return $callbacks;
+}
+
+function the7_update_931_elementor_the7_photo_scroller() {
+	if ( ! the7_elementor_is_active() ) {
+		return false;
+	}
+
+	$updater = new \The7\Adapters\Elementor\Upgrade\The7_Elementor_Updater();
+	\The7\Adapters\Elementor\Upgrade\Widgets\The7_Elementor_Photo_Scroller_Migrations::run( '_9_3_1_migration', $updater );
+
+	\Elementor\Plugin::$instance->files_manager->clear_cache();
+
+	return false;
+}
+
+function the7_update_940_elementor_the7_posts_masonry() {
+	if ( ! the7_elementor_is_active() ) {
+		return false;
+	}
+
+	$updater = new \The7\Adapters\Elementor\Upgrade\The7_Elementor_Updater();
+	\The7\Adapters\Elementor\Upgrade\Widgets\The7_Elementor_Masonry_Migrations::run( '_9_4_0_migration', $updater );
+
+	\Elementor\Plugin::$instance->files_manager->clear_cache();
+
+	return false;
+}
+
+function the7_update_940_theme_options() {
+	require_once __DIR__ . '/patches/class-the7-db-patch-090400.php';
+	the7_apply_theme_options_migration( new The7_DB_Patch_090400() );
+}
+
+function the7_update_9402_theme_options() {
+	require_once __DIR__ . '/patches/class-the7-db-patch-090402.php';
+	the7_apply_theme_options_migration( new The7_DB_Patch_090402() );
+}
+
+function the7_update_9600_theme_options() {
+	require_once __DIR__ . '/patches/class-the7-db-patch-090600.php';
+	the7_apply_theme_options_migration( new The7_DB_Patch_090600() );
+}
+
+function the7_update_960_elementor_the7_posts_carousel() {
+	if ( ! the7_elementor_is_active() ) {
+		return false;
+	}
+
+	require_once PRESSCORE_MODS_DIR . '/theme-update/migrations/v9_6_0/posts-carousel-widget-migration.php';
+
+	The7\Inc\Mods\ThemeUpdate\Migrations\v9_6_0\Posts_Carousel_Widget_Migration::migrate();
+
+	\Elementor\Plugin::$instance->files_manager->clear_cache();
+
+	return false;
 }

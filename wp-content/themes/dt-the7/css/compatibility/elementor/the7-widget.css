@@ -1,6 +1,8 @@
   /*Breadcrumbs*/
 .elementor-widget-the7-breadcrumb .breadcrumbs {
-  margin: 0; 
+  margin: 0;
+  display: flex;
+  flex-flow: row wrap;
 }
 .elementor-widget-the7-breadcrumb .breadcrumbs li {
     padding-left: 0;

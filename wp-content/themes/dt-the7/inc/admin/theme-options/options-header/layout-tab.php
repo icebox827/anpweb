@@ -25,6 +25,10 @@ $options['header-layout'] = array(
 	'style'     => 'vertical',
 	'class'     => 'option-header-layout',
 	'options'   => array(
+		'disabled' => array(
+			'title' => _x( 'Disabled', 'theme-options', 'the7mk2' ),
+			'src'   => '/inc/admin/assets/images/h-disabled.gif',
+		),
 		'classic'   => array(
 			'title' => _x( 'Classic', 'theme-options', 'the7mk2' ),
 			'src'   => '/inc/admin/assets/images/h01.gif',
@@ -54,6 +58,7 @@ $options['header-layout'] = array(
 			'title' => _x( 'Floating menu button', 'theme-options', 'the7mk2' ),
 			'src'   => '/inc/admin/assets/images/h07.gif',
 		),
+
 	),
 	'show_hide' => array(
 		'side'      => array( 'header-below-menu-microwidgets' ),

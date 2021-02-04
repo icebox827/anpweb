@@ -19,25 +19,15 @@ class The7_Elementor_Importer {
 	}
 
 	public function import_options( $options ) {
-		$options_whitelist = [
-			'elementor_scheme_color',
-			'elementor_scheme_typography',
-			'elementor_scheme_color-picker',
-			'elementor_cpt_support',
-			'elementor_disable_color_schemes',
-			'elementor_disable_typography_schemes',
-			'elementor_use_the7_schemes',
-		];
-
 		$origin_options = [];
 
-		foreach ( $options_whitelist as $option ) {
-			$origin_options[ $option ] = get_option( $option, null );
+		foreach ( $options as $key => $option ) {
+			$origin_options[ $key ] = get_option( $key, null );
 
-			if ( isset( $options[ $option ] ) ) {
-				update_option( $option, $options[ $option ] );
+			if ( isset( $option ) ) {
+				update_option( $key, $option );
 			} else {
-				delete_option( $option );
+				delete_option( $key );
 			}
 		}
 
@@ -56,26 +46,13 @@ class The7_Elementor_Importer {
 	 * @param array $kit_settings
 	 */
 	public function import_kit_settings( $kit_settings ) {
-		$white_list= [
-			'default_generic_fonts',
-			'container_width',
-			'container_width_tablet',
-			'container_width_mobile',
-			'space_between_widgets',
-			'stretched_section_container',
-			'page_title_selector',
-			'global_image_lightbox',
-			'viewport_lg',
-			'viewport_md',
-		];
-
-		$kit_id = \Elementor\Plugin::$instance->kits_manager->get_active_id();
+        $kit_id = \Elementor\Plugin::$instance->kits_manager->get_active_id();
 		$kit = \Elementor\Plugin::$instance->documents->get( $kit_id );
 		$current_settings = (array) $kit->get_meta( \Elementor\Core\Settings\Page\Manager::META_KEY ) ?: [];
 
-		foreach ( $white_list as $key ) {
-			if ( isset( $kit_settings[ $key ] ) ) {
-				$current_settings[ $key ] = $kit_settings[ $key ];
+		foreach ( $kit_settings as $key => $setting ) {
+			if ( isset( $setting ) ) {
+				$current_settings[ $key ] = $setting;
 			} else {
 				unset( $current_settings[ $key ] );
 			}

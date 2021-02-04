@@ -1,4 +1,5 @@
 <wpml-config>
+    <built-with-page-builder>/\[vc_row\]/</built-with-page-builder>
     <shortcodes>
         <shortcode>
             <tag>dt_fancy_title</tag>
@@ -424,6 +425,12 @@
         <custom-field action="copy">_dt_fancy_header_subtitle_text_transform</custom-field>
         <custom-field action="copy">_dt_fancy_header_text_transform</custom-field>
         <custom-field action="translate">_dt_testimonial_options_position</custom-field>
+        <custom-field action="copy">_dt_header_disabled_background</custom-field>
+        <custom-field action="copy">_dt_header_disabled_transparent_bg_color_scheme</custom-field>
+        <custom-field action="copy">_dt_header_disabled_transparent_top_bar_bg_color</custom-field>
+        <custom-field action="copy">_dt_header_disabled_transparent_top_bar_bg_opacity</custom-field>
+        <custom-field action="copy">_dt_header_disabled_transparent_bg_color</custom-field>
+        <custom-field action="copy">_dt_header_disabled_transparent_bg_opacity</custom-field>
     </custom-fields>
     <admin-texts>
         <key name="the7">
@@ -437,91 +444,93 @@
                     <key name="sidebar_desc"/>
                 </key>
             </key>
-            <key name="header-elements-text" />
-            <key name="header-elements-text-2" />
-            <key name="header-elements-text-3" />
+            <key name="header-elements-text"/>
+            <key name="header-elements-text-2"/>
+            <key name="header-elements-text-3"/>
             <key name="header-elements-text-4" />
             <key name="header-elements-text-5" />
-            <key name="header-elements-login-url" />
-            <key name="header-elements-logout-caption" />
-            <key name="header-elements-login-caption" />
-            <key name="header-elements-contact-clock-caption" />
-            <key name="header-elements-contact-skype-caption" />
-            <key name="header-elements-contact-email-caption" />
-            <key name="header-elements-contact-phone-caption" />
-            <key name="header-elements-contact-address-caption" />
+            <key name="header-elements-login-url"/>
+            <key name="header-elements-logout-caption"/>
+            <key name="header-elements-login-caption"/>
+            <key name="header-elements-contact-clock-caption"/>
+            <key name="header-elements-contact-skype-caption"/>
+            <key name="header-elements-contact-email-caption"/>
+            <key name="header-elements-contact-phone-caption"/>
+            <key name="header-elements-contact-address-caption"/>
             <key name="header-elements-contact-multipurpose_1-caption" />
             <key name="header-elements-contact-multipurpose_2-caption" />
             <key name="header-elements-contact-multipurpose_3-caption" />
             <key name="header-elements-contact-multipurpose_4-caption" />
-            <key name="header-elements-search-caption" />
+            <key name="header-elements-search-caption"/>
             <key name="header-elements-search-input-caption" />
-            <key name="header-elements-woocommerce_cart-caption" />
+            <key name="header-elements-woocommerce_cart-caption"/>
             <key name="header-elements-button-1-name" />
+            <key name="header-elements-button-1-url" />
             <key name="header-elements-button-2-name" />
-            <key name="bottom_bar-copyrights" />
-            <key name="bottom_bar-text" />
+            <key name="header-elements-button-2-url" />
+            <key name="bottom_bar-copyrights"/>
+            <key name="bottom_bar-text"/>
             <key name="header-logo_regular">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-logo_hd">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-mobile-logo_regular">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-mobile-logo_hd">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-transparent-logo_regular">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-transparent-logo_hd">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-mixed-logo_regular">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-mixed-logo_hd">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-floating-logo_regular">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="header-style-floating-logo_hd">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="bottom_bar-logo_regular">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="bottom_bar-logo_hd">
-                <key name="0" />
-                <key name="1" />
+                <key name="0"/>
+                <key name="1"/>
             </key>
             <key name="general-post_back_button_target_page_url" />
             <key name="general-project_back_button_target_page_url" />
             <key name="general-album_back_button_target_page_url" />
-            <key name="general-rel_posts_head_title" />
-            <key name="general-rel_projects_head_title" />
-            <key name="social_buttons-post-button_title" />
-            <key name="social_buttons-portfolio_post-button_title" />
-            <key name="social_buttons-photo-button_title" />
-            <key name="social_buttons-page-button_title" />
-            <key name="social_buttons-product-button_title" />
-            <key name="custom_error_messages_validation" />
-            <key name="custom_error_messages" />
-            <key name="custom_success_messages" />
+            <key name="general-rel_posts_head_title"/>
+            <key name="general-rel_projects_head_title"/>
+            <key name="social_buttons-post-button_title"/>
+            <key name="social_buttons-portfolio_post-button_title"/>
+            <key name="social_buttons-photo-button_title"/>
+            <key name="social_buttons-page-button_title"/>
+            <key name="social_buttons-product-button_title"/>
+            <key name="custom_error_messages_validation"/>
+            <key name="custom_error_messages"/>
+            <key name="custom_success_messages"/>
             <key name="header-mobile-menu_icon-caption-text" />
             <key name="header-mobile-menu-close_icon-caption-text" />
         </key>

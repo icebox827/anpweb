@@ -995,8 +995,13 @@ function dt_get_next_posts_url( $max_page = 0, $cur_page = null ) {
 	return '';
 }
 
-function dt_is_woocommerce_enabled() {
-	return class_exists( 'Woocommerce' );
+/**
+ * Determine if the WooCommerce plugin is active.
+ *
+ * @return bool
+ */
+function the7_is_woocommerce_enabled() {
+	return class_exists( 'WooCommerce' );
 }
 
 function dt_the7_core_is_enabled() {
@@ -1256,6 +1261,40 @@ function the7_add_submenu_page_after( $parent_slug, $page_title, $menu_title, $c
 	return $hook;
 }
 
+function the7_fvm_is_active() {
+	return function_exists( "fvm_can_minify" );
+}
+
 function the7_elementor_is_active() {
 	return class_exists( 'Elementor\Plugin' );
+}
+
+/**
+ * @sice 9.4.0
+ *
+ * @return bool
+ */
+function the7_is_elementor2() {
+	return defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.0.0', '<' );
+}
+
+/**
+ * @since 9.4.0
+ *
+ * @return bool
+ */
+function the7_is_elementor3() {
+	return defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.0.0', '>=' );
+}
+
+/**
+ * Flush WC attributes cache.
+ *
+ * @sice 9.6.1
+ */
+function the7_wc_flush_attributes_cache() {
+	delete_transient( 'wc_attribute_taxonomies' );
+	if ( class_exists( '\WC_Cache_Helper' ) ) {
+		\WC_Cache_Helper::invalidate_cache_group( 'woocommerce-attributes' );
+	}
 }

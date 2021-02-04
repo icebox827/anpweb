@@ -79,18 +79,23 @@ class The7_Demo_Content_Import_Manager {
 		$download_response = $the7_remote_api->download_demo( $item, $download_dir, $source );
 
 		if ( is_wp_error( $download_response ) ) {
-			if ( 'the7_auto_deactivated' === $download_response->get_error_code() ) {
-				$error = $download_response->get_error_message();
-			} else {
-				$error = sprintf(
-					__(
-						'Import failed due to repository server error. Please try again in 30-60 minutes.
-If the problem persists, please don\'t hesitate to contact our <a href="%s" target="_blank">support</a>.',
-						'the7mk2'
-					),
-					'http://support.dream-theme.com/'
-				);
+			$error = $download_response->get_error_message();
+
+			$code = presscore_get_purchase_code();
+			if ( $code && strpos( $error, $code ) !== false ) {
+				$error = str_replace( $code, presscore_get_censored_purchase_code(), $error );
 			}
+
+			if ( 'the7_auto_deactivated' !== $download_response->get_error_code() ) {
+				$error .= ' ' . sprintf(
+						__(
+							'Please don\'t hesitate to contact our <a href="%s" target="_blank" rel="noopener">support</a>.',
+							'the7mk2'
+						),
+						'https://support.dream-theme.com/'
+					);
+			}
+
 			$this->add_error( $error );
 
 			return false;
@@ -170,7 +175,7 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 		return $this->importer->get_processed_filtered_post();
 	}
 
-	public function import_attachments( $include_attachments = false ) {
+	public function import_attachments( $include_attachments = false, $batch = 27 ) {
 		if ( ! $this->importer ) {
 			return false;
 		}
@@ -187,7 +192,7 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 		add_filter( 'wp_import_categories', '__return_empty_array' );
 		add_filter( 'wp_import_terms', '__return_empty_array' );
 
-		$status = $this->importer->import_batch( $this->xml_file_to_import, 27 );
+		$status = $this->importer->import_batch( $this->xml_file_to_import, (int) $batch );
 
 		$widgets = get_option( 'widget_text', [] );
 		if ( $widgets ) {
@@ -519,7 +524,7 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 			$elementor_importer->import_options( $site_meta['elementor'] );
 		}
 
-		if ( ! empty( $site_meta['elementor_kit_settings'] ) && version_compare( ELEMENTOR_VERSION, '3.0.0', '>=') ) {
+		if ( ! empty( $site_meta['elementor_kit_settings'] ) && the7_is_elementor3() ) {
 			$elementor_importer->import_kit_settings( $site_meta['elementor_kit_settings'] );
 		}
 	}
@@ -547,9 +552,13 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 	}
 
 	public function import_woocommerce_settings() {
-		$site_meta = $this->get_site_meta();
+		if ( ! the7_is_woocommerce_enabled() ) {
+			return;
+		}
 
-		if ( empty( $site_meta['woocommerce'] ) ) {
+		$global_settings = $this->get_site_meta( 'woocommerce' );
+
+		if ( ! $global_settings ) {
 			return;
 		}
 
@@ -557,17 +566,17 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 			return;
 		}
 
-		$woocommerce_meta = (array) $site_meta['woocommerce'];
+		$global_settings = (array) $global_settings;
 
 		$woocommerce_page_settings = wp_parse_args(
-			$woocommerce_meta,
-			array(
+			$global_settings,
+			[
 				'woocommerce_shop_page_id'      => false,
 				'woocommerce_cart_page_id'      => false,
 				'woocommerce_checkout_page_id'  => false,
 				'woocommerce_myaccount_page_id' => false,
 				'woocommerce_terms_page_id'     => false,
-			)
+			]
 		);
 		foreach ( $woocommerce_page_settings as $opt_id => $post_id ) {
 			if ( ! $post_id ) {
@@ -582,13 +591,13 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 			update_option( $opt_id, $post_id );
 		}
 
-		$wc_image_settings = array(
+		$wc_image_settings = [
 			'woocommerce_single_image_width',
 			'woocommerce_thumbnail_image_width',
 			'woocommerce_thumbnail_cropping',
 			'woocommerce_thumbnail_cropping_custom_width',
 			'woocommerce_thumbnail_cropping_custom_height',
-		);
+		];
 
 		$options_to_export = [];
 		foreach ( $wc_image_settings as $wc_option ) {
@@ -601,6 +610,37 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 		update_option( 'woocommerce_queue_flush_rewrite_rules', 'yes' );
 		WC()->query->init_query_vars();
 		WC()->query->add_endpoints();
+	}
+
+	/**
+	 * Import WooCommerce attributes.
+	 *
+	 * @since 9.6.1
+	 */
+	public function import_woocommerce_attributes() {
+		if ( ! the7_is_woocommerce_enabled() ) {
+			return;
+		}
+
+		$attributes = $this->get_site_meta( 'wc_attributes' );
+
+		if ( ! $attributes ) {
+			return;
+		}
+
+		foreach ( $attributes as $attribute ) {
+			wc_create_attribute(
+				[
+					'name'         => $attribute['attribute_label'],
+					'slug'         => $attribute['attribute_name'],
+					'type'         => $attribute['attribute_type'],
+					'order_by'     => $attribute['attribute_orderby'],
+					'has_archives' => (bool) $attribute['attribute_public'],
+				]
+			);
+		}
+
+		the7_wc_flush_attributes_cache();
 	}
 
 	/**
@@ -653,7 +693,7 @@ If the problem persists, please don\'t hesitate to contact our <a href="%s" targ
 	 * @param string $msg
 	 */
 	public function add_error( $msg ) {
-		$this->errors[] = $msg;
+		$this->errors[] = wp_kses_post( $msg );
 	}
 
 	/**

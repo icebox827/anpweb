@@ -37,8 +37,8 @@ class The7_Demo_Content_Tracker extends The7_Demo_Tracker {
 	}
 
 	public function track_imported_items() {
-		add_filter( 'wp_import_post_meta', [ $this, 'add_the7_imported_item_meta_filter' ] );
-		add_filter( 'wp_import_term_meta', [ $this, 'add_the7_imported_item_meta_filter' ] );
+		add_filter( 'wp_import_post_meta', [ $this, 'add_the7_imported_item_meta_filter' ], 10, 3 );
+		add_filter( 'wp_import_term_meta', [ $this, 'add_the7_imported_item_meta_filter' ], 10, 3 );
 	}
 
 	public function keep_demo_content() {
@@ -48,7 +48,11 @@ class The7_Demo_Content_Tracker extends The7_Demo_Tracker {
 		$this->remove_demo();
 	}
 
-	public function add_the7_imported_item_meta_filter( $meta ) {
+	public function add_the7_imported_item_meta_filter( $meta, $post_id = 0, $post = [] ) {
+		if ( isset( $post['post_type'], $post['post_title'] ) && $post['post_type'] === 'elementor_library' && $post['post_title'] === 'Default Kit' ) {
+			return $meta;
+		}
+
 		$meta[] = [
 			'key' => '_the7_imported_item',
 			'value' => $this->demo_type,

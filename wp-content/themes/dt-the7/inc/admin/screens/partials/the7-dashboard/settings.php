@@ -51,6 +51,24 @@ $hide_tr = 'class="hide-if-js"';
                             <input type="checkbox" id="the7-web-fonts-display-swap" name="the7_dashboard_settings[web-fonts-display-swap]"<?php checked( The7_Admin_Dashboard_Settings::get( 'web-fonts-display-swap' ) ); ?>>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label for="the7-lite-mode"><?php esc_html_e( 'The7 Lite Mode (recommended)', 'the7mk2' ); ?></label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="the7-lite-mode" name="the7_dashboard_settings[lite-mode]"<?php checked( The7_Admin_Dashboard_Settings::get( 'lite-mode' ) ); ?>>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="disable-gutenberg-styles"><?php esc_html_e( 'Disable Gutenberg Block Editor CSS (experimental feature)', 'the7mk2' ); ?></label>
+                        </td>
+                        <td>
+                            <input type="checkbox" id="disable-gutenberg-styles" name="the7_dashboard_settings[disable-gutenberg-styles]"<?php checked( The7_Admin_Dashboard_Settings::get( 'disable-gutenberg-styles' ) ); ?>>
+                        </td>
+                    </tr>
+
+
 					<?php $critical_alerts = The7_Admin_Dashboard_Settings::get( 'critical-alerts' ); ?>
 					<tr>
 						<td>

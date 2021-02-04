@@ -34,68 +34,20 @@ class The7_Demo {
 	/**
 	 * @var string
 	 */
-	public $title;
-
-	/**
-	 * @var string
-	 */
-	public $id;
-
-	/**
-	 * @var bool
-	 */
-	public $include_attachments;
-
-	/**
-	 * @var string
-	 */
-	public $screenshot;
-
-	/**
-	 * @var string
-	 */
-	public $link;
-
-	/**
-	 * @var array
-	 */
-	public $required_plugins;
-
-	/**
-	 * @var array
-	 */
-	public $tags;
-
-	/**
-	 * @var string
-	 */
-	private $import_status;
+	protected $import_status;
 
 	/**
 	 * @var The7_Demo_Content_TGMPA
 	 */
-	private $plugins;
+	protected $plugins;
+
+	/**
+	 * @var array
+	 */
+	protected $fields = [];
 
 	public function __construct( $demo ) {
-		$demo = wp_parse_args(
-			$demo,
-			[
-				'title'               => '',
-				'id'                  => '',
-				'include_attachments' => false,
-				'screenshot'          => '',
-				'link'                => '',
-				'required_plugins'    => [],
-				'tags'                => [],
-			]
-		);
-
-		foreach ( $demo as $prop => $value ) {
-			if ( property_exists( $this, $prop ) ) {
-				$this->$prop = $value;
-			}
-		}
-
+		$this->setup_fields( $demo );
 		$this->refresh_import_status();
 	}
 
@@ -161,6 +113,19 @@ class The7_Demo {
 	}
 
 	/**
+	 * @param string $prop
+	 *
+	 * @return mixed|null
+	 */
+	public function __get( $prop ) {
+		if ( array_key_exists( $prop, $this->fields ) ) {
+			return $this->fields[ $prop ];
+		}
+
+		return null;
+	}
+
+	/**
 	 * @return string
 	 */
 	protected function get_import_status() {
@@ -181,6 +146,25 @@ class The7_Demo {
 		}
 
 		return static::DEMO_STATUS_NOT_IMPORTED;
+	}
+
+	/**
+	 * @param array $fields
+	 */
+	protected function setup_fields( $fields ) {
+		$allowed_fields = [
+			'title'               => '',
+			'id'                  => '',
+			'include_attachments' => false,
+			'screenshot'          => '',
+			'link'                => '',
+			'attachments_batch'   => 27,
+			'required_plugins'    => [],
+			'tags'                => [],
+		];
+
+		$fields       = array_intersect_key( (array) $fields, $allowed_fields );
+		$this->fields = wp_parse_args( $fields, $allowed_fields );
 	}
 
 }

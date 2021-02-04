@@ -144,7 +144,7 @@ class The7_Options implements The7_Options_Interface {
 
 		if ( ! empty( $option['name'] ) ) {
 
-			$output .= '<div class="name">' . ( ! empty( $option['name'] ) ? esc_html( $option['name'] ) : '' ) . "\n";
+			$output .= '<div class="name">' . ( ! empty( $option['name'] ) ? wp_kses_post( $option['name'] ) : '' ) . "\n";
 
 			if ( isset( $option['desc'] ) ) {
 				$explain_value = $option['desc'];

@@ -76,6 +76,63 @@ $options['advanced-normalize_resize_on_mobile'] = array(
 	),
 );
 
+$options[] = array( 'type' => 'divider' );
+
+$options['advanced-fvm_enable_integration'] = array(
+	'id'        => 'advanced-fvm_enable_integration',
+	'name'      => sprintf(
+		_x(
+			'Enable <a href="%1$s" target="_blank">Fast Velocity Minify</a> plugin integration',
+			'theme-options',
+			'the7mk2'
+		),
+		'https://wordpress.org/plugins/fast-velocity-minify/'
+	),
+	'std'       => '0',
+	'type'      => 'radio',
+	'options'   => array(
+		'1' => _x( 'Enabled', 'theme-options', 'the7mk2' ),
+		'0' => _x( 'Disabled', 'theme-options', 'the7mk2' ),
+	),
+	'show_hide' => array(
+		'1' => 'show-fvm-options',
+	),
+);
+
+
+$options[] = array(
+	'type'  => 'js_hide_begin',
+	'class' => 'advanced-fvm_enable_integration show-fvm-options',
+);
+
+$options['advanced-fvm_script_timeout'] = array(
+	'id'    => 'advanced-fvm_script_timeout',
+	'name'  => _x( 'Delay loading of merged scripts', 'theme-options', 'the7mk2' ),
+	'std'   => '50',
+	'type'  => 'number',
+	'units' => 'ms',
+);
+
+$beautiful_loading_url = add_query_arg( 'page', 'options-framework', admin_url( 'admin.php', 'relative' ) );
+$beautiful_loading_url .= '#section-general-beautiful_loading';
+
+$options[] = array(
+	'id'   => 'test',
+	'type' => 'info',
+	'desc' => sprintf(
+		_x(
+			'- 50ms can significantly improve google page speed score
+- 1000ms and beyond is aggressive setting for particularly heavy sites
+- for best visual results use in combination with <a href="%1$s">beautiful loading</a>',
+			'theme-options',
+			'the7mk2'
+		),
+		esc_url_raw( $beautiful_loading_url )
+	),
+);
+
+$options[] = array( 'type' => 'js_hide_end' );
+
 $options[] = array( 'name' => _x( 'SEO', 'theme-options', 'the7mk2' ), 'type' => 'block' );
 
 $options['the7_opengraph_tags'] = array(

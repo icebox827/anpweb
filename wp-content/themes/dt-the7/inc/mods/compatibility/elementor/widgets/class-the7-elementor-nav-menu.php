@@ -104,18 +104,27 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 				'menu',
 				[
 					'type'            => Controls_Manager::RAW_HTML,
-					'raw'             => '<strong>' . __( 'There are no menus in your site.', 'the7mk2' ) . '</strong><br>' . sprintf( __( 'Go to the <a href="%s" target="_blank">Menus screen</a> to create one.', 'the7mk2' ), admin_url( 'nav-menus.php?action=edit&menu=0' ) ),
+					'raw'             => '<strong>' . __(
+							'There are no menus in your site.',
+							'the7mk2'
+						) . '</strong><br>' . sprintf(
+											 __(
+												 'Go to the <a href="%s" target="_blank">Menus screen</a> to create one.',
+												 'the7mk2'
+											 ),
+											 admin_url( 'nav-menus.php?action=edit&menu=0' )
+										 ),
 					'content_classes' => 'elementor-panel-alert elementor-panel-alert-info',
 				]
 			);
 		}
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'align_items',
 			[
-				'label'        => __( 'Menu items alignment', 'the7mk2' ),
-				'type'         => Controls_Manager::CHOOSE,
-				'options'      => [
+				'label'                => __( 'Items alignment', 'the7mk2' ),
+				'type'                 => Controls_Manager::CHOOSE,
+				'options'              => [
 					'left'   => [
 						'title' => __( 'Left', 'the7mk2' ),
 						'icon'  => 'eicon-text-align-left',
@@ -129,7 +138,15 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 						'icon'  => 'eicon-text-align-right',
 					],
 				],
-				'prefix_class' => 'dt-nav-menu__align-',
+				'prefix_class'         => 'dt-nav-menu__align-',
+				'selectors_dictionary' => [
+					'left'   => 'justify-content: flex-start; align-items: flex-start; text-align: left;',
+					'center' => 'justify-content: center; align-items: center; text-align: center;',
+					'right'  => 'justify-content: flex-end;  align-items: flex-end; text-align: right',
+				],
+				'selectors'            => [
+					'{{WRAPPER}} ul' => ' {{VALUE}};',
+				],
 			]
 		);
 
@@ -396,7 +413,7 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 					'unit'     => 'px',
 					'isLinked' => true,
 				],
-				'selectors' => [
+				'selectors'  => [
 					'{{WRAPPER}} .dt-nav-menu > li > a' => 'border-top-width: {{TOP}}{{UNIT}};
 					border-right-width: {{RIGHT}}{{UNIT}}; border-bottom-width: {{BOTTOM}}{{UNIT}}; border-left-width:{{LEFT}}{{UNIT}};',
 				],
@@ -417,7 +434,7 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 					'unit'     => 'px',
 					'isLinked' => true,
 				],
-				'selectors' => [
+				'selectors'  => [
 					'{{WRAPPER}} .dt-nav-menu > li > a' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
@@ -437,7 +454,7 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 					'unit'     => 'px',
 					'isLinked' => true,
 				],
-				'selectors' => [
+				'selectors'  => [
 					'{{WRAPPER}} .dt-nav-menu > li > a' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
@@ -653,7 +670,7 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 					'unit'     => 'px',
 					'isLinked' => true,
 				],
-				'selectors' => [
+				'selectors'  => [
 					'{{WRAPPER}} .vertical-sub-nav li a' => 'border-top-width: {{TOP}}{{UNIT}};
 					border-right-width: {{RIGHT}}{{UNIT}}; border-bottom-width: {{BOTTOM}}{{UNIT}}; border-left-width:{{LEFT}}{{UNIT}};',
 				],
@@ -674,7 +691,7 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 					'unit'     => 'px',
 					'isLinked' => true,
 				],
-				'selectors' => [
+				'selectors'  => [
 					'{{WRAPPER}} .vertical-sub-nav li a' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
@@ -694,7 +711,7 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 					'unit'     => 'px',
 					'isLinked' => true,
 				],
-				'selectors' => [
+				'selectors'  => [
 					'{{WRAPPER}} .vertical-sub-nav li a'              => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 					'{{WRAPPER}} .vertical-sub-nav .vertical-sub-nav' => 'margin-left: {{LEFT}}{{UNIT}};',
 				],
@@ -908,17 +925,6 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 
 		$settings = $this->get_active_settings();
 
-		$sub_menu_icon = '';
-		if ( $settings['selected_icon'] ) {
-			ob_start();
-			Icons_Manager::render_icon(
-				$settings['selected_icon'],
-				[ 'aria-hidden' => 'true', 'class' => 'open-button' ],
-				'i'
-			);
-			$sub_menu_icon = ob_get_clean();
-		}
-
 		$this->add_render_attribute(
 			[
 				'main-menu' => [
@@ -937,19 +943,36 @@ class The7_Elementor_Nav_Menu extends The7_Elementor_Widget_Base {
 			]
 		);
 
-		$clickable_item_parent = $settings['submenu_display'] !== 'on_item_click';
+		$sub_menu_icon = '';
+		if ( $settings['selected_icon'] ) {
+			ob_start();
+			Icons_Manager::render_icon(
+				$settings['selected_icon'],
+				[ 'aria-hidden' => 'true', 'class' => 'open-button' ],
+				'i'
+			);
+			$sub_menu_icon = ob_get_clean();
+		}
+
+		$link_after = sprintf(
+			'</span><span class="%s" data-icon = "%s">%s</span>',
+			esc_attr( $settings['icon_align'] . ' next-level-button' ),
+			esc_attr( $settings['selected_active_icon']['value'] ),
+			$sub_menu_icon
+		);
 
 		do_action( 'presscore_primary_nav_menu_before' );
 
 		presscore_nav_menu(
-			array(
+			[
 				'menu'                => $settings['menu'],
+				'theme_location'      => 'the7_nav-menu',
 				'items_wrap'          => '<nav ' . $this->get_render_attribute_string( 'main-menu' ) . '><ul class="dt-nav-menu"' . '">%3$s</ul></nav>',
 				'submenu_class'       => implode( ' ', presscore_get_primary_submenu_class( 'vertical-sub-nav' ) ),
 				'link_before'         => '<span class="item-content">',
-				'link_after'          => '</span><span class="next-level-button ' . esc_attr( $settings['icon_align'] ) . '" data-icon = "' . $settings['selected_active_icon']['value'] . '">' . $sub_menu_icon . '</span>',
-				'parent_is_clickable' => $clickable_item_parent,
-			)
+				'link_after'          => $link_after,
+				'parent_is_clickable' => $settings['submenu_display'] !== 'on_item_click',
+			]
 		);
 
 		do_action( 'presscore_primary_nav_menu_after' );

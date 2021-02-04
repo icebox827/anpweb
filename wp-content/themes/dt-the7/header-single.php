@@ -40,7 +40,7 @@ if ( 'boxed' === $config->get( 'template.layout' ) ) {
 <div id="page" <?php echo $page_class; ?>>
 	<a class="skip-link screen-reader-text" href="#content"><?php _e( 'Skip to content', 'the7mk2' ); ?></a>
 <?php
-if ( apply_filters( 'presscore_show_header', true ) ) {
+if ( apply_filters( 'presscore_show_header', $config->get( 'header.show' ) ) ) {
 	presscore_get_template_part( 'theme', 'header/header', str_replace( '_', '-', $config->get( 'header.layout' ) ) );
 	presscore_get_template_part( 'theme', 'header/mobile-header' );
 }

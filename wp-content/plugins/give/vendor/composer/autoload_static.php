@@ -4,12 +4,18 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit96906e70e71c480d55d19a58aab0c13a
+class ComposerStaticInit784b6868813ae81544221ba255ec208c
 {
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
             'Stripe\\' => 7,
+            'Sample\\' => 7,
+        ),
+        'P' => 
+        array (
+            'PayPalHttp\\' => 11,
+            'PayPalCheckoutSdk\\' => 18,
         ),
         'G' => 
         array (
@@ -26,6 +32,18 @@ class ComposerStaticInit96906e70e71c480d55d19a58aab0c13a
         array (
             0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
+        'Sample\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paypal/paypal-checkout-sdk/samples',
+        ),
+        'PayPalHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paypal/paypalhttp/lib/PayPalHttp',
+        ),
+        'PayPalCheckoutSdk\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paypal/paypal-checkout-sdk/lib/PayPalCheckoutSdk',
+        ),
         'Give\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
@@ -37,6 +55,7 @@ class ComposerStaticInit96906e70e71c480d55d19a58aab0c13a
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
@@ -56,9 +75,9 @@ class ComposerStaticInit96906e70e71c480d55d19a58aab0c13a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit96906e70e71c480d55d19a58aab0c13a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit96906e70e71c480d55d19a58aab0c13a::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit96906e70e71c480d55d19a58aab0c13a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit784b6868813ae81544221ba255ec208c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit784b6868813ae81544221ba255ec208c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit784b6868813ae81544221ba255ec208c::$classMap;
 
         }, null, ClassLoader::class);
     }

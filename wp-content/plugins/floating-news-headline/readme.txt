@@ -3,8 +3,8 @@ Contributors: awordpresslife
 Donate link: https://paypal.me/awplife
 Tags:  scrolling text, news headline, news floating, floating text, scrolling headline
 Requires at least: 4.0
-Tested up to: 5.5
-Stable tag: 1.1.4
+Tested up to: 5.6
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,9 +99,27 @@ That's it. You're ready to go!
 
 == Changelog ==
 
+= 1.1.7 =
+
+* Tested for wordpress 5.6
+* Fix color issue.
+
+= 1.1.7 =
+
+* Enhancements: Yes, tested for wordpress 5.5.3
+* Bug: Miner Issue Fixed.
+
+= 1.1.6 =
+
+* Enhancements: Yes, tested for wordpress 5.5.3
+
+= 1.1.5 =
+
+* Enhancements: Yes, tested for wordpress 5.5.1
+
 = 1.1.4 =
 
-* Enhancements: Yes, tested for wordpress 5.
+* Enhancements: Yes, tested for wordpress 5.0
 * Bug: Miner Issue Fixed.
 
 = 1.1.3 =

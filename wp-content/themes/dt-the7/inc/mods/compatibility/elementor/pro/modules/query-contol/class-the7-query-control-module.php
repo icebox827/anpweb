@@ -911,9 +911,9 @@ class The7_Query_Control_Module{
 
 	/**
 	 * @deprecated 2.5.0
-	 * @param \WP_Query &$query
+	 * @param \WP_Query $query
 	 */
-	public function fix_query_offset( &$query ) {
+	public function fix_query_offset( $query ) {
 		if ( ! empty( $query->query_vars['offset_to_fix'] ) ) {
 			if ( $query->is_paged ) {
 				$query->query_vars['offset'] = $query->query_vars['offset_to_fix'] + ( ( $query->query_vars['paged'] - 1 ) * $query->query_vars['posts_per_page'] );

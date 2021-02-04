@@ -39,7 +39,7 @@ class The7_Color extends Tag {
 	public function render() {
 		$color_type = $this->get_settings( 'color-type' );
 		if ( ! empty( $color_type ) ) {
-			$value = $this->get_color( $color_type );
+			$value = the7_theme_get_color( $color_type );
 		}
 
 		if ( empty( $value ) && $this->get_settings( 'fallback' ) ) {
@@ -69,49 +69,6 @@ class The7_Color extends Tag {
 		return $options;
 	}
 
-	public function get_color( $color_type ) {
-		switch ( $color_type ) {
-			case 'accent':
-				$color_val = the7_theme_accent_color();
-				break;
-			default:
-				if ( substr_compare( $color_type, '_mode', - strlen( '_mode' ) ) === 0 ) {
-					$color_val = $this->get_simplified_the7_color( $color_type );
-					break;
-				}
-				$color_val = of_get_option( $color_type, '#000000' );
-				break;
-		}
 
-		return $color_val;
-	}
-
-	/**
-	 * Return simplified hex color.
-	 */
-	private function get_simplified_the7_color( $color_mode_option ) {
-		$color_val = '';
-
-		$color_option = str_replace( "_mode", "", $color_mode_option );
-		switch ( of_get_option( $color_mode_option ) ) {
-			case 'disabled':
-				break;
-			case 'accent':
-				$color_val = the7_theme_accent_color();
-				break;
-			case 'color':
-				$color_val = of_get_option( $color_option );
-				break;
-			case 'gradient':
-				$gradient_obj = the7_less_create_gradient_obj( of_get_option( $color_option . '_gradient' ) );
-				$color_val = $gradient_obj->get_color_stop( 1 )->get_color();
-				break;
-		}
-		if ( empty( $color_val ) ) {
-			$color_val = '#ffffff00';
-		}
-
-		return $color_val;
-	}
 
 }

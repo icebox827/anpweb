@@ -23,7 +23,7 @@
 .give-submit.give-btn {
 	font: @dt-btn-s-font-style @dt-btn-s-font-variant @dt-btn-s-font-weight @dt-btn-s-font-size~"/"@dt-btn-s-font-size + 2 @dt-btn-s-font-family;
 	text-transform: @dt-btn-s-text-transform;
-	.border-radius (@radius: @dt-btn-s-border-radius);
+	border-radius: var(--the7-small-button-border-radius);
 	border: @dt-btn-s-border-width solid @dt-btn-border-color;
 
 	padding: @btn-s-padding-top @btn-s-padding-right @btn-s-padding-bottom @btn-s-padding-left;
@@ -46,7 +46,6 @@
 /*middle button*/
 button.button,
 a.button,
-input[type="button"],
 input[type="reset"],
 .wpcf7-submit,
 .dt-btn-m,
@@ -57,7 +56,7 @@ input.dt-btn-m[type="submit"],
 .woocommerce-widget-layered-nav-dropdown__submit {
 	font: @dt-btn-m-font-style @dt-btn-m-font-variant @dt-btn-m-font-weight @dt-btn-m-font-size~"/"@dt-btn-m-font-size + 2 @dt-btn-m-font-family;
 	text-transform: @dt-btn-m-text-transform;
-	.border-radius (@radius: @dt-btn-m-border-radius);
+	border-radius: var(--the7-medium-button-border-radius);
 	border: @dt-btn-m-border-width solid @dt-btn-border-color;
 	padding: @btn-m-padding-top @btn-m-padding-right @btn-m-padding-bottom @btn-m-padding-left;
 }
@@ -83,7 +82,7 @@ input.dt-btn-m[type="submit"],
 	padding: @btn-l-padding-top @btn-l-padding-right @btn-l-padding-bottom @btn-l-padding-left;
 	font: @dt-btn-l-font-style @dt-btn-l-font-variant @dt-btn-l-font-weight @dt-btn-l-font-size~"/"@dt-btn-l-font-size + 2 @dt-btn-l-font-family;
 	text-transform: @dt-btn-l-text-transform;
-	.border-radius (@radius: @dt-btn-l-border-radius);
+	border-radius: var(--the7-big-button-border-radius);
 	border: @dt-btn-l-border-width solid @dt-btn-border-color;
 	&.ico-right-side > i {
 	    .btn-icon-gap-left (@dt-btn-l-font-size, 18px);
@@ -105,7 +104,6 @@ button.button,
 a.button:not(.edd-submit),
 .dt-form button,
 .widget .dt-form .dt-btn,
-//input[type="button"],
 input[type="reset"],
 .wpcf7-submit,
 .nsu-submit,
@@ -183,7 +181,6 @@ input[type="submit"]:not([name="update_cart"]),
 .dt-form button,
 #page .widget .dt-form .dt-btn,
 .widget .dt-form .dt-btn,
-input[type="button"],
 input[type="reset"],
 .wpcf7-submit,
 .nsu-submit,

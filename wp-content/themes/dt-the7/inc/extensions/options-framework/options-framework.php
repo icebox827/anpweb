@@ -1197,7 +1197,7 @@ function optionsframework_admin_bar_theme_options( $wp_admin_bar ) {
 	$wp_admin_bar->add_menu( array(
 		'id'    => $parent_menu_id,
 		'title' => optionsframework_get_main_title(),
-		'href'  => admin_url( 'admin.php?page=' . urlencode( $parent_menu_item->get( 'slug' ) ) ),
+		'href'  => admin_url( 'admin.php?page=options-framework' ),
 	));
 
 	foreach( $menu_items as $menu_item ) {
@@ -1617,3 +1617,9 @@ function optionsframework_fonts_ajax_response() {
 }
 
 add_action( 'wp_ajax_of_get_fonts', 'optionsframework_fonts_ajax_response' );
+
+function of_save_unsanitized_options( $options ) {
+	add_filter( 'optionsframework_get_validated_options', 'the7_skip_options_sanitizing', 10, 2 );
+	update_option( optionsframework_get_options_id(), $options );
+	remove_filter( 'optionsframework_get_validated_options', 'the7_skip_options_sanitizing', 10 );
+}

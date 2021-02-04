@@ -65,6 +65,15 @@ if ( ! function_exists( 'dt_woocommerce_setup_less_vars' ) ) :
 	 * @param The7_Less_Vars_Manager_Interface $less_vars
 	 */
 	function dt_woocommerce_setup_less_vars( The7_Less_Vars_Manager_Interface $less_vars ) {
+		the7_less_add_responsive_font($less_vars,"header-elements-woocommerce_cart-font-content", "product-microwidget-content");
+
+		$less_vars->add_pixel_number( 'product-title-gap', of_get_option( 'woocommerce_product_title_gap' ) );
+		$less_vars->add_pixel_number( 'product-price-gap', of_get_option( 'woocommerce_product_price_gap' ) );
+		$less_vars->add_pixel_number( 'product-rating-gap', of_get_option( 'woocommerce_product_rating_gap' ) );
+		$less_vars->add_pixel_number( 'product-description-gap', of_get_option( 'woocommerce_product_desc_gap' ) );
+		$less_vars->add_pixel_number( 'product-cart-gap', of_get_option( 'woocommerce_product_cart_gap' ) );
+		$less_vars->add_keyword( 'product-alignment', of_get_option( 'woocommerce_display_align' ) );
+
 		$less_vars->add_hex_color(
 			'product-counter-color',
 			of_get_option( 'header-elements-woocommerce_cart-counter-color' )

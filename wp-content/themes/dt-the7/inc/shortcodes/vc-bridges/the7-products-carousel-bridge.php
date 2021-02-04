@@ -73,6 +73,7 @@ return array(
 				'Author'=> 'author',
 				'Menu Order'=> 'menu_order',
 				'Title'=> 'title',
+				'Random' => 'rand',
 			),
 			'edit_field_class' => 'vc_col-xs-6 vc_column',
 		),

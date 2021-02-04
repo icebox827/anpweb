@@ -10,7 +10,9 @@ use Yoast\WP\SEO\Generators\Schema_Generator;
 use Yoast\WP\SEO\Generators\Twitter_Image_Generator;
 use Yoast\WP\SEO\Helpers\Current_Page_Helper;
 use Yoast\WP\SEO\Helpers\Image_Helper;
+use Yoast\WP\SEO\Helpers\Indexable_Helper;
 use Yoast\WP\SEO\Helpers\Options_Helper;
+use Yoast\WP\SEO\Helpers\Permalink_Helper;
 use Yoast\WP\SEO\Helpers\Url_Helper;
 use Yoast\WP\SEO\Helpers\User_Helper;
 use Yoast\WP\SEO\Models\Indexable;
@@ -47,6 +49,7 @@ use Yoast\WP\SEO\Models\Indexable;
  * @property string $twitter_site
  * @property array  $source
  * @property array  $breadcrumbs
+ * @property int    $estimated_reading_time_minutes
  */
 class Indexable_Presentation extends Abstract_Presentation {
 
@@ -135,6 +138,20 @@ class Indexable_Presentation extends Abstract_Presentation {
 	protected $user;
 
 	/**
+	 * The indexable helper.
+	 *
+	 * @var Indexable_Helper
+	 */
+	protected $indexable_helper;
+
+	/**
+	 * The permalink helper.
+	 *
+	 * @var Permalink_Helper
+	 */
+	protected $permalink_helper;
+
+	/**
 	 * Sets the generator dependencies.
 	 *
 	 * @required
@@ -169,19 +186,38 @@ class Indexable_Presentation extends Abstract_Presentation {
 	 * @param Current_Page_Helper $current_page The current page helper.
 	 * @param Url_Helper          $url          The URL helper.
 	 * @param User_Helper         $user         The user helper.
+	 * @param Indexable_Helper    $indexable    The indexable helper.
+	 * @param Permalink_Helper    $permalink    The permalin helper.
 	 */
 	public function set_helpers(
 		Image_Helper $image,
 		Options_Helper $options,
 		Current_Page_Helper $current_page,
 		Url_Helper $url,
-		User_Helper $user
+		User_Helper $user,
+		Indexable_Helper $indexable,
+		Permalink_Helper $permalink
 	) {
-		$this->image        = $image;
-		$this->options      = $options;
-		$this->current_page = $current_page;
-		$this->url          = $url;
-		$this->user         = $user;
+		$this->image            = $image;
+		$this->options          = $options;
+		$this->current_page     = $current_page;
+		$this->url              = $url;
+		$this->user             = $user;
+		$this->indexable_helper = $indexable;
+		$this->permalink_helper = $permalink;
+	}
+
+	/**
+	 * Gets the permalink from the indexable or generates it if dynamic permalinks are enabled.
+	 *
+	 * @return string The permalink.
+	 */
+	public function get_permalink() {
+		if ( $this->indexable_helper->dynamic_permalinks_enabled() ) {
+			return $this->permalink_helper->get_permalink_for_indexable( $this->model );
+		}
+
+		return $this->model->permalink;
 	}
 
 	/**
@@ -312,7 +348,7 @@ class Indexable_Presentation extends Abstract_Presentation {
 	 * @return array The robots value with opt-in snippets.
 	 */
 	public function generate_googlebot() {
-		_deprecated_function( __METHOD__, 'WPSEO 14.9' );
+		\_deprecated_function( __METHOD__, 'WPSEO 14.9' );
 
 		return [];
 	}
@@ -326,7 +362,7 @@ class Indexable_Presentation extends Abstract_Presentation {
 	 * @return array The robots value with opt-in snippets.
 	 */
 	public function generate_bingbot() {
-		_deprecated_function( __METHOD__, 'WPSEO 14.9' );
+		\_deprecated_function( __METHOD__, 'WPSEO 14.9' );
 
 		return [];
 	}
@@ -341,8 +377,9 @@ class Indexable_Presentation extends Abstract_Presentation {
 			return $this->model->canonical;
 		}
 
-		if ( $this->model->permalink ) {
-			return $this->model->permalink;
+		$permalink = $this->get_permalink();
+		if ( $permalink ) {
+			return $permalink;
 		}
 
 		return '';
@@ -424,7 +461,7 @@ class Indexable_Presentation extends Abstract_Presentation {
 			return $this->model->canonical;
 		}
 
-		return $this->model->permalink;
+		return $this->get_permalink();
 	}
 
 	/**
@@ -474,6 +511,9 @@ class Indexable_Presentation extends Abstract_Presentation {
 
 	/**
 	 * Generates the open graph Facebook app ID.
+	 *
+	 * @deprecated 15.5
+	 * @codeCoverageIgnore
 	 *
 	 * @return string The open graph Facebook app ID.
 	 */
@@ -623,6 +663,28 @@ class Indexable_Presentation extends Abstract_Presentation {
 	 */
 	public function generate_breadcrumbs() {
 		return $this->breadcrumbs_generator->generate( $this->context );
+	}
+
+	/**
+	 * Generates the estimated reading time.
+	 *
+	 * @return integer The estimated reading time.
+	 *
+	 * @codeCoverageIgnore Wrapper method.
+	 */
+	public function generate_estimated_reading_time_minutes() {
+		if ( $this->model->estimated_reading_time_minutes !== null ) {
+			return $this->model->estimated_reading_time_minutes;
+		};
+
+		if ( $this->context->post === null ) {
+			return null;
+		}
+
+		// 200 is the approximate estimated words per minute across languages.
+		$words_per_minute = 200;
+		$words            = \str_word_count( \wp_strip_all_tags( $this->context->post->post_content ) );
+		return (int) \round( $words / $words_per_minute );
 	}
 
 	/**

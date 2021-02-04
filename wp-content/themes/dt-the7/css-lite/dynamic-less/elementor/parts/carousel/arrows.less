@@ -1,0 +1,65 @@
+.nav-v-position(@position, @offset) when (@position = top) {
+  top: @offset;
+}
+
+.nav-v-position(@position, @offset) when (@position = center) {
+  top: 50%;
+  transform: translateY(calc(-50%~'+'@offset));
+  @media all and (-ms-high-contrast: none) {
+    transform: translateY(-50%);
+    margin-top: @offset;
+  }
+}
+
+.nav-v-position(@position, @offset) when (@position = bottom) {
+  top: calc(100% ~'+' @offset);
+}
+
+.nav-h-position(@position,@offset) when (@position = left) {
+  left: @offset;
+  transform: translateX(0);
+}
+
+.nav-h-position(@position,@offset) when (@position = center) {
+  left: 50%;
+  transform: translateX(calc(-50%~'+'@offset));
+  @media all and (-ms-high-contrast: none) {
+    transform: translateX(-50%);
+    margin-left: @offset;
+  }
+}
+
+.nav-h-position(@position,@offset) when (@position = right) {
+  right: @offset;
+  left: auto;
+  transform: translateX(0);
+}
+
+.nav-combined-position(@position-v, @position-h, @offset-v, @offset-h) when (@position-v = center)and (@position-h = center)  {
+  transform: translate3d(calc(-50%~'+'@offset-h), calc(-50%~'+'@offset-v), 0);
+}
+
+.nav-combined-position(@position-v, @position-h, @offset-v, @offset-h) when (@position-v = center)and (@position-h = right)  {
+  transform: translate3d(0, calc(-50%~'+'@offset-v), 0);
+  left: auto;
+}
+
+.nav-combined-position(@position-v, @position-h, @offset-v, @offset-h) when (@position-v = center)and (@position-h = left)  {
+  transform: translate3d(0, calc(-50%~'+'@offset-v), 0);
+}
+
+.owl-carousel-nav-left-position(@pv, @ph, @ov, @oh) {
+  .owl-nav a.owl-prev {
+    .nav-h-position(@ph, @oh);
+    .nav-v-position(@pv, @ov);
+    .nav-combined-position(@pv, @ph, @ov, @oh);
+  }
+}
+
+.owl-carousel-nav-right-position(@pv, @ph, @ov, @oh) {
+  .owl-nav a.owl-next {
+    .nav-h-position(@ph, @oh);
+    .nav-v-position(@pv, @ov);
+    .nav-combined-position(@pv, @ph, @ov, @oh);
+  }
+}

@@ -140,16 +140,60 @@ add_filter( 'of_sanitize_square_size', 'of_sanitize_square_size' );
 
 /* Slider */
 
-function of_sanitize_slider($input, $option) {
-
-	if ( !is_numeric($input) && isset($option['std']) ) {
-		$input = intval($option['std']);
-	} else {
-		$input = intval($input);
+function of_sanitize_slider( $input, $option ) {
+	if ( $input === '' || ( isset( $input['val'] ) && $input['val'] === '' ) ) {
+		return null; //for responsive option
 	}
-	return $input;
+
+	$input_val = $input;
+	$units = '';
+	if ( isset( $option['units'] ) ) {
+		$units = $option['units'];
+	}
+	$range = null;
+	if ( isset( $option['range'] ) ) {
+		$range = $option['range'];
+	}
+
+	if ( is_array( $input ) ) {
+		$input_units = 'px';
+		if ( isset( $input['units'] ) ) {
+			$input_units = $input['units'];
+		}
+
+		$input_val = $input['val'] . $input_units;
+	}
+
+	$number = The7_Option_Field_Slider::sanitize( $input_val, $units, $range );
+
+	if ( $number['val'] === '' ) {
+		return isset( $option['std'] ) ? $option['std'] : '';
+	}
+
+	return The7_Option_Field_Slider::encode( $number );
 }
 add_filter( 'of_sanitize_slider', 'of_sanitize_slider', 10, 2 );
+
+function of_sanitize_responsive_option($input, $option) {
+	if (isset($option['option'])) {
+		$responsive_options = array();
+		$options_val = The7_Option_Field_Responsive_Option::sanitize($input);
+		foreach ( The7_Option_Field_Responsive_Option::get_devices() as $device ) {
+			$responsive_options[$device] = $option['option'];
+			$responsive_options[$device]['id'] = $device;
+		}
+		$options = optionsframework_sanitize_options_values( $responsive_options, $options_val);
+		//clear empty(null) fields
+		$options = array_filter($options, function($value) { return !is_null($value);});
+		return $options;
+	}
+	if (isset($option['std'])){
+		return The7_Option_Field_Responsive_Option::sanitize($option['std']);
+	}
+	return "";
+}
+
+add_filter( 'of_sanitize_responsive_option', 'of_sanitize_responsive_option', 10, 2 );
 
 /* posts per page */
 
@@ -306,7 +350,12 @@ add_filter( 'of_sanitize_select', 'of_sanitize_enum', 10, 2);
 
 /* Web Fonts */
 
-add_filter( 'of_sanitize_web_fonts', 'esc_attr', 10, 2);
+add_filter( 'of_sanitize_web_fonts', 'of_sanitize_web_fonts', 10, 2);
+
+
+/* Font sizes */
+
+add_filter( 'of_sanitize_font_sizes', 'of_sanitize_font_sizes', 10, 2);
 
 /* Radio */
 
@@ -517,7 +566,12 @@ add_filter( 'of_background_attachment', 'of_sanitize_background_attachment' );
 /* Typography */
 
 function of_sanitize_typography( $input, $option ) {
-	return $input;
+	$options = The7_Option_Field_Typography::get_typography_fields();
+	foreach ( $options as $field => $default_declaration ) {
+		$options[$field]['id'] = $field;
+	}
+
+	return optionsframework_sanitize_options_values( $options, $input);
 }
 add_filter( 'of_sanitize_typography', 'of_sanitize_typography', 10, 2 );
 
@@ -1003,3 +1057,17 @@ function of_sanitize_multi_select( $val, $option ) {
 }
 
 add_filter( 'of_sanitize_multi_select', 'of_sanitize_multi_select', 10, 2 );
+
+function of_sanitize_web_fonts( $val, $option ) {
+	$sanitized = The7_Option_Field_Web_Fonts::sanitize($val);
+	return The7_Option_Field_Web_Fonts::encode( $sanitized );
+}
+
+function of_sanitize_font_sizes($input){
+	$options = The7_Option_Field_Font_Sizes::get_fields();
+	foreach ( $options as $field => $default_declaration ) {
+		$options[$field]['id'] = $field;
+	}
+
+	return optionsframework_sanitize_options_values( $options, $input);
+}

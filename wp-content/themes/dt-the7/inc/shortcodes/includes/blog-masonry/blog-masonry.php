@@ -958,7 +958,7 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 		 *
 		 * @param WP_Query $query
 		 */
-		public function add_offset( &$query ) {
+		public function add_offset( $query ) {
 			$offset  = (int) $this->get_att( 'posts_offset' );
 			$ppp     = (int) $query->query_vars['posts_per_page'];
 			$current = (int) $query->query_vars['paged'];

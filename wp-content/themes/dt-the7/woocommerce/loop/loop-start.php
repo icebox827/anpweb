@@ -43,6 +43,15 @@ if ( presscore_config()->get( 'full_width' ) ) {
 }
 
 $loop_layout = presscore_config()->get( 'layout' );
+
+if (
+	( $loop_layout === 'list' && of_get_option( 'woocommerce_show_list_desc' ) === '0' )
+	||
+	( in_array( $loop_layout, [ 'grid', 'masonry' ] ) && of_get_option( 'woocommerce_show_masonry_desc' ) === '0' )
+) {
+	add_filter( 'woocommerce_short_description', '__return_empty_string' );
+}
+
 if ( 'list' === $loop_layout ) {
 	$classes = array(
 		'wc-layout-list',

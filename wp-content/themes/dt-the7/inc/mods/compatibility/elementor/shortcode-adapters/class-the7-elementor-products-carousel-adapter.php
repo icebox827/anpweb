@@ -6,6 +6,7 @@ defined( 'ABSPATH' ) || exit;
 
 use The7\Adapters\Elementor\ShortcodeAdapters\Queries\Products_Current_Query;
 use The7\Adapters\Elementor\ShortcodeAdapters\Queries\Products_Query;
+use WP_Query;
 
 class DT_Shortcode_Products_Carousel_Adapter extends \DT_Shortcode_Products_Carousel implements The7_Shortcode_Adapter_Interface {
 
@@ -30,13 +31,18 @@ class DT_Shortcode_Products_Carousel_Adapter extends \DT_Shortcode_Products_Caro
 		$this->default_atts = array_merge( $this->default_atts, $default_atts );
 	}
 
-	protected function get_query_args() {
+	/**
+	 * Return products query.
+	 *
+	 * @return mixed|WP_Query
+	 */
+	protected function get_query() {
 		if ( 'current_query' === $this->get_att( self::QUERY_CONTROL_NAME . '_post_type' ) ) {
-			$query = new Products_Current_Query( $this->get_atts(), self::QUERY_CONTROL_NAME . '_' );
-		} else {
-			$query = new Products_Query( $this->get_atts(), self::QUERY_CONTROL_NAME . '_' );
+			return $GLOBALS['wp_query'];
 		}
 
-		return $query->parse_query_args();
+		$query = new Products_Query( $this->get_atts(), self::QUERY_CONTROL_NAME . '_' );
+
+		return new WP_Query( $query->parse_query_args() );
 	}
 }

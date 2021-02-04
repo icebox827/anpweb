@@ -188,7 +188,7 @@ defined( 'ABSPATH' ) || exit;
 						<?php
 						$time_limit = ini_get( 'max_execution_time' );
 						// translators: %1$s - wp codex article url.
-						$tip = sprintf( __( '<br><span class="the7-tip">See <a href="%1$s" target="_blank" rel="noopener noreferrer">increasing max PHP execution time</a> or contact your hosting provider.</span>', 'the7mk2' ), 'http://codex.wordpress.org/Common_WordPress_Errors#Maximum_execution_time_exceeded' );
+						$tip = sprintf( __( '<br><span class="the7-tip">See <a href="%1$s" target="_blank" rel="noopener noreferrer">increasing max PHP execution time</a> or contact your hosting provider.</span>', 'the7mk2' ), 'https://wordpress.org/support/article/common-wordpress-errors/#php-errors' );
 
 						if ( 30 > $time_limit && 0 != $time_limit ) {
 							// translators: %1$s - php time limit.

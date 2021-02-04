@@ -158,13 +158,14 @@ $new_options['header-elements-woocommerce_cart-show_sub_cart'] = array(
 	'type' => 'checkbox',
 	'std'  => '1',
 );
+
 $new_options['header-elements-woocommerce_cart-sub_cart-bg-width'] = array(
-	'id'       => 'header-elements-woocommerce_cart-sub_cart-bg-width',
-	'name'     => _x( 'Background width', 'theme-options', 'the7mk2' ),
-	'type'     => 'text',
-	'std'      => '240',
-	'class'    => 'mini',
-	'sanitize' => 'dimensions',
+	'id'         => 'header-elements-woocommerce_cart-sub_cart-bg-width',
+	'name'       => _x( 'Background width', 'theme-options', 'the7mk2' ),
+	'type'       => 'text',
+	'std'        => '240',
+	'class'      => 'mini',
+	'sanitize'   => 'dimensions',
 	'dependency' => array(
 		'field'    => 'header-elements-woocommerce_cart-show_sub_cart',
 		'operator' => '==',
@@ -172,21 +173,22 @@ $new_options['header-elements-woocommerce_cart-sub_cart-bg-width'] = array(
 	),
 );
 $new_options['header-elements-woocommerce_cart-sub_cart-bg-color'] = array(
-	'id'   => 'header-elements-woocommerce_cart-sub_cart-bg-color',
-	'name' => _x( 'Background color', 'theme-options', 'the7mk2' ),
-	'type' => 'alpha_color',
-	'std'  => 'rgba(255,255,255,0.3)',
+	'id'         => 'header-elements-woocommerce_cart-sub_cart-bg-color',
+	'name'       => _x( 'Background color', 'theme-options', 'the7mk2' ),
+	'type'       => 'alpha_color',
+	'std'        => 'rgba(255,255,255,0.3)',
 	'dependency' => array(
 		'field'    => 'header-elements-woocommerce_cart-show_sub_cart',
 		'operator' => '==',
 		'value'    => '1',
 	),
 );
+
 $new_options['header-elements-woocommerce_cart-sub_cart-font-color'] = array(
-	'id'   => 'header-elements-woocommerce_cart-sub_cart-font-color',
-	'name' => _x( 'Text color', 'theme-options', 'the7mk2' ),
-	'type' => 'color',
-	'std'  => '#000',
+	'id'         => 'header-elements-woocommerce_cart-sub_cart-font-color',
+	'name'       => _x( 'Text color', 'theme-options', 'the7mk2' ),
+	'type'       => 'color',
+	'std'        => '#000',
 	'dependency' => array(
 		'field'    => 'header-elements-woocommerce_cart-show_sub_cart',
 		'operator' => '==',
@@ -194,9 +196,25 @@ $new_options['header-elements-woocommerce_cart-sub_cart-font-color'] = array(
 	),
 );
 
-
-
-
+$new_options['header-elements-woocommerce_cart-font-content'] = array(
+	'id'   => 'header-elements-woocommerce_cart-font-content',
+	'type' => 'typography',
+	'std'  => array(
+		'font_family'            => 'Open Sans',
+		'responsive_font_size'   => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
+		),
+		'responsive_line_height' => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
+		'text_transform'         => 'none',
+	),
+	'dependency' => array(
+		'field'    => 'header-elements-woocommerce_cart-show_sub_cart',
+		'operator' => '==',
+		'value'    => '1',
+	),
+);
 
 
 // add new options

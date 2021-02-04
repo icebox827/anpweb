@@ -349,6 +349,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'condition' => [
 				'arrows' => 'y',
 			],
+			'global' => [
+				'active' => false,
+			],
 		] );
 
 		$this->add_control( 'arrow_icon_color', [
@@ -360,6 +363,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'condition'   => [
 				'arrows' => 'y',
 			],
+			'global' => [
+				'active' => false,
+			],
 		] );
 
 		$this->add_control( 'arrow_icon_border', [
@@ -369,6 +375,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'default'      => 'y',
 			'condition'    => [
 				'arrows' => 'y',
+			],
+			'global' => [
+				'active' => false,
 			],
 		] );
 
@@ -381,6 +390,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'condition'   => [
 				'arrow_icon_border' => 'y',
 				'arrows'            => 'y',
+			],
+			'global' => [
+				'active' => false,
 			],
 		] );
 
@@ -404,6 +416,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 				'arrows_bg_show' => 'y',
 				'arrows'         => 'y',
 			],
+			'global' => [
+				'active' => false,
+			],
 		] );
 
 		$this->add_control( 'arrows_hover_color_heading', [
@@ -412,6 +427,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'separator' => 'before',
 			'condition' => [
 				'arrows' => 'y',
+			],
+			'global' => [
+				'active' => false,
 			],
 		] );
 
@@ -423,6 +441,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'default'     => 'rgba(255,255,255,0.75)',
 			'condition'   => [
 				'arrows' => 'y',
+			],
+			'global' => [
+				'active' => false,
 			],
 		] );
 
@@ -446,6 +467,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 				'arrow_icon_border_hover' => 'y',
 				'arrows'                  => 'y',
 			],
+			'global' => [
+				'active' => false,
+			],
 		] );
 
 		$this->add_control( 'arrows_bg_hover_show', [
@@ -468,6 +492,9 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 				'arrows_bg_hover_show' => 'y',
 				'arrows'               => 'y',
 			],
+			'global' => [
+				'active' => false,
+			],
 		] );
 
 		$this->add_control( 'right_arrow_position_heading', [
@@ -479,22 +506,6 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			],
 		] );
 
-		$this->add_control( 'r_arrow_icon_paddings', [
-			'label'      => __( 'Icon paddings', 'the7mk2' ),
-			'type'       => Controls_Manager::DIMENSIONS,
-			'size_units' => [ 'px' ],
-			'default'    => [
-				'top'      => '0',
-				'right'    => '0',
-				'bottom'   => '0',
-				'left'     => '0',
-				'unit'     => 'px',
-				'isLinked' => true,
-			],
-			'condition'  => [
-				'arrows' => 'y',
-			],
-		] );
 
 		$this->add_control( 'r_arrow_v_position', [
 			'label'     => __( 'Vertical position', 'the7mk2' ),
@@ -569,23 +580,6 @@ class The7_Elementor_Elements_Woocommerce_Carousel_Widget extends The7_Elementor
 			'type'      => Controls_Manager::HEADING,
 			'separator' => 'before',
 			'condition' => [
-				'arrows' => 'y',
-			],
-		] );
-
-		$this->add_control( 'l_arrow_icon_paddings', [
-			'label'      => __( 'Icon paddings', 'the7mk2' ),
-			'type'       => Controls_Manager::DIMENSIONS,
-			'size_units' => [ 'px' ],
-			'default'    => [
-				'top'      => '0',
-				'right'    => '0',
-				'bottom'   => '0',
-				'left'     => '0',
-				'unit'     => 'px',
-				'isLinked' => true,
-			],
-			'condition'  => [
 				'arrows' => 'y',
 			],
 		] );

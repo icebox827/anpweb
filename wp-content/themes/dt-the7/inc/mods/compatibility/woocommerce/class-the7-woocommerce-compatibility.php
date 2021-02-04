@@ -42,6 +42,8 @@ class The7_Woocommerce_Compatibility {
 		presscore_template_manager()->add_path( 'woocommerce', 'inc/mods/compatibility/woocommerce/front/templates' );
 
 		add_action( 'init', array( $this, 'register_wc_hooks' ), 10); // fix for elementor modules/woocommerce/module.php:335
+
+		add_action( 'wp_enqueue_scripts',  array( $this,  'enqueue_scripts' ), 20 );
 	}
 
 	public function register_wc_hooks(){
@@ -49,7 +51,11 @@ class The7_Woocommerce_Compatibility {
 		require_once "{$mod_dir}/front/mod-wc-template-hooks.php";
 	}
 
-
+	public static function enqueue_scripts( ) {
+		if ( the7_is_light_mode() ) {
+			wp_enqueue_script( 'dt-woocommerce' );
+		}
+	}
 
 	/**
 	 * Hide some admin notices. The less you know, the better.

@@ -673,8 +673,11 @@ class the7_lessc {
 			if ($name[0] == $this->vPrefix) {
 				$this->set($name, $value);
 			} else {
-				$out->lines[] = $this->formatter->property($name,
+				$ret_val = $this->formatter->property($name,
 						$this->compileValue($this->reduce($value)));
+				if ( !empty($ret_val) ) {
+					$out->lines[] = $ret_val;
+				}
 			}
 			break;
 		case 'block':
@@ -1618,6 +1621,21 @@ class the7_lessc {
 		}
 
 		return $c;
+	}
+
+	protected function op_keyword_number($op, $lft, $rgt) {
+		$operations = array('*','%','/');
+
+		if (($lft[1] === '' ||  $rgt[1] === '') && in_array($op, $operations)) return self::$defaultValue;
+		return null;
+	}
+
+	protected function op_number_keyword($op, $lft, $rgt) {
+		return $this->op_keyword_number($op, $lft, $rgt);
+	}
+
+	protected function op_keyword_keyword($op, $lft, $rgt) {
+		return $this->op_keyword_number($op, $lft, $rgt);
 	}
 
 	protected function op_number_color($op, $lft, $rgt) {
@@ -3611,6 +3629,10 @@ class the7_lessc_formatter_classic {
 	}
 
 	public function property($name, $value) {
+		if ($value === ''){
+			return $value;
+		}
+
 		return $name . $this->assignSeparator . $value . ";";
 	}
 

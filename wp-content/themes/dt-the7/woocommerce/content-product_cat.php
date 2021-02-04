@@ -13,7 +13,7 @@
  * @see     https://docs.woothemes.com/document/template-structure/
  * @author  WooThemes
  * @package WooCommerce/Templates
- * @version 2.6.1
+ * @version 4.7.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,8 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	presscore_get_config()->set( 'subcategory', $category );
 
 	dt_woocommerce_template_subcategory_desc_under();
-
-	
 	?>
 
 </article>

@@ -101,7 +101,8 @@ class Presscore_Mod_Slideshow_Public {
 					'inactive_opacity' => $config->get( 'slideshow.photo_scroller.inactive.opacity' ),
 					'show_overlay' => $config->get( 'slideshow.photo_scroller.overlay.enabled' ),
 					'show_post_navigation' => false,
-					'show_share_buttons' => false
+					'show_share_buttons' => false,
+					'thumbnails_lazy_load_class' => 'photo-thumb-lazy-load',
 				) );
 
 				if ( $photo_scroller->have_slides() ) {

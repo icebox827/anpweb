@@ -93,7 +93,8 @@ if ( ! function_exists( 'presscore_mod_albums_single_post_photoscroller' ) ) :
 			),
 
 			'inactive_opacity' => $config->get( 'post.media.photo_scroller.inactive.opacity' ),
-			'show_overlay' => $config->get( 'post.media.photo_scroller.overlay.enabled' )
+			'show_overlay' => $config->get( 'post.media.photo_scroller.overlay.enabled' ),
+			'thumbnails_lazy_load_class' => 'photo-thumb-lazy-load',
 		);
 		$photo_scroller = new The7pt_Photo_Scroller( $media_items, $args );
 

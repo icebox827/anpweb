@@ -630,7 +630,7 @@ endif;
 
 if ( ! function_exists( 'presscore_complex_pagination' ) ) :
 
-	function presscore_complex_pagination( &$query ) {
+	function presscore_complex_pagination( $query ) {
 		if ( $query ) {
 
 			if ( presscore_is_load_more_pagination() ) {

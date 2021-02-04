@@ -78,3 +78,15 @@ function the7_elementor_get_content_width_string() {
 
 	return $content_width;
 }
+
+/**
+ * @since 9.4.0
+ *
+ * @return bool
+ */
+function the7_is_elementor_schemes_disabled() {
+	$custom_colors_disabled      = get_option( 'elementor_disable_color_schemes' );
+	$typography_schemes_disabled = get_option( 'elementor_disable_typography_schemes' );
+
+	return the7_is_elementor3() || ( $custom_colors_disabled && $typography_schemes_disabled );
+}

@@ -238,3 +238,35 @@ function the7_update_purge_elementor_cache() {
 		Elementor\Plugin::$instance->files_manager->clear_cache();
 	}
 }
+
+/**
+ * Apply $migration to theme options.
+ *
+ * @since 9.4.0
+ *
+ * @param The7_DB_Patch_Interface $migration
+ */
+function the7_apply_theme_options_migration( The7_DB_Patch_Interface $migration ) {
+	$options = optionsframework_get_options();
+	if ( ! $options ) {
+		return;
+	}
+
+	$options = $migration->apply( $options );
+
+	of_save_unsanitized_options( $options );
+
+	_optionsframework_delete_defaults_cache();
+}
+
+/**
+ * @since 9.4.0
+ *
+ * @param array $clean
+ * @param array $input
+ *
+ * @return array
+ */
+function the7_skip_options_sanitizing( $clean, $input ) {
+	return $input;
+}

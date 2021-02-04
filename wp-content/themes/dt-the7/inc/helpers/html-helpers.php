@@ -2285,13 +2285,22 @@ function the7_get_read_more_aria_label( $post = null ) {
 }
 
 /**
+ * Escapes 'href' and 'src' attributes with the esc_url and the rest with the esc_attr.
+ *
  * @param array $attributes
  *
  * @return string
  */
 function the7_get_html_attributes_string( $attributes ) {
 	$attributes = array_filter( $attributes );
-	$attributes = array_map( 'esc_attr', $attributes );
+	foreach ( $attributes as $att => &$value ) {
+		if ( $att === 'href' || $att === 'src' ) {
+			$value = esc_url( $value );
+		} else {
+			$value = esc_attr( $value );
+		}
+	}
+	unset( $value );
 
 	return implode( ' ', presscore_convert_indexed2numeric_array( '=', $attributes, '', '"%s"' ) );
 }

@@ -494,8 +494,7 @@
 .filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.filter-item {
   color: var(--filter-title-color-normal);
 }
-.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.filter-item:hover,
-.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.filter-item:focus {
+.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.filter-item:hover {
   color: var(--filter-title-color-hover);
 }
 .filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.filter-item.act {
@@ -511,52 +510,54 @@
 #page .filter.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) .filter-switch-toggle {
   background: var(--filter-pointer-bg-color-active);
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) .dots,
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) .nav-next i,
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) .nav-prev i {
+.paginator.filter-decorations:not(.class-1) .dots,
+.paginator.filter-decorations:not(.class-1) .nav-next i,
+.paginator.filter-decorations:not(.class-1) .nav-prev i {
   color: var(--filter-title-color-normal);
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.button-load-more {
+.paginator.filter-decorations:not(.class-1) a.button-load-more {
   border: inherit;
   transition: opacity 0.01s ease, color 0.05s ease;
   color: var(--filter-title-color-normal);
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.button-load-more:hover,
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.button-load-more:focus {
+.paginator.filter-decorations:not(.class-1) a.button-load-more:hover {
   color: var(--filter-title-color-hover);
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.button-load-more * {
+.paginator.filter-decorations:not(.class-1) a.button-load-more * {
   color: inherit;
   transition: inherit;
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4) a.button-load-more .button-caption:before {
+.paginator.filter-decorations:not(.class-1) a.button-load-more .button-caption:before {
   content: "";
   margin: 0;
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4):not(.filter-pointer-framed) a.button-load-more.highlighted:not(:hover):before,
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4):not(.filter-pointer-framed) a.button-load-more.highlighted:not(:hover):after {
+.paginator.filter-decorations:not(.class-1):not(.filter-pointer-framed) a.button-load-more.highlighted:not(:hover):before,
+.paginator.filter-decorations:not(.class-1):not(.filter-pointer-framed) a.button-load-more.highlighted:not(:hover):after {
   background: var(--filter-pointer-bg-color-normal);
 }
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4).filter-pointer-framed a.button-load-more.highlighted:not(:hover):before,
-.paginator.filter-decorations:not(.class-1):not(.class-2):not(.class-3):not(.class-4).filter-pointer-framed a.button-load-more.highlighted:not(:hover):after {
+.paginator.filter-decorations:not(.class-1).filter-pointer-framed a.button-load-more.highlighted:not(:hover):before,
+.paginator.filter-decorations:not(.class-1).filter-pointer-framed a.button-load-more.highlighted:not(:hover):after {
   border-color: var(--filter-pointer-bg-color-normal);
 }
 .post-thumbnail-rollover img {
   transition: opacity 0.25s linear;
 }
-.elementor-element.elementor-widget .entry-title a,
+.elementor-element.elementor-widget .ele-entry-title a,
 .elementor-element.elementor-widget .entry-meta a,
 .elementor-element.elementor-widget .entry-meta > span,
 .elementor-element.elementor-widget .portfolio-categories a,
 .elementor-element.elementor-widget .portfolio-categories > span {
   text-decoration: inherit;
 }
-.elementor-element.elementor-widget .entry-title a:hover,
+.elementor-element.elementor-widget .ele-entry-title a:hover,
 .elementor-element.elementor-widget .entry-meta a:hover,
 .elementor-element.elementor-widget .entry-meta > span:hover,
 .elementor-element.elementor-widget .portfolio-categories a:hover,
 .elementor-element.elementor-widget .portfolio-categories > span:hover {
   text-decoration: inherit;
+}
+.filter-decorations:not(.class-1).filter-pointer-framed a.filter-item.act:after {
+  background: none;
 }
 .elementor-widget.elementor-widget-the7_elements {
   /*Always show description*/
@@ -615,6 +616,9 @@
   box-sizing: border-box;
   -ms-flex: 0 0 auto;
 }
+.elementor-widget.elementor-widget-the7_elements .classic-layout-list .post-thumbnail {
+  display: inline-block;
+}
 .elementor-widget.elementor-widget-the7_elements .post-thumbnail {
   position: relative;
   display: block;
@@ -622,19 +626,19 @@
 .elementor-widget.elementor-widget-the7_elements .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img {
   width: 100%;
 }
-.mobile-false .elementor-widget.elementor-widget-the7_elements .quick-scale-img.gradient-overlay-layout-list article:hover .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img,
-.mobile-false .elementor-widget.elementor-widget-the7_elements .quick-scale-img.content-rollover-layout-list article:hover .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img,
-.mobile-false .elementor-widget.elementor-widget-the7_elements .quick-scale-img.gradient-overlap-layout-list article:hover .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img {
+.elementor-widget.elementor-widget-the7_elements .quick-scale-img.gradient-overlay-layout-list article:hover .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img,
+.elementor-widget.elementor-widget-the7_elements .quick-scale-img.content-rollover-layout-list article:hover .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img,
+.elementor-widget.elementor-widget-the7_elements .quick-scale-img.gradient-overlap-layout-list article:hover .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img {
   transform: scale(1.2);
   transition: transform 0.25s ease-out, opacity 0.25s ease-out;
 }
-.mobile-true .elementor-widget.elementor-widget-the7_elements .quick-scale-img.gradient-overlay-layout-list article.is-clicked .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .quick-scale-img.content-rollover-layout-list article.is-clicked .post-thumbnail:not(.overlay-placeholder) > .post-thumbnail-rollover img {
-  transform: scale(1.2);
-  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+.mobile-true .elementor-widget.elementor-widget-the7_elements .content-rollover-layout-list article:hover > .post-thumbnail-wrap .post-thumbnail-rollover:after,
+.mobile-true .elementor-widget.elementor-widget-the7_elements .gradient-overlay-layout-list article:hover > .post-thumbnail-wrap .post-thumbnail-rollover:after,
+.mobile-true .elementor-widget.elementor-widget-the7_elements .content-rollover-layout-list article:hover .post-thumbnail > .post-thumbnail-rollover:after,
+.mobile-true .elementor-widget.elementor-widget-the7_elements .content-rollover-layout-list article:hover .project-links-container a {
+  opacity: 1;
 }
-.mobile-false .elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list.scale-img article:hover .post-thumbnail > .post-thumbnail-rollover img,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list.scale-img .is-clicked .post-thumbnail > .post-thumbnail-rollover img {
+.elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list.scale-img article:hover .post-thumbnail > .post-thumbnail-rollover img {
   transform: scale(1.2);
   transition: transform 4s ease-out, opacity 0.25s ease-out;
 }
@@ -678,6 +682,7 @@
   margin-top: -125px;
   z-index: 1;
   padding-top: 90px;
+  display: block;
 }
 .elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list .post-entry-content:before {
   position: absolute;
@@ -706,20 +711,16 @@
   overflow: hidden;
   transition: opacity 0.35s;
 }
-.mobile-true .elementor-widget.elementor-widget-the7_elements .hover-scale.gradient-overlay-layout-list .post-entry-conten {
-  opacity: 0;
-}
-.mobile-false .elementor-widget.elementor-widget-the7_elements .hover-scale .post-entry-content {
+.elementor-widget.elementor-widget-the7_elements .hover-scale .post-entry-content {
   transform: scale(0);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
 }
-.mobile-false .elementor-widget.elementor-widget-the7_elements .hover-scale article:hover .post-entry-content {
+.elementor-widget.elementor-widget-the7_elements .hover-scale article:hover .post-entry-content {
   opacity: 1;
   transform: scale(1);
 }
-.mobile-false .elementor-widget.elementor-widget-the7_elements .hover-scale .rollover-project:hover:after,
-.mobile-false .elementor-widget.elementor-widget-the7_elements .hover-scale article:hover:after,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .hover-scale article.is-clicked:after {
+.elementor-widget.elementor-widget-the7_elements .hover-scale .rollover-project:hover:after,
+.elementor-widget.elementor-widget-the7_elements .hover-scale article:hover:after {
   opacity: 1;
   transform: scale(2);
 }
@@ -727,14 +728,8 @@
 .elementor-widget.elementor-widget-the7_elements .hover-grid-reverse .post-entry-content {
   opacity: 0;
 }
-.mobile-false .elementor-widget.elementor-widget-the7_elements .hover-grid article:hover .post-entry-content,
-.mobile-false .elementor-widget.elementor-widget-the7_elements .hover-grid-reverse article:hover .post-entry-content,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .hover-grid .is-clicked .post-entry-content,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .hover-grid-reverse .is-clicked .post-entry-content {
-  opacity: 1;
-}
-.mobile-true .elementor-widget.elementor-widget-the7_elements .hover-scale.gradient-overlay-layout-list .is-clicked .post-entry-content,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .hover-scale article.is-clicked .post-entry-content {
+.elementor-widget.elementor-widget-the7_elements .hover-grid article:hover .post-entry-content,
+.elementor-widget.elementor-widget-the7_elements .hover-grid-reverse article:hover .post-entry-content {
   opacity: 1;
 }
 .elementor-widget.elementor-widget-the7_elements .content-rollover-layout-list .post-entry-content {
@@ -745,8 +740,7 @@
   opacity: 0;
   visibility: hidden;
 }
-.mobile-false .elementor-widget.elementor-widget-the7_elements .gradient-overlay-layout-list.hover-fade article:hover .post-entry-content,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .gradient-overlay-layout-list.hover-fade article.is-clicked .post-entry-content {
+.elementor-widget.elementor-widget-the7_elements .gradient-overlay-layout-list.hover-fade article:hover .post-entry-content {
   opacity: 1;
   visibility: visible;
 }
@@ -765,12 +759,12 @@
 .elementor-widget.elementor-widget-the7_elements .entry-meta > span a {
   display: inline-block;
 }
-#page .elementor-widget.elementor-widget-the7_elements .the7-elementor-widget:not(.keep-custom-css) .entry-title a {
+#page .elementor-widget.elementor-widget-the7_elements .the7-elementor-widget:not(.class-1):not(.keep-custom-css) .ele-entry-title a {
   transition: color 0.3s;
 }
-#page .elementor-widget.elementor-widget-the7_elements .the7-elementor-widget:not(.keep-custom-css) .entry-title a:hover {
-  background: inherit;
-  color: inherit;
+#page .elementor-widget.elementor-widget-the7_elements .the7-elementor-widget:not(.class-1):not(.keep-custom-css) .ele-entry-title a:hover {
+  background: none;
+  color: var(--the7-title-color);
 }
 .elementor-widget.elementor-widget-the7_elements .post-thumbnail-rollover:before {
   position: absolute;
@@ -786,10 +780,10 @@
   transition: none;
 }
 .elementor-widget.elementor-widget-the7_elements .post-thumbnail-rollover:after,
-.elementor-widget.elementor-widget-the7_elements .post-thumbnail:hover .post-thumbnail-rollover:before {
-  opacity: 0;
-}
-.elementor-widget.elementor-widget-the7_elements .elementor-widget.elementor-widget-the7_elements .enable-bg-rollover .post-thumbnail > .post-thumbnail-rollover:after {
+.elementor-widget.elementor-widget-the7_elements .post-thumbnail:hover .post-thumbnail-rollover:before,
+.elementor-widget.elementor-widget-the7_elements .content-rollover-layout-list article:hover .post-thumbnail-rollover:before,
+.elementor-widget.elementor-widget-the7_elements .gradient-overlay-layout-list article:hover .post-thumbnail-rollover:before,
+.elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list article:hover .post-thumbnail-rollover:before {
   opacity: 0;
 }
 .elementor-widget.elementor-widget-the7_elements .enable-bg-rollover .post-thumbnail > .post-thumbnail-rollover:after {
@@ -797,9 +791,7 @@
   transition: opacity 0.3s;
 }
 .elementor-widget.elementor-widget-the7_elements .post-thumbnail:hover > .post-thumbnail-rollover:after,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .is-clicked .post-thumbnail > .post-thumbnail-rollover:after,
-.elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list article:hover .post-thumbnail-rollover:after,
-.mobile-true .elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list .is-clicked .post-thumbnail-rollover:after {
+.elementor-widget.elementor-widget-the7_elements .gradient-overlap-layout-list article:hover .post-thumbnail-rollover:after {
   opacity: 1;
 }
 .elementor-widget.elementor-widget-the7_elements .description-under-image .post-thumbnail-wrap {
@@ -843,13 +835,27 @@
 }
 .elementor-widget.elementor-widget-the7_elements .project-links-container a:hover:before,
 .elementor-widget.elementor-widget-the7_elements .project-links-container a:not(:hover):after {
-  transition-delay: 0.1s;
+  transition-delay: unset;
 }
 .elementor-widget.elementor-widget-the7_elements .project-links-container a > span {
   position: relative;
   z-index: 2;
   transition: color 0.25s;
   vertical-align: middle;
+}
+.elementor-widget.elementor-widget-the7_elements .project-links-container a > svg {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  transition: color 0.25s;
+  width: 44px;
+  height: 44px;
+}
+.elementor-widget.elementor-widget-the7_elements .gradient-overlay-layout-list .project-links-container a {
+  opacity: 1;
+}
+.elementor-widget.elementor-widget-the7_elements .post-entry-content .project-links-container {
+  display: inline-block;
 }
 .elementor-widget.elementor-widget-the7_elements .post-entry-content:hover .project-links-container a,
 .elementor-widget.elementor-widget-the7_elements .post-thumbnail:hover .project-links-container a,
@@ -934,7 +940,7 @@
 .elementor-widget.elementor-widget-the7_elements .classic-layout-list .post-thumbnail {
   width: 100%;
 }
-.elementor-widget.elementor-widget-the7_elements .entry-title {
+.elementor-widget.elementor-widget-the7_elements .ele-entry-title {
   margin-bottom: 10px;
 }
 .elementor-widget.elementor-widget-the7_elements .content-rollover-layout-list.meta-info-off .post-entry-wrapper {
@@ -962,7 +968,6 @@
   border-width: 0px;
   border-color: var(--the7-accent-color);
   background-color: var(--the7-accent-color);
-  background-image: linear-gradient(var(--the7-accent-gradient));
   box-shadow: none;
 }
 .elementor-widget.elementor-widget-the7_elements .project-links-container a:not(:hover) > span {
@@ -1010,24 +1015,10 @@
   --filter-title-color-active: var(--the7-title-color);
   --filter-pointer-bg-color-hover: var(--the7-accent-color);
 }
-.accent-gradient .elementor-widget.elementor-widget-the7_elements .filter.filter-underline-decoration .filter-categories {
-  --filter-pointer-bg-color-hover: linear-gradient(var(--the7-accent-gradient));
-  --filter-pointer-bg-color-active: linear-gradient(var(--the7-accent-gradient));
-}
-.accent-gradient .elementor-widget.elementor-widget-the7_elements .filter.filter-bg-decoration .filter-categories {
-  --filter-pointer-bg-color-hover: linear-gradient(var(--the7-accent-gradient));
-  --filter-pointer-bg-color-active: linear-gradient(var(--the7-accent-gradient));
-}
 .accent-gradient .elementor-widget.elementor-widget-the7_elements .filter.filter-bg-decoration .filter-categories a:not(.act):hover {
   --filter-title-color-hover: transparent;
   background: var(--filter-pointer-bg-color-hover);
   -webkit-background-clip: text;
-}
-.accent-gradient .elementor-widget.elementor-widget-the7_elements .filter.filter-without-decoration .filter-categories {
-  --filter-pointer-bg-color-hover: linear-gradient(var(--the7-accent-gradient));
-  --filter-pointer-bg-color-active: linear-gradient(var(--the7-accent-gradient));
-  --filter-title-color-hover: transparent;
-  --filter-title-color-active: transparent;
 }
 .accent-gradient .elementor-widget.elementor-widget-the7_elements .filter.filter-without-decoration .filter-categories a:hover {
   background: var(--filter-pointer-bg-color-hover);
@@ -1066,10 +1057,6 @@
   font-weight: normal;
   margin: 0 5px;
   padding: 5px 10px;
-}
-.accent-gradient .elementor-widget.elementor-widget-the7_elements .paginator {
-  --filter-pointer-bg-color-hover: linear-gradient(var(--the7-accent-gradient));
-  --filter-pointer-bg-color-active: linear-gradient(var(--the7-accent-gradient));
 }
 .elementor-widget.elementor-widget-the7_elements .rollover-project {
   position: relative;
@@ -1271,35 +1258,35 @@
   display: table;
   clear: both;
 }
-#page .elementor-widget.elementor-widget-the7_elements .rollover-content .entry-title a {
+#page .elementor-widget.elementor-widget-the7_elements .rollover-content .ele-entry-title a {
   background: none;
 }
-.elementor-widget.elementor-widget-the7_elements .links-hovers-disabled .rollover-content .entry-title a:hover {
+.elementor-widget.elementor-widget-the7_elements .links-hovers-disabled .rollover-content .ele-entry-title a:hover {
   background: none;
   -webkit-background-clip: text;
 }
 #page .elementor-widget.elementor-widget-the7_elements .rollover-content,
 #page .elementor-widget.elementor-widget-the7_elements .rollover-content *,
-#page .elementor-widget.elementor-widget-the7_elements .rollover-content h3.entry-title,
-#page .elementor-widget.elementor-widget-the7_elements .rollover-content h3.entry-title a,
-#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content h4.entry-title a:hover,
-#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content .entry-title a:hover,
+#page .elementor-widget.elementor-widget-the7_elements .rollover-content h3.ele-entry-title,
+#page .elementor-widget.elementor-widget-the7_elements .rollover-content h3.ele-entry-title a,
+#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content h4.ele-entry-title a:hover,
+#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content .ele-entry-title a:hover,
 #page .elementor-widget.elementor-widget-the7_elements .rollover-content a:hover,
-#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content h3.entry-title a:hover,
-#page .elementor-widget.elementor-widget-the7_elements .hover-style-one h2.entry-title,
-#page .elementor-widget.elementor-widget-the7_elements .hover-style-two h2.entry-title {
+#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content h3.ele-entry-title a:hover,
+#page .elementor-widget.elementor-widget-the7_elements .hover-style-one h2.ele-entry-title,
+#page .elementor-widget.elementor-widget-the7_elements .hover-style-two h2.ele-entry-title {
   color: #fff;
 }
 .elementor-widget.elementor-widget-the7_elements .rollover-content .portfolio-categories > a:after,
 .elementor-widget.elementor-widget-the7_elements .rollover-content .portfolio-categories > span:after {
   background: #fff;
 }
-#page .elementor-widget.elementor-widget-the7_elements .rollover-content h3.entry-title,
-#page .elementor-widget.elementor-widget-the7_elements .rollover-content .entry-title a,
-#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content .entry-title a:hover,
-#page .elementor-widget.elementor-widget-the7_elements .hover-style-one h2.entry-title,
-#page .elementor-widget.elementor-widget-the7_elements .hover-style-two h2.entry-title,
-#page .elementor-widget.elementor-widget-the7_elements .hover-style-two h4.entry-title {
+#page .elementor-widget.elementor-widget-the7_elements .rollover-content h3.ele-entry-title,
+#page .elementor-widget.elementor-widget-the7_elements .rollover-content .ele-entry-title a,
+#page .elementor-widget.elementor-widget-the7_elements .post .rollover-content .ele-entry-title a:hover,
+#page .elementor-widget.elementor-widget-the7_elements .hover-style-one h2.ele-entry-title,
+#page .elementor-widget.elementor-widget-the7_elements .hover-style-two h2.ele-entry-title,
+#page .elementor-widget.elementor-widget-the7_elements .hover-style-two h4.ele-entry-title {
   background: none;
 }
 .elementor-widget.elementor-widget-the7_elements .hover-grid .rollover-content {
@@ -1430,4 +1417,14 @@
   font-size: inherit;
   line-height: inherit;
   vertical-align: middle;
+}
+#page .elementor-widget.elementor-widget-the7_elements .post-entry-content .post-details:after,
+.elementor-widget.elementor-widget-the7_elements .post-entry-content .post-details:after {
+  display: none;
+}
+.elementor-widget.elementor-widget-the7_elements .portfolio-shortcode .post-entry-content .post-details:not(.class-1):not(.class-2) {
+  background: var(--the7-button-normal-bg-color);
+}
+.elementor-widget.elementor-widget-the7_elements .portfolio-shortcode .post-entry-content .post-details:not(.class-1):not(.class-2):hover {
+  background: var(--the7-button-hover-bg-color);
 }

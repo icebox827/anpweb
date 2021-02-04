@@ -418,7 +418,7 @@
   font-size: 10px;
 }
 .main-nav .sub-nav > li.dt-mega-parent > a .menu-text {
-  font:   bold 16px / 22px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font:   700 16px / 22px "Roboto", Helvetica, Arial, Verdana, sans-serif;
   text-transform: none;
   color: #333333;
 }
@@ -493,10 +493,6 @@
 .mobile-main-nav > li .dt-mega-menu-wrap,
 .mobile-main-nav > li .dt-mega-menu-wrap > .sub-nav .sub-nav {
   margin-bottom: 16px;
-}
-.header-side-right .mega-full-width .sub-nav,
-.header-side-right .mega-auto-width .sub-nav {
-  padding-right: ;
 }
 .dt-mega-parent .sidebar-content .widget .soc-ico a:before {
   background-color: rgba(51,51,51,0.15);

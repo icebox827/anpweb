@@ -81,6 +81,8 @@ if ( ! class_exists( 'The7pt_Photo_Scroller', false ) ) {
 				'show_slide_link'        => true,
 				'show_post_navigation'   => true,
 				'show_share_buttons'     => true,
+				'thumbnails_lazy_load_class' => '',
+				'thumbnails_lazy_bg_class' => '',
 			);
 
 			$this->settings = wp_parse_args( $settings, $defaults );
@@ -210,20 +212,21 @@ if ( ! class_exists( 'The7pt_Photo_Scroller', false ) ) {
 		}
 
 		protected function get_slide_thumbnail( &$slide ) {
-			$args = array(
-				'img_meta' => $slide->image_src,
-				'img_id'   => $slide->id,
-				'alt'      => $slide->image_alt,
-				'options'  => array(
-					'w' => ( $this->settings['thumbnails_width'] ? $this->settings['thumbnails_width'] : null ),
-					'h' => $this->settings['thumbnails_height'],
-					'z' => 1,
-				),
-				'wrap'     => '<img %IMG_CLASS% %SRC% %SIZE% %ALT% />',
-				'echo'     => false,
+			return dt_get_thumb_img(
+				array(
+					'img_meta'   => $slide->image_src,
+					'img_id'     => $slide->id,
+					'alt'        => $slide->image_alt,
+					'options'    => array(
+						'w' => ( $this->settings['thumbnails_width'] ? $this->settings['thumbnails_width'] : null ),
+						'h' => $this->settings['thumbnails_height'],
+						'z' => 1,
+					),
+					'wrap'       => '<img %IMG_CLASS% %SRC% %SIZE% %ALT% />',
+					'echo'       => false,
+					'lazy_class' => $this->settings['thumbnails_lazy_load_class'] ?: null,
+				)
 			);
-
-			return dt_get_thumb_img( $args );
 		}
 
 		protected function get_slide_video_link( &$slide ) {

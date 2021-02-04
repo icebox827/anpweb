@@ -56,15 +56,17 @@ class The7_Demo_Content_TGMPA {
 		$plugins_to_install = $this->get_plugins_to_install();
 		$required_plugins   = [];
 		if ( ! $this->is_installed( 'pro-elements' ) ) {
-			$required_plugins['pro-elements'] = sprintf(
-				_x(
-				// translators: 1: elementor pro plugin name, 2: pro elements plugin name
-					'%1$s or %2$s (cannot be installed automatically)',
-					'admin',
-					'the7mk2'
-				),
-				'Elementor Pro',
-				'PRO Elements'
+			$required_plugins['pro-elements'] = esc_html(
+				sprintf(
+					_x(
+						// translators: 1: elementor pro plugin name, 2: pro elements plugin name
+						'%1$s or %2$s (cannot be installed automatically)',
+						'admin',
+						'the7mk2'
+					),
+					'Elementor Pro',
+					'PRO Elements'
+				)
 			);
 		}
 

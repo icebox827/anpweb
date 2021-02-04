@@ -119,3 +119,68 @@ function the7_less_create_gradient_obj( $gradient = null ) {
 
 	return new The7_Less_Gradient( $gradient );
 }
+/**
+ * @param array $array
+ *
+ * @return array
+ */
+function the7_array_filter_non_empty_string( array $array ) {
+	return array_filter( $array, static function($var) {
+		return $var !== '';
+	} );
+}
+
+
+/**
+ * Helper function to fill less for responsive fonts
+ *
+ * @since 9.5.1
+ *
+ * @param  The7_Less_Vars_Manager_Interface $less_vars
+ *
+ * @return none
+ */
+function the7_less_add_responsive_font( The7_Less_Vars_Manager_Interface $less_vars, $opt_name, $id ) {
+	$devices = [
+		The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP,
+		The7_Option_Field_Responsive_Option::RESPONSIVE_TABLET,
+		The7_Option_Field_Responsive_Option::RESPONSIVE_MOBILE,
+	];
+
+	$typography = The7_Option_Field_Typography::sanitize( of_get_option( $opt_name ) );
+	$less_vars->add_font( array(
+		"{$id}-font-family",
+		"{$id}-font-weight",
+		"{$id}-font-style",
+	), $typography['font_family'] );
+	foreach ($devices as $device){
+		if ( isset($typography['responsive_font_size'][$device]) ) {
+			$less_vars->add_unitized_number( "{$id}-font-size-{$device}", $typography['responsive_font_size'][$device] );
+		}
+		if ( isset($typography['responsive_line_height'][$device]) ) {
+			$less_vars->add_unitized_number( "{$id}-line-height-{$device}", $typography['responsive_line_height'][$device] );
+		}
+	}
+	$less_vars->add_keyword( "{$id}-text-transform", $typography['text_transform'] );
+}
+
+/**
+ *  Helper function to fill less for normal fonts
+ *
+ * @since 9.5.1
+ *
+ * @param  The7_Less_Vars_Manager_Interface $less_vars
+ *
+ * @return none
+ */
+function the7_less_add_font( The7_Less_Vars_Manager_Interface $less_vars, $opt_name, $id ) {
+	$typography = The7_Option_Field_Typography::sanitize( of_get_option($opt_name) );
+	$less_vars->add_font( array(
+		"{$id}-font-family",
+		"{$id}-font-weight",
+		"{$id}-font-style",
+	), $typography['font_family'] );
+	$less_vars->add_pixel_number( "{$id}-font-size", $typography['font_size'] );
+	$less_vars->add_pixel_number( "{$id}-line-height", $typography['line_height'] );
+	$less_vars->add_keyword( "{$id}-text-transform", $typography['text_transform'] );
+}

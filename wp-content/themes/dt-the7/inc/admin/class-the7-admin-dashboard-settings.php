@@ -31,6 +31,14 @@ class The7_Admin_Dashboard_Settings {
 			'type' => 'checkbox',
 			'std'  => false,
 		),
+		'lite-mode' => array(
+			'type' => 'checkbox',
+			'std'  => true,
+		),
+		'disable-gutenberg-styles' => array(
+			'type' => 'checkbox',
+			'std'  => false,
+		),
 		'silence-purchase-notification' => array(
 			'type' => 'checkbox',
 			'std'  => false,

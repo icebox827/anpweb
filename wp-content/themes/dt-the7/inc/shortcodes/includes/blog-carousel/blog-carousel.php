@@ -697,7 +697,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 		 *
 		 * @param WP_Query $query
 		 */
-		public function add_offset( &$query ) {
+		public function add_offset( $query ) {
 			// Apply offset only to the7 main query.
 			if ( empty( $query->query['is_the7_main_query'] ) ) {
 				return;

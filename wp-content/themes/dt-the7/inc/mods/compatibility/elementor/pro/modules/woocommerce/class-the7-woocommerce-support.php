@@ -65,8 +65,8 @@ class Woocommerce_Support {
 			add_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 			add_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
 
-			add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
-			add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+			add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 5 );
+			add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 10 );
 			add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
 			add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 
@@ -133,7 +133,17 @@ class Woocommerce_Support {
 		if ( ( $this->is_ignore_theme_templates() && strpos( $template, PRESSCORE_THEME_DIR ) !== false ) || WC_TEMPLATE_DEBUG_MODE ) {
 			// Get default template/.
 			$default_path = WC()->plugin_path() . '/templates/';
-			$template = $default_path . $template_name;
+			if ( version_compare( WC()->version, '3.7.0', '>=' ) ) {
+				if ( false !== strpos( $template_name, 'product_cat' ) || false !== strpos( $template_name, 'product_tag' ) ) {
+					$cs_template = str_replace( '_', '-', $template_name );
+				}
+			}
+			// Get default template/.
+            if ( empty( $cs_template ) ) {
+                $template = $default_path . $template_name;
+            } else {
+                $template = $default_path . $cs_template;
+            }
 		}
 
 		return $template;

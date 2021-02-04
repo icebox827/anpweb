@@ -23,17 +23,6 @@ add_action( 'load-widgets.php', array( 'The7_Admin_WA_Manager', 'enqueue_assets'
 
 add_action( 'save_post', 'the7_update_post_css_on_save', 20 );
 
-/**
- * @param $post_id
- */
-function the7_update_post_css_on_save( $post_id ) {
-	if ( wp_is_post_revision( $post_id ) ) {
-		return;
-	}
-	
-	the7_update_post_css( $post_id );
-}
-
 if ( ! function_exists( 'presscore_themeoptions_add_share_buttons' ) ) :
 
 	/**
@@ -903,6 +892,70 @@ if ( ! function_exists( 'presscore_of_localized_vars_filter' ) ) :
 				)
 			),
 
+			'microwidgets-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				)
+			),
+            'topbar-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				)
+			),
+            'header-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				)
+			),
+            'menu-tab' => array(
+	            array(
+		            array(
+			            'field' => 'header-layout',
+			            'operator' => '!=',
+			            'value' => 'disabled',
+		            )
+	            )
+            ),
+            'submenu-tab' => array(
+	            array(
+		            array(
+			            'field' => 'header-layout',
+			            'operator' => '!=',
+			            'value' => 'disabled',
+		            )
+	            )
+            ),
+            'mobile-header-tab' => array(
+	            array(
+		            array(
+			            'field' => 'header-layout',
+			            'operator' => '!=',
+			            'value' => 'disabled',
+		            )
+	            )
+            ),
+            'mobile-menu-tab' => array(
+	            array(
+                    array(
+                        'field' => 'header-layout',
+                        'operator' => '!=',
+                        'value' => 'disabled',
+                    )
+                )
+			),
+
 			// Floating header
 			'floating-header-tab' => array(
 				array(
@@ -926,7 +979,13 @@ if ( ! function_exists( 'presscore_of_localized_vars_filter' ) ) :
 						'value' => 'split',
 					)
 				),
-				
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				),
 			),
 			// Woocommerce
 			'isotope-block-settings' => array(
@@ -1257,4 +1316,27 @@ if ( ! function_exists( 'presscore_get_post_type_edit_link_template' ) ) {
 		return admin_url( str_replace( '99999', '%#%', sprintf( $post_type_object->_edit_link . $action, 99999 ) ) );
 	}
 
+}
+
+add_action( 'after_setup_theme', 'the7_admin_log_theme_activations' );
+
+function the7_admin_log_theme_activations() {
+	if ( ! defined( 'WP_CLI' ) && ! is_admin() ) {
+		return;
+	}
+
+	$activation_log            = (array) get_option( 'the7_theme_activation_log', [] );
+	$previous_version          = end( $activation_log );
+	$another_version_is_active = version_compare( $previous_version['version'], THE7_VERSION, '!=' );
+
+	if ( ! isset( $previous_version['version'] ) || $another_version_is_active ) {
+		$activation_log[] = [
+			'version'      => THE7_VERSION,
+			'activated_at' => time(),
+		];
+
+		$activation_log = array_slice( $activation_log, max( count( $activation_log ) - 7, 0 ) );
+
+		update_option( 'the7_theme_activation_log', $activation_log, false );
+	}
 }

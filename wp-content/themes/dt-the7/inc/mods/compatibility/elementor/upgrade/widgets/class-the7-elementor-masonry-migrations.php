@@ -6,8 +6,6 @@
 namespace The7\Adapters\Elementor\Upgrade\Widgets;
 
 use The7\Adapters\Elementor\Upgrade\The7_Elementor_Widget_Migrations;
-
-use A;
 use The7_Less_Vars_Value_Color;
 
 defined( 'ABSPATH' ) || exit;
@@ -18,8 +16,83 @@ class The7_Elementor_Masonry_Migrations extends The7_Elementor_Widget_Migrations
 		return 'the7_elements';
 	}
 
+	public static function _9_4_0_migration( $element, $args ) {
+		if ( ! static::is_the_right_widget( $element ) ) {
+			return $element;
+		}
+
+		$settings = $element['settings'];
+
+		if ( isset( $settings['__globals__']['post_title_typography'] ) ) {
+			return $element;
+		}
+
+		$title_was_changed = false;
+
+		if ( empty( $settings['post_title_typography'] ) ) {
+			$settings = array_diff_key(
+				$settings,
+				array_fill_keys(
+					[
+						'post_title_font_family',
+						'post_title_font_weight',
+						'post_title_font_size',
+						'post_title_font_size_tablet',
+						'post_title_font_size_mobile',
+						'post_title_text_transform',
+						'post_title_font_style',
+						'post_title_text_decoration',
+						'post_title_line_height',
+						'post_title_line_height_tablet',
+						'post_title_line_height_mobile',
+						'post_title_letter_spacing',
+						'post_title_letter_spacing_tablet',
+						'post_title_letter_spacing_mobile',
+					],
+					null
+				)
+			);
+		}
+
+		if ( empty( $settings['post_title_font_weight'] ) ) {
+			$title_was_changed                  = true;
+			$settings['post_title_font_weight'] = 'normal';
+		}
+
+		$h4_typography = of_get_option( 'fonts-h4-typography', [] );
+
+		$empty_title_font_size = ! isset( $settings['post_title_font_size']['size'] ) || $settings['post_title_font_size']['size'] === '';
+		if ( $empty_title_font_size && isset( $h4_typography['responsive_font_size']['desktop'] ) ) {
+			$title_was_changed                = true;
+			$settings['post_title_font_size'] = [
+				'unit'  => 'px',
+				'size'  => (int) $h4_typography['responsive_font_size']['desktop'],
+				'sizes' => [],
+			];
+		}
+
+		$empty_title_line_height = ! isset( $settings['post_title_line_height']['size'] ) || $settings['post_title_line_height']['size'] === '';
+		if ( $empty_title_line_height && isset( $h4_typography['responsive_line_height']['desktop'] ) ) {
+			$title_was_changed                  = true;
+			$settings['post_title_line_height'] = [
+				'unit'  => 'px',
+				'size'  => (int) $h4_typography['responsive_line_height']['desktop'],
+				'sizes' => [],
+			];
+		}
+
+		if ( $title_was_changed ) {
+			$settings['post_title_typography'] = 'custom';
+		}
+
+		$element['settings'] = $settings;
+		$args['do_update']   = true;
+
+		return $element;
+	}
+
 	public static function _8_9_0_migration( $element, $args ) {
-		if ( empty( $element['widgetType'] ) || $element['widgetType'] !== self::get_widget_name() ) {
+		if ( ! static::is_the_right_widget( $element ) ) {
 			return $element;
 		}
 

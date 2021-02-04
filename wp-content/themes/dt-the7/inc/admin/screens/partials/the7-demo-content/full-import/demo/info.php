@@ -45,11 +45,15 @@ defined( 'ABSPATH' ) || exit;
 	<div class="dt-dummy-controls-block dt-dummy-info-content">
 		<p><?php
 			echo wp_kses_post(
-				_x(
-					'<strong>Important!</strong> This demo requires Elementor Pro or its free alternative, PRO Elements plugin. We cannot install them automatically. Please install one of these plugins to proceed with the demo installation.',
-					'admin',
-					'the7mk2'
-				)
+				sprintf(
+                    _x(
+                        '<strong>Important!</strong> This demo requires <a href="%s" target="_blank" rel="nofollow">Elementor Pro</a> or its free alternative, <a href="%s" target="_blank" rel="nofollow">PRO Elements</a> plugin. We cannot install them automatically. Please install one of these plugins to proceed with the demo installation.',
+                        'admin',
+                        'the7mk2'
+                    ),
+                    'https://elementor.com/pro/',
+                    'https://proelements.org'
+                )
 			);
 			?></p>
 	</div>

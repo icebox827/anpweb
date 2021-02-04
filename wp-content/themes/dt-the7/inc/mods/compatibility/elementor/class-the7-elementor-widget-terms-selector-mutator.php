@@ -35,10 +35,15 @@ class The7_Elementor_Widget_Terms_Selector_Mutator {
 		check_admin_referer( 'the7-elements-ajax' );
 
 		$post_types = array_keys( the7_elementor_elements_widget_post_types() );
+		$post_types[] = 'related';
 		$taxonomies = [];
 		$terms = [];
 		foreach ( $post_types as $post_type ) {
-			$tax_objects = get_object_taxonomies( $post_type, 'objects' );
+			if ( $post_type === 'related' ) {
+				$tax_objects = get_taxonomies( [ 'public' => true ], 'objects' );
+			} else {
+				$tax_objects = get_object_taxonomies( $post_type, 'objects' );
+			}
 			$taxonomies[ $post_type ] = [];
 			foreach ( $tax_objects as $tax ) {
 				if ( $tax->name === 'post_format' ) {
@@ -49,6 +54,10 @@ class The7_Elementor_Widget_Terms_Selector_Mutator {
 					'value' => $tax->name,
 					'label' => $tax->label,
 				];
+
+				if ( $post_type === 'related' ) {
+					continue;
+				}
 
 				$terms_objects = get_terms(
 					[

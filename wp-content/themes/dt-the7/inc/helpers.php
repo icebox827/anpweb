@@ -141,13 +141,10 @@ if ( ! function_exists( 'presscore_get_categorizer_sorting_fields' ) ) :
 	 */
 	function presscore_get_categorizer_sorting_fields( $select, $term_id, $order, $orderby, $show_order, $show_orderby ) {
 		$term = '';
-
-		if ( 'except' == $select && 0 === $term_id ) {
+		if ( 'except' === $select && 0 === $term_id ) {
 			$term = 'none';
-
-		} else if ( 'only' == $select ) {
-			$term = absint( $term_id );
-
+		} else if ( 'only' === $select ) {
+			$term = $term_id;
 		}
 
 		$paged = the7_get_paged_var();
@@ -171,15 +168,15 @@ if ( ! function_exists( 'presscore_get_categorizer_sorting_fields' ) ) :
 
 		$html =	'<div class="filter-extras">'
 			.'<div class="filter-by"' . ( $show_orderby ? '' : $display_none ) . '>'
-				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => 'date', 'order' => $order ), $link ) ) . '" class="sort-by-date' . ('date' == $orderby ? $act : '') . '" data-by="date"><i class="dt-icon-the7-sort-02"></i><span class="filter-popup">' . __( 'Sort by date', 'the7mk2' ) . '</span></a>'
+				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => 'date', 'order' => $order ), $link ) ) . '" class="sort-by-date' . ('date' === $orderby ? $act : '') . '" data-by="date"><i class="dt-icon-the7-sort-02"></i><span class="filter-popup">' . __( 'Sort by date', 'the7mk2' ) . '</span></a>'
 				. '<span class="filter-switch"></span>'
-				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => 'name', 'order' => $order ), $link ) ) . '" class="sort-by-name' . ('name' == $orderby ? $act : '') . '" data-by="name"><i class="dt-icon-the7-sort-03" aria-hidden="true"></i><span class="filter-popup">' . __( 'Sort by name', 'the7mk2' ) . '</span></a>'
+				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => 'name', 'order' => $order ), $link ) ) . '" class="sort-by-name' . ('name' === $orderby ? $act : '') . '" data-by="name"><i class="dt-icon-the7-sort-03" aria-hidden="true"></i><span class="filter-popup">' . __( 'Sort by name', 'the7mk2' ) . '</span></a>'
 			. '</div>'
 
 			. '<div class="filter-sorting"' . ( $show_order ? '' : $display_none ) . '>'
-				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => $orderby, 'order' => 'DESC' ), $link ) ) . '" class="sort-by-desc' . ('desc' == $order ? $act : '') . '" data-sort="desc"><i class="dt-icon-the7-sort-00" aria-hidden="true"></i><span class="filter-popup">' . __( 'Descending', 'the7mk2' ) . '</span></a>'
+				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => $orderby, 'order' => 'desc' ), $link ) ) . '" class="sort-by-desc' . ('desc' === $order ? $act : '') . '" data-sort="desc"><i class="dt-icon-the7-sort-00" aria-hidden="true"></i><span class="filter-popup">' . __( 'Descending', 'the7mk2' ) . '</span></a>'
 				. '<span class="filter-switch"></span>'
-				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => $orderby, 'order' => 'ASC' ), $link ) ) . '" class="sort-by-asc' . ('asc' == $order ? $act : '') . '" data-sort="asc"><i class="dt-icon-the7-sort-01" aria-hidden="true"></i><span class="filter-popup">' . __( 'Ascending', 'the7mk2' ) . '</span></a>'
+				. '<a href="' . esc_url( add_query_arg( array( 'orderby' => $orderby, 'order' => 'asc' ), $link ) ) . '" class="sort-by-asc' . ('asc' === $order ? $act : '') . '" data-sort="asc"><i class="dt-icon-the7-sort-01" aria-hidden="true"></i><span class="filter-popup">' . __( 'Ascending', 'the7mk2' ) . '</span></a>'
 			. '</div>'
 		. '</div>';
 
@@ -199,7 +196,7 @@ if ( ! function_exists( 'presscore_get_category_list' ) ) :
 
 		$defaults = array(
 			'item_wrap'         => '<a href="%HREF%" %CLASS% data-filter="%CATEGORY_ID%">%TERM_NICENAME%</a>',
-			'hash'              => '#!term=%TERM_ID%&amp;page=%PAGE%&amp;orderby=date&amp;order=DESC',
+			'hash'              => [],
 			'item_class'        => '',
 			'all_class'        	=> 'show-all',
 			'all_text'			=> null,
@@ -215,14 +212,69 @@ if ( ! function_exists( 'presscore_get_category_list' ) ) :
 			'before'			=> '<div class="filter-categories">',
 			'after'				=> '</div>',
 			'act_class'			=> 'act',
+			'sorting'			=> [],
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'presscore_get_category_list-args', $args );
 
 		$data = $args['data'];
 
+		$config = presscore_get_config();
+
+		$sorting_args = $args['sorting'];
+		if ( ! $sorting_args ) {
+			$filter_request = $config->get( 'request_display' );
+			if ( $filter_request === null ) {
+				$filter_request           = (array) $config->get( 'display' );
+				$filter_request['select'] = 'all';
+			}
+
+			$sorting_args = [
+				'order'           => strtolower( $config->get( 'order' ) ),
+				'orderby'         => strtolower( $config->get( 'orderby' ) ),
+				'show_order'      => $config->get( 'template.posts_filter.order.enabled' ),
+				'show_orderby'    => $config->get( 'template.posts_filter.orderby.enabled' ),
+				'select'          => isset( $filter_request['select'] ) ? $filter_request['select'] : 'all',
+				'term_id'         => isset( $filter_request['terms_ids'] ) ? current( (array) $filter_request['terms_ids'] ) : [],
+			];
+		}
+
+		$sorting_args = wp_parse_args(
+			$sorting_args,
+			[
+				'order'           => 'desc',
+				'orderby'         => 'date',
+				'default_order'   => null,
+				'default_orderby' => null,
+				'show_order'      => false,
+				'show_orderby'    => false,
+				'select'          => 'all',
+				'term_id'         => [],
+			]
+		);
+
+		if ( is_array( $args['hash'] ) ) {
+			$hash = wp_parse_args( $args['hash'], [
+				'term' => '%TERM_ID%',
+			] );
+
+			if ( $sorting_args['show_orderby'] && $sorting_args['orderby'] !== $sorting_args['default_orderby'] ) {
+				$hash['orderby'] = $sorting_args['orderby'];
+			}
+
+			if ( $sorting_args['show_order'] && $sorting_args['order'] !== $sorting_args['default_order'] ) {
+				$hash['order'] = $sorting_args['order'];
+			}
+
+			$args['hash'] = add_query_arg( $hash, get_permalink() );
+		}
+
 		$args['hash'] = str_replace( array( '%PAGE%' ), array( $args['page'] ), $args['hash'] );
 		$output = $all = '';
+
+		if ( $args['current'] === null ) {
+			$args['current'] = 'all';
+		}
 
 		if ( isset($data['terms']) &&
 		     ! is_wp_error( $data['terms'] ) &&
@@ -266,7 +318,7 @@ if ( ! function_exists( 'presscore_get_category_list' ) ) :
 				$output .= str_replace(
 					$replace_list,
 					array(
-						esc_url( str_replace( array( '%TERM_ID%' ), array( $term->term_id ), $args['hash'] ) ),
+						esc_url( str_replace( [ '%TERM_ID%', '%TERM_SLUG%' ], [ $term->term_id, $term->slug ], $args['hash'] ) ),
 						$item_class,
 						$term->description,
 						$term->name,
@@ -299,7 +351,7 @@ if ( ! function_exists( 'presscore_get_category_list' ) ) :
 				$all = str_replace(
 					$replace_list,
 					array(
-						esc_url( str_replace( array( '%TERM_ID%' ), array( '' ), $args['hash'] ) ),
+						esc_url( str_replace( [ '%TERM_ID%', '%TERM_SLUG%' ], '', remove_query_arg( 'term', $args['hash'] ) ) ),
 						$all_class,
 						$args['all_text'] ? $args['all_text'] : __( 'All posts', 'the7mk2' ),
 						$args['all_text'] ? $args['all_text'] : __( 'View all', 'the7mk2' ),
@@ -332,7 +384,7 @@ if ( ! function_exists( 'presscore_get_category_list' ) ) :
 				$output .= str_replace(
 					$replace_list,
 					array(
-						esc_url( str_replace( array( '%TERM_ID%' ), array( 'none' ), $args['hash'] ) ),
+						esc_url( str_replace( [ '%TERM_ID%', '%TERM_SLUG%' ], 'none', $args['hash'] ) ),
 						$other_class,
 						__( 'Other posts', 'the7mk2' ),
 						__( 'Other', 'the7mk2' ),
@@ -344,32 +396,11 @@ if ( ! function_exists( 'presscore_get_category_list' ) ) :
 				); 
 			}
 
-			$config = presscore_config();
-
 			$output = '<div class="filter-categories" data-default-order="' . esc_attr( strtolower( $config->get( 'order' ) ) ) . '" data-default-orderby="' . esc_attr( strtolower( $config->get( 'orderby' ) ) ) . '">' . $all . $output . '</div>';
 			$output = str_replace( array( '%CLASS%' ), array( $args['class'] ), $output );
 		}
 
-		if ( empty( $args['sorting'] ) ) {
-			$config         = presscore_config();
-			$filter_request = $config->get( 'request_display' );
-			if ( $filter_request === null ) {
-				$filter_request           = (array) $config->get( 'display' );
-				$filter_request['select'] = 'all';
-			}
-
-			$args['sorting'] = array(
-				'order'        => strtolower( $config->get( 'order' ) ),
-				'orderby'      => strtolower( $config->get( 'orderby' ) ),
-				'show_order'   => $config->get( 'template.posts_filter.order.enabled' ),
-				'show_orderby' => $config->get( 'template.posts_filter.orderby.enabled' ),
-				'select'       => isset( $filter_request['select'] ) ? $filter_request['select'] : 'all',
-				'term_id'      => isset( $filter_request['terms_ids'] ) ? current( (array) $filter_request['terms_ids'] ) : array(),
-			);
-		}
-		$sorting_args = $args['sorting'];
-
-		if ( $sorting_args['show_order'] || $sorting_args['show_orderby'] ) {
+		if ( ! empty( $sorting_args['show_order'] ) || ! empty( $sorting_args['show_orderby'] ) ) {
 			$output .= presscore_get_categorizer_sorting_fields(
 				$sorting_args['select'],
 				$sorting_args['term_id'],
@@ -1013,6 +1044,55 @@ if ( ! function_exists( 'the7_theme_accent_color' ) ) :
 
 endif;
 
+if ( ! function_exists( 'the7_theme_get_color' ) ) :
+    function the7_theme_get_color( $color_type ) {
+        switch ( $color_type ) {
+            case 'accent':
+                $color_val = the7_theme_accent_color();
+                break;
+            default:
+                if ( substr_compare( $color_type, '_mode', - strlen( '_mode' ) ) === 0 ) {
+                    $color_val = the7_theme_get_simplified_color( $color_type );
+                    break;
+                }
+                $color_val = of_get_option( $color_type, '#000000' );
+                break;
+        }
+
+        return $color_val;
+    }
+endif;
+
+/**
+ * Return simplified hex color.
+ */
+if ( ! function_exists( 'the7_theme_get_simplified_color' ) ) :
+    function the7_theme_get_simplified_color( $color_mode_option ) {
+        $color_val = '';
+
+        $color_option = str_replace( "_mode", "", $color_mode_option );
+        switch ( of_get_option( $color_mode_option ) ) {
+            case 'disabled':
+                break;
+            case 'accent':
+                $color_val = the7_theme_accent_color();
+                break;
+            case 'color':
+                $color_val = of_get_option( $color_option );
+                break;
+            case 'gradient':
+                $gradient_obj = the7_less_create_gradient_obj( of_get_option( $color_option . '_gradient' ) );
+                $color_val = $gradient_obj->get_color_stop( 1 )->get_color();
+                break;
+        }
+        if ( empty( $color_val ) ) {
+            $color_val = '#ffffff00';
+        }
+
+        return $color_val;
+}
+endif;
+
 if ( ! function_exists( 'presscore_theme_color_meta' ) ) :
 
 	/**
@@ -1201,4 +1281,24 @@ function the7_update_post_css( $post_id ) {
 	} else {
 		The7_Post_CSS_Generator::delete_css_for_post( $post_id );
 	}
+}
+
+/**
+ * @param $post_id
+ */
+function the7_update_post_css_on_save( $post_id ) {
+	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+
+	the7_update_post_css( $post_id );
+}
+
+/**
+ * @since 9.5.1
+ *
+ * @return bool
+ */
+function the7_is_light_mode() {
+	return \The7_Admin_Dashboard_Settings::get( 'lite-mode' );
 }

@@ -127,7 +127,7 @@ if ( is_admin() ) {
 	$the7_admin_dashboard->init();
 
 	require_once PRESSCORE_ADMIN_DIR . '/admin-functions.php';
-	require_once PRESSCORE_ADMIN_DIR . '/the7-site-health-tests.php';
+	require_once PRESSCORE_ADMIN_DIR . '/site-health-tests/the7-site-health-tests.php';
 	require_once PRESSCORE_ADMIN_DIR . '/admin-bulk-actions.php';
 	require_once locate_template( 'inc/admin/load-meta-boxes.php' );
 

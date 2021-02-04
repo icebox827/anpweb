@@ -17,12 +17,20 @@ if ( ! function_exists( 'presscore_get_dynamic_stylesheets_list' ) ) :
 	function presscore_get_dynamic_stylesheets_list() {
 		static $dynamic_stylesheets = null;
 
+		$is_lite_mode = the7_is_light_mode();
+
 		if ( null === $dynamic_stylesheets ) {
 			$dynamic_stylesheets = array();
 
-			$dynamic_import_top    = array(
-				'dynamic-less/plugins/gutenberg.less',
-			);
+			$dynamic_import_top = array();
+			$dynamic_import_top['gutenberg'] = 'dynamic-less/plugins/gutenberg.less';
+			if ( The7_Admin_Dashboard_Settings::get( 'disable-gutenberg-styles' ) ){
+				unset($dynamic_import_top['gutenberg']);
+			}
+			if ( the7_elementor_is_active() ) {
+				$dynamic_import_top[] = 'dynamic-less/elementor/css-vars.less';
+			}
+
 			$dynamic_import_bottom = array();
 
 			if ( The7_Admin_Dashboard_Settings::get( 'overlapping-headers' ) ) {
@@ -62,6 +70,11 @@ if ( ! function_exists( 'presscore_get_dynamic_stylesheets_list' ) ) :
 					$dynamic_import_bottom[] = 'dynamic-less/header/header-layouts/_mixed-headers.less';
 					$dynamic_import_bottom[] = 'dynamic-less/header/header-layouts/_vertical-headers.less';
 					break;
+				case 'disabled':
+					break;
+			}
+			if ( $is_lite_mode && defined( 'WPB_VC_VERSION' )) {
+				$dynamic_import_bottom[] = 'dynamic-less/plugins/wpbakery.less';
 			}
 
 			$dynamic_stylesheets['dt-custom'] = array(
@@ -69,7 +82,7 @@ if ( ! function_exists( 'presscore_get_dynamic_stylesheets_list' ) ) :
 				'imports' => compact( 'dynamic_import_top', 'dynamic_import_bottom' ),
 			);
 
-			if ( dt_is_woocommerce_enabled() ) {
+			if ( the7_is_woocommerce_enabled() ) {
 				$dynamic_stylesheets['wc-dt-custom'] = array(
 					'src' => 'compatibility/wc-dt-custom.less',
 				);

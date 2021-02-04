@@ -50,13 +50,20 @@ class The7_Demo_Full_Import_Actions_Builder extends The7_Demo_Actions_Builder_Ba
 			$actions[] = 'import_the7_dashboard_settings';
 		}
 
-		$actions[] = 'clear_importer_session';
-		$actions   = array_merge( $actions, array_intersect( $supported_fields, array_keys( $this->external_data ) ) );
-		$actions[] = 'cleanup';
-		$actions   = array_values( $actions );
-
 		$demo                      = $this->demo();
 		$demo_id                   = $demo->id;
+
+		$demo_history = The7_Demo_Tracker::get_demo_history( $demo_id );
+		$required_actions = array_intersect( $supported_fields, array_keys( $this->external_data ) );
+
+		if ( ! isset( $demo_history['attachments_in_process'] ) || ! in_array( 'import_attachments', $required_actions, true ) ) {
+			$actions[] = 'clear_importer_session';
+		}
+
+		$actions         = array_merge( $actions, $required_actions );
+		$actions[]       = 'cleanup';
+		$actions         = array_values( $actions );
+
 		$plugins_to_install        = array_keys( $demo->plugins()->get_plugins_to_install() );
 		$plugins_to_activate       = array_keys( $demo->plugins()->get_inactive_plugins() );
 

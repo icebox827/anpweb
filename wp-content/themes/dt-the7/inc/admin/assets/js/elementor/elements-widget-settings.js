@@ -114,8 +114,6 @@
                     appendOptionsTo($termsSelect, getTermsOptions(widgetType, $(this).val()), null);
                     model.setSetting("terms", []);
                 });
-
-                fillTermsTaxonomy(model, $termsSelect, $taxonomySelect);
             }, 350, this.model, this.panel);
         }
 

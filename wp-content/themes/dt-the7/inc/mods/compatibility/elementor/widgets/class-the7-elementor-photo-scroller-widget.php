@@ -70,19 +70,17 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 		return [ 'dt-photo-scroller' ];
 	}
 	public function get_script_depends() {
-
-		the7_register_script( 'dt-photo-scroller', PRESSCORE_THEME_URI . '/js/photo-scroller' );
 		if ( Plugin::$instance->preview->is_preview_mode() ) {
 
 			wp_register_script(
 				'the7-photo-scroller-widget-preview',
 				PRESSCORE_ADMIN_URI . '/assets/js/elementor/photo-scroller-widget-preview.js',
-				[],
+				[ 'dt-photo-scroller' ],
 				THE7_VERSION,
 				true
 			);
 
-			return [ 'the7-photo-scroller-widget-preview', 'dt-photo-scroller' ];
+			return [ 'the7-photo-scroller-widget-preview' ];
 
 		}
 
@@ -144,11 +142,16 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 						'icon' => 'eicon-frame-expand',
 					],
 				],
-				//'devices' => [ 'desktop', 'mobile' ],
-				'default' => 'fill',
-				'tablet_default' => 'fit',
-				'mobile_default' => 'fit',
 				'toggle' => false,
+				'device_args' => [
+					'tablet' => [
+						'toggle' => true,
+					],
+					'mobile' => [
+						'toggle' => true,
+					],
+				],
+				'default' => 'fill',
 				'show_label' => true,
 			]
 		);
@@ -216,7 +219,14 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'default' => 'fit',
 				'tablet_default' => 'fit',
 				'mobile_default' => 'fit',
-				//'devices' => [ 'desktop', 'mobile' ],
+				'device_args' => [
+					'tablet' => [
+						'toggle' => true,
+					],
+					'mobile' => [
+						'toggle' => true,
+					],
+				],
 				'toggle' => false,
 				'show_label' => true,
 			]
@@ -331,28 +341,64 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'size_units' => [ 'px' ],
 			]
 		);
-	
 
 		$this->end_controls_section();
+
+		/**
+		 * Arrows section.
+		 */
+		$this->start_controls_section(
+			'arrows_section',
+			[
+				'label' => __( 'Arrows', 'the7mk2' ),
+				'tab'   => Controls_Manager::TAB_LAYOUT,
+			]
+		);
+
+		$this->add_control(
+			'arrows',
+			[
+				'label'        => __( 'Show Arrows On Desktop', 'the7mk2' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'y',
+				'default'      => 'y',
+
+			]
+		);
+
+		$this->add_control(
+			'arrows_tablet',
+			[
+				'label'        => __( 'Show Arrows On Tablet', 'the7mk2' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'y',
+				'default'      => 'y',
+
+			]
+		);
+
+		$this->add_control(
+			'arrows_mobile',
+			[
+				'label'        => __( 'Show Arrows On Mobile', 'the7mk2' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'return_value' => 'y',
+				'default'      => 'y',
+
+			]
+		);
+
+		$this->end_controls_section();
+
 
 		$this->start_controls_section(
 			'section_thumbs_options',
 			[
-				'label' => __( 'Navigation', 'the7mk2' ),
+				'label' => __( 'Thumbnails', 'the7mk2' ),
 				'tab' => Controls_Manager::TAB_LAYOUT,
 			]
 		);
-			$this->add_control(
-				'arrows',
-				[
-					'label' => __( 'Arrows visibility', 'the7mk2' ),
-					'type' => Controls_Manager::SWITCHER,
-					'label_on' => __( 'Show', 'the7mk2' ),
-					'label_off' => __( 'Hide', 'the7mk2' ),
-					'return_value' => 'yes',
-					'default' => 'yes',
-				]
-			);
+		
 
 			$this->add_control(
 				'thumbnails',
@@ -639,25 +685,38 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 		);
 
 		$this->end_controls_section();
+
 		$this->start_controls_section(
 			'arrows_style',
 			[
 				'label' => __( 'Arrows', 'the7mk2' ),
 				'tab' => Controls_Manager::TAB_STYLE,
-				'condition' => [
-					'arrows' => [ 'yes'],
+				'conditions' => [
+					'relation' => 'or',
+					'terms' => [
+						[
+							'name' => 'arrows',
+							'value' => 'y',
+						],
+						[
+							'name' => 'arrows_tablet',
+							'value' => 'y',
+						],
+						[
+							'name' => 'arrows_mobile',
+							'value' => 'y',
+						],
+					],
 				],
 			]
 		);
+
 		$this->add_control(
 			'arrows_heading',
 			[
 				'label'     => __( 'Arrow Icon', 'the7mk2' ),
 				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
-				'condition' => [
-					'arrows' => [ 'yes'],
-				],
 			]
 		);
 
@@ -671,9 +730,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 					'library' => 'the7-icons',
 				],
 				'classes'   => [ 'elementor-control-icons-svg-uploader-hidden' ],
-				'condition' => [
-					'arrows' => [ 'yes'],
-				],
 			]
 		);
 
@@ -687,9 +743,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 					'library' => 'the7-icons',
 				],
 				'classes'   => [ 'elementor-control-icons-svg-uploader-hidden' ],
-				'condition' => [
-					'arrows' => [ 'yes'],
-				],
 			]
 		);
 
@@ -713,9 +766,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .scroller-arrow' => 'font-size: {{SIZE}}{{UNIT}};',
 				],
-				'condition'  => [
-					'arrows' => [ 'yes'],
-				],
 			]
 		);
 
@@ -725,9 +775,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'label'     => __( 'Arrow Background', 'the7mk2' ),
 				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
-				'condition' => [
-					'arrows' => [ 'yes'],
-				],
 			]
 		);
 
@@ -750,9 +797,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .scroller-arrow' => 'width: {{SIZE}}{{UNIT}};',
-				],
-				'condition'  => [
-					'arrows' => [ 'yes'],
 				],
 			]
 		);
@@ -777,9 +821,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 
 				'selectors' => [
 					'{{WRAPPER}} .scroller-arrow' => 'height: {{SIZE}}{{UNIT}};',
-				],
-				'condition'  => [
-					'arrows' => [ 'yes'],
 				],
 			]
 		);
@@ -807,9 +848,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .scroller-arrow:before' => 'border-radius: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .scroller-arrow:after' => 'border-radius: {{SIZE}}{{UNIT}};',
 				],
-				'condition'  => [
-					'arrows' => [ 'yes'],
-				],
 			]
 		);
 
@@ -832,11 +870,8 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				],
 
 				'selectors' => [
-					'{{WRAPPER}} .dt-arrow-border-on .scroller-arrow:before' => 'border-width: {{SIZE}}{{UNIT}}; border-style: solid;',
-					'{{WRAPPER}} .dt-arrow-hover-border-on .scroller-arrow:after' => 'border-width: {{SIZE}}{{UNIT}}; border-style: solid;',
-				],
-				'condition'  => [
-					'arrows' => [ 'yes'],
+					'{{WRAPPER}} .scroller-arrow:before' => 'border-width: {{SIZE}}{{UNIT}}; border-style: solid;',
+					'{{WRAPPER}} .scroller-arrow:after' => 'border-width: {{SIZE}}{{UNIT}}; border-style: solid;',
 				],
 			]
 		);
@@ -858,23 +893,8 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'default'     => '',
 
 				'selectors' => [
-					'{{WRAPPER}} .scroller-arrow:not(:hover) span' => 'color: {{VALUE}}; background: none;',
-				],
-				'condition'   => [
-					'arrows' => [ 'yes'],
-				],
-			]
-		);
-
-		$this->add_control(
-			'arrow_icon_border',
-			[
-				'label'        => __( 'Show arrow border color', 'the7mk2' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'return_value' => 'y',
-				'default'      => 'n',
-				'condition'    => [
-					'arrows' => ['yes'],
+					'{{WRAPPER}} .scroller-arrow span { background: none; }
+					{{WRAPPER}} .scroller-arrow span' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -889,27 +909,11 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'default'     => '',
 
 				'selectors' => [
-					'{{WRAPPER}} .dt-arrow-border-on .scroller-arrow:before' => 'border-color: {{VALUE}};',
-				],
-				'condition'   => [
-					'arrow_icon_border' => 'y',
-					'arrows'            => [ 'yes'],
+					'{{WRAPPER}} .scroller-arrow:before, {{WRAPPER}} .scroller-arrow:after' => 'border-color: {{VALUE}};',
 				],
 			]
 		);
 
-		$this->add_control(
-			'arrows_bg_show',
-			[
-				'label'        => __( 'Show arrow background', 'the7mk2' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'return_value' => 'y',
-				'default'      => 'n',
-				'condition'    => [
-					'arrows' => [ 'yes'],
-				],
-			]
-		);
 
 		$this->add_control(
 			'arrow_bg_color',
@@ -921,11 +925,7 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'default'     => '',
 
 				'selectors' => [
-					'{{WRAPPER}} .arrows-bg-on .scroller-arrow:before' => 'background: {{VALUE}};',
-				],
-				'condition'   => [
-					'arrows_bg_show' => 'y',
-					'arrows'         => [ 'yes'],
+					'{{WRAPPER}} .scroller-arrow:before' => 'background: {{VALUE}};',
 				],
 			]
 		);
@@ -940,18 +940,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 		);
 
 		$this->add_control(
-			'arrows_hover_color_heading',
-			[
-				'label'     => __( 'Hover Color Setting', 'the7mk2' ),
-				'type'      => Controls_Manager::HEADING,
-				'separator' => 'before',
-				'condition' => [
-					'arrows' => [ 'yes'],
-				],
-			]
-		);
-
-		$this->add_control(
 			'arrow_icon_color_hover',
 			[
 				'label'       => __( 'Arrow icon color hover', 'the7mk2' ),
@@ -959,24 +947,11 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'type'        => Controls_Manager::COLOR,
 				'alpha'       => true,
 				'default'     => '',
+				
 				'selectors' => [
-					'{{WRAPPER}} .scroller-arrow:hover span' => 'color: {{VALUE}}; background: none;',
-				],
-				'condition'   => [
-					'arrows' => [ 'yes'],
-				],
-			]
-		);
-
-		$this->add_control(
-			'arrow_icon_border_hover',
-			[
-				'label'        => __( 'Show arrow border color hover', 'the7mk2' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'return_value' => 'y',
-				'default'      => 'n',
-				'condition'    => [
-					'arrows' => [ 'yes'],
+					'{{WRAPPER}} .scroller-arrow span { transition: color 0.15s; }
+					{{WRAPPER}} .scroller-arrow:hover span { background: none; }
+					{{WRAPPER}} .scroller-arrow:hover span' => 'color: {{VALUE}};',
 				],
 			]
 		);
@@ -991,24 +966,9 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'default'     => '',
 
 				'selectors' => [
-					'{{WRAPPER}} .dt-arrow-hover-border-on .scroller-arrow:after' => 'border-color: {{VALUE}};',
-				],
-				'condition'   => [
-					'arrow_icon_border_hover' => 'y',
-					'arrows'                  => [ 'yes'],
-				],
-			]
-		);
-
-		$this->add_control(
-			'arrows_bg_hover_show',
-			[
-				'label'        => __( 'Show arrow background hover', 'the7mk2' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'return_value' => 'y',
-				'default'      => 'n',
-				'condition'    => [
-					'arrows' => [ 'yes'],
+					'{{WRAPPER}} .scroller-arrow:before,
+					{{WRAPPER}} .scroller-arrow:after { transition: opacity 0.150s linear; }
+					{{WRAPPER}} .scroller-arrow:after' => 'border-color: {{VALUE}};',
 				],
 			]
 		);
@@ -1023,11 +983,9 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'default'     => '',
 
 				'selectors' => [
-					'{{WRAPPER}} .arrows-hover-bg-on .scroller-arrow:after' => 'background: {{VALUE}};',
-				],
-				'condition'   => [
-					'arrows_bg_hover_show' => 'y',
-					'arrows'               => [ 'yes'],
+					'{{WRAPPER}} .scroller-arrow:before,
+					{{WRAPPER}} .scroller-arrow:after { transition: opacity 0.150s linear; }
+					{{WRAPPER}} .scroller-arrow:after' => 'background: {{VALUE}};',
 				],
 			]
 		);
@@ -1035,123 +993,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 		$this->end_controls_tab();
 
 		$this->end_controls_tabs();
-		
-		$this->add_control(
-		    'right_arrow_position_heading',
-		    [
-		        'label' => __( 'Right Arrow Position', 'the7mk2' ),
-		        'type' => Controls_Manager::HEADING,
-		        'separator' => 'before',
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
-
-		$this->add_control(
-		    'r_arrow_icon_paddings',
-		    [
-		        'label'      => __( 'Icon paddings', 'the7mk2' ),
-		        'type'       => Controls_Manager::DIMENSIONS,
-		        'size_units' => [ 'px' ],
-		        'default'    => [
-		            'top'      => '',
-		            'right'    => '',
-		            'bottom'   => '',
-		            'left'     => '',
-		            'unit'     => 'px',
-		            'isLinked' => true,
-		        ],
-
-				'selectors' => [
-					'{{WRAPPER}} .scroller-arrow.next span' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
-
-		$this->add_control(
-		    'r_arrow_v_position',
-		    [
-		        'label'   => __( 'Vertical position', 'the7mk2' ),
-		        'type'    => Controls_Manager::SELECT,
-		        'default' => 'center',
-		        'options' => [
-					'top' => 'Top',
-					'center' => 'Center',
-					 'bottom' => 'Bottom',
-		        ],
-		       
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
-
-		$this->add_control(
-		    'r_arrow_h_position',
-		    [
-		        'label'   => __( 'Horizontal position', 'the7mk2' ),
-		        'type'    => Controls_Manager::SELECT,
-		        'default' => 'right',
-		        'options' => [
-					"left" => "Left",
-					"center" => "Center",
-					"right" => "Right",
-		        ],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
-
-		$this->add_control(
-		    'r_arrow_v_offset',
-		    [
-		        'label' => __( 'Vertical offset', 'the7mk2' ),
-		        'type' => Controls_Manager::SLIDER,
-		        'default'    => [
-		            'unit' => 'px',
-		            'size' => '',
-		        ],
-		        'size_units' => [ 'px' ],
-		        'range'      => [
-		            'px' => [
-		                'min'  => -1000,
-		                'max'  => 1000,
-		                'step' => 1,
-		            ],
-		        ],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
-
-		$this->add_control(
-		    'r_arrow_h_offset',
-		    [
-		        'label' => __( 'Horizontal offset', 'the7mk2' ),
-		        'type' => Controls_Manager::SLIDER,
-		        'default'    => [
-		            'unit' => 'px',
-		            'size' => '',
-		        ],
-		        'size_units' => [ 'px' ],
-		        'range'      => [
-		            'px' => [
-		                'min'  => -1000,
-		                'max'  => 1000,
-		                'step' => 1,
-		            ],
-		        ],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
 
 		$this->add_control(
 		    'left_arrow_position_heading',
@@ -1159,218 +1000,317 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 		        'label' => __( 'Left Arrow Position', 'the7mk2' ),
 		        'type' => Controls_Manager::HEADING,
 		        'separator' => 'before',
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
 		    ]
 		);
 
-		$this->add_control(
-		    'l_arrow_icon_paddings',
-		    [
-		        'label'      => __( 'Icon paddings', 'the7mk2' ),
-		        'type'       => Controls_Manager::DIMENSIONS,
-		        'size_units' => [ 'px' ],
-		        'default'    => [
-		            'top'      => '',
-		            'right'    => '',
-		            'bottom'   => '',
-		            'left'     => '',
-		            'unit'     => 'px',
-		            'isLinked' => true,
-		        ],
-		        'selectors' => [
-					'{{WRAPPER}} .scroller-arrow.prev span' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
+		// $this->add_control(
+		//     'l_arrow_icon_paddings',
+		//     [
+		//         'label'      => __( 'Icon paddings', 'the7mk2' ),
+		//         'type'       => Controls_Manager::DIMENSIONS,
+		//         'size_units' => [ 'px' ],
+		//         'default'    => [
+		//             'top'      => '',
+		//             'right'    => '',
+		//             'bottom'   => '',
+		//             'left'     => '',
+		//             'unit'     => 'px',
+		//             'isLinked' => true,
+		//         ],
+		//         'selectors' => [
+		// 			'{{WRAPPER}} .scroller-arrow.prev span' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+		// 		],
+		// 		'condition'   => [
+		// 			'arrows'               => [ 'yes'],
+		// 		],
+		//     ]
+		// );
 
-		$this->add_control(
+		// $this->add_control(
+		// 	'l_arrow_v_position',
+		// 	[
+		// 		'label'   => __( 'Vertical position', 'the7mk2' ),
+		// 		'type'    => Controls_Manager::SELECT,
+		// 		'default' => 'center',
+		// 		'options' => [
+		// 			'top' => 'Top',
+		// 			'center' => 'Center',
+		// 			'bottom' => 'Bottom',
+		// 		],
+		// 		'condition'   => [
+		// 			'arrows'               => [ 'yes'],
+		// 		],
+		// 	]
+		// );
+
+		// $this->add_control(
+		// 	'l_arrow_h_position',
+		// 	[
+		// 		'label'   => __( 'Horizontal position', 'the7mk2' ),
+		// 		'type'    => Controls_Manager::SELECT,
+		// 		'default' => 'left',
+		// 		'options' => [
+		// 			"left" => "Left",
+		// 			"center" => "Center",
+		// 			"right" => "Right",
+		// 		],
+		// 		'condition'   => [
+		// 			'arrows'               => [ 'yes'],
+		// 		],
+		// 	]
+		// );
+
+		// $this->add_control(
+		// 	'l_arrow_v_offset',
+		// 	[
+		// 		'label' => __( 'Vertical offset', 'the7mk2' ),
+		// 		'type' => Controls_Manager::SLIDER,
+		// 		'default'    => [
+		// 			'unit' => 'px',
+		// 			'size' => '',
+		// 		],
+		// 		'size_units' => [ 'px' ],
+		// 		'range'      => [
+		// 			'px' => [
+		// 				'min'  => -1000,
+		// 				'max'  => 1000,
+		// 				'step' => 1,
+		// 			],
+		// 		],
+		// 		'condition'   => [
+		// 			'arrows'               => [ 'yes'],
+		// 		],
+		// 	]
+		// );
+
+		// $this->add_control(
+		// 	'l_arrow_h_offset',
+		// 	[
+		// 		'label' => __( 'Horizontal offset', 'the7mk2' ),
+		// 		'type' => Controls_Manager::SLIDER,
+		// 		'default'    => [
+		// 			'unit' => 'px',
+		// 			'size' => '',
+		// 		],
+		// 		'size_units' => [ 'px' ],
+		// 		'range'      => [
+		// 			'px' => [
+		// 				'min'  => -1000,
+		// 				'max'  => 1000,
+		// 				'step' => 1,
+		// 			],
+		// 		],
+		// 		'condition'   => [
+		// 			'arrows'               => [ 'yes'],
+		// 		],
+		// 	]
+		// );
+
+		$this->add_responsive_control(
 			'l_arrow_v_position',
 			[
-				'label'   => __( 'Vertical position', 'the7mk2' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'center',
+				'label' => __( 'Vertical Position', 'the7mk2' ),
+				'type' => Controls_Manager::CHOOSE,
+				'label_block' => false,
 				'options' => [
-					'top' => 'Top',
-					'center' => 'Center',
-					'bottom' => 'Bottom',
+					'top' => [
+						'title' => __( 'Top', 'the7mk2' ),
+						'icon' => 'eicon-v-align-top',
+					],
+					'center' => [
+						'title' => __( 'Middle', 'the7mk2' ),
+						'icon' => 'eicon-v-align-middle',
+					],
+					'bottom' => [
+						'title' => __( 'Bottom', 'the7mk2' ),
+						'icon' => 'eicon-v-align-bottom',
+					],
 				],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
+				'default' => 'center',
 			]
 		);
-
-		$this->add_control(
+		$this->add_responsive_control(
 			'l_arrow_h_position',
 			[
-				'label'   => __( 'Horizontal position', 'the7mk2' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'left',
+				'label' => __( 'Horizontal Position', 'the7mk2' ),
+				'type' => Controls_Manager::CHOOSE,
+				'label_block' => false,
 				'options' => [
-					"left" => "Left",
-					"center" => "Center",
-					"right" => "Right",
+					'left' => [
+						'title' => __( 'Left', 'the7mk2' ),
+						'icon' => 'eicon-h-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'the7mk2' ),
+						'icon' => 'eicon-v-align-middle',
+					],
+					'right' => [
+						'title' => __( 'Right', 'the7mk2' ),
+						'icon' => 'eicon-h-align-right',
+					],
 				],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
+				'default' => 'left',
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'l_arrow_v_offset',
 			[
-				'label' => __( 'Vertical offset', 'the7mk2' ),
+				'label' => __( 'Vertical Offset', 'the7mk2' ),
 				'type' => Controls_Manager::SLIDER,
 				'default'    => [
 					'unit' => 'px',
 					'size' => '',
 				],
-				'size_units' => [ 'px' ],
+				'size_units' => [ 'px', '%' ],
 				'range'      => [
 					'px' => [
 						'min'  => -1000,
 						'max'  => 1000,
 						'step' => 1,
 					],
-				],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
+					'%' => [
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					],
 				],
 			]
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'l_arrow_h_offset',
 			[
-				'label' => __( 'Horizontal offset', 'the7mk2' ),
+				'label' => __( 'Horizontal Offset', 'the7mk2' ),
 				'type' => Controls_Manager::SLIDER,
 				'default'    => [
 					'unit' => 'px',
 					'size' => '',
 				],
-				'size_units' => [ 'px' ],
+				'size_units' => [ 'px', '%' ],
 				'range'      => [
 					'px' => [
 						'min'  => -1000,
 						'max'  => 1000,
 						'step' => 1,
 					],
-				],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
+					'%' => [
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					],
 				],
 			]
 		);
-
+		
 		$this->add_control(
-		    'arrows_responsiveness_heading',
+		    'right_arrow_position_heading',
 		    [
-		        'label' => __( 'Arrows responsiveness', 'the7mk2' ),
+		        'label' => __( 'Right Arrow Position', 'the7mk2' ),
 		        'type' => Controls_Manager::HEADING,
 		        'separator' => 'before',
-				'condition'   => [
-					'arrows'               => [ 'yes'],
-				],
 		    ]
 		);
 
-		$this->add_control(
-		    'arrow_responsiveness',
-		    [
-		        'label'   => __( 'Responsive behaviour', 'the7mk2' ),
-		        'type'    => Controls_Manager::SELECT,
-		        'default' => 'no-changes',
-		        'options' => [
-					 'reposition-arrows' => 'Reposition arrows',
-					 'no-changes' => 'Leave as is',
-					 'hide-arrows' => 'Hide arrows',
-		        ],
-				'condition'   => [
-					'arrows'               => [ 'yes'],
+
+		$this->add_responsive_control(
+			'r_arrow_v_position',
+			[
+				'label' => __( 'Vertical Position', 'the7mk2' ),
+				'type' => Controls_Manager::CHOOSE,
+				'label_block' => false,
+				'options' => [
+					'top' => [
+						'title' => __( 'Top', 'the7mk2' ),
+						'icon' => 'eicon-v-align-top',
+					],
+					'center' => [
+						'title' => __( 'Middle', 'the7mk2' ),
+						'icon' => 'eicon-v-align-middle',
+					],
+					'bottom' => [
+						'title' => __( 'Bottom', 'the7mk2' ),
+						'icon' => 'eicon-v-align-bottom',
+					],
 				],
-		    ]
+				'default' => 'center',
+			]
+		);
+		$this->add_responsive_control(
+			'r_arrow_h_position',
+			[
+				'label' => __( 'Horizontal Position', 'the7mk2' ),
+				'type' => Controls_Manager::CHOOSE,
+				'label_block' => false,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'the7mk2' ),
+						'icon' => 'eicon-h-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'the7mk2' ),
+						'icon' => 'eicon-v-align-middle',
+					],
+					'right' => [
+						'title' => __( 'Right', 'the7mk2' ),
+						'icon' => 'eicon-h-align-right',
+					],
+				],
+				'default' => 'right',
+			]
 		);
 
-		$this->add_control(
-		    'hide_arrows_mobile_switch_width',
+		$this->add_responsive_control(
+		    'r_arrow_v_offset',
 		    [
-		        'label' => __( 'Hide arrows if browser width is less then', 'the7mk2' ),
-		        'type' => Controls_Manager::NUMBER,
-		        'default' => '',
-				'condition'   => [
-					'arrow_responsiveness' => 'hide-arrows',
-					'arrows'               => [ 'yes'],
-				],
-		    ]
-		);
-
-		$this->add_control(
-		    'reposition_arrows_mobile_switch_width',
-		    [
-		        'label' => __( 'Reposition arrows after browser width', 'the7mk2' ),
-		        'type' => Controls_Manager::NUMBER,
-		        'default' => '',
-				'condition'   => [
-					'arrow_responsiveness' => 'reposition-arrows',
-					'arrows'               => [ 'yes'],
-				],
-				
-		    ]
-		);
-
-		$this->add_control(
-		    'l_arrows_mobile_h_position',
-		    [
-		        'label' => __( 'Left arrow horizontal offset', 'the7mk2' ),
+		        'label' => __( 'Vertical Offset', 'the7mk2' ),
 		        'type' => Controls_Manager::SLIDER,
 		        'default'    => [
 		            'unit' => 'px',
 		            'size' => '',
 		        ],
-		        'size_units' => [ 'px' ],
+		        'size_units' => [ 'px', '%' ],
 		        'range'      => [
 		            'px' => [
-		                'min'  => -10000,
-		                'max'  => 10000,
+		                'min'  => -1000,
+		                'max'  => 1000,
 		                'step' => 1,
 		            ],
+		            '%' => [
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					],
 		        ],
-				'condition'   => [
-					'arrow_responsiveness' => 'reposition-arrows',
-					'arrows'               => [ 'yes'],
-				],
 		    ]
 		);
 
-		$this->add_control(
-		    'r_arrows_mobile_h_position',
+		$this->add_responsive_control(
+		    'r_arrow_h_offset',
 		    [
-		        'label' => __( 'Right arrow horizontal offset', 'the7mk2' ),
+		        'label' => __( 'Horizontal Offset', 'the7mk2' ),
 		        'type' => Controls_Manager::SLIDER,
 		        'default'    => [
 		            'unit' => 'px',
 		            'size' => '',
 		        ],
-		        'size_units' => [ 'px' ],
+		        'size_units' => [ 'px', '%' ],
 		        'range'      => [
 		            'px' => [
-		                'min'  => -10000,
-		                'max'  => 10000,
+		                'min'  => -1000,
+		                'max'  => 1000,
 		                'step' => 1,
 		            ],
+		            '%' => [
+						'min'  => -100,
+						'max'  => 100,
+						'step' => 1,
+					],
 		        ],
-				'condition'   => [
-					'arrow_responsiveness' => 'reposition-arrows',
-					'arrows'               => [ 'yes'],
-				],
 		    ]
 		);
+
+		
 		$this->end_controls_section();
 
 
@@ -1697,11 +1637,11 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'class'  => 'post-thumbnail-rollover',
 				'href'   => '',
 				'custom' => ' aria-label="' . esc_attr__( 'Post image', 'the7mk2' ) . '"',
-				//'wrap'   => '<a %HREF% %CLASS% target="' . $target . '" %CUSTOM%><img %IMG_CLASS% %SRC% %ALT% %IMG_TITLE% %SIZE% /></a>',
 				'echo'   => false,
 			];
 			if ( presscore_lazy_loading_enabled() ) {
 				$thumb_args['lazy_loading'] = true;
+				$thumb_args['lazy_class'] = 'photo-thumb-lazy-load';
 			}
 			$post_media = dt_get_thumb_img( $thumb_args );
 
@@ -1736,12 +1676,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 			$title = array_key_exists( $title_type, $image_data ) ? $image_data[ $title_type ] : '';
 			$description = array_key_exists( $description_type, $image_data ) ? $image_data[ $description_type ] : '';
 			if ( $title || $description ) {
-						// $image_data = [
-						// 	'caption' => wp_get_attachment_caption($attachment['id']),
-						// 	'description' => $attachment_img['description'],
-						// 	'title' => $attachment_img['title'],
-						// 	'alt' => $attachment_img['alt'],
-						// ];
 				if(! empty( $image_data['caption'] ) || ! empty( $image_data['description'] ) || ! empty($image_data['title'] ) || ! empty( $image_data['alt'] )){
 					$desc_html = '<div class="album-content-description" ><div class="content-description-inner">';
 							if ( $has_title ) {
@@ -1793,7 +1727,9 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'data-thumb-width' => $settings['thumb_width']['size'] !== '' ? absint( $settings['thumb_width']['size']) : 60,
 
 				'data-transparency' => $settings['image_opacity']['size'] !== '' ? absint($settings['image_opacity']['size'])/100 : 0.15,
-				'data-arrows' => ( $settings['arrows'] == 'yes' ? 'true' : 'false' ),
+				'data-arrows' => ( $settings['arrows'] == 'y' ? 'true' : 'false' ),
+				'data-arrows_tablet' => ( $settings['arrows_tablet'] == 'y' ? 'true' : 'false' ),
+				'data-arrows_mobile' => ( $settings['arrows_mobile'] == 'y' ? 'true' : 'false' ),
 				'data-next-icon'            => $settings['next_icon']['value'],
 				'data-prev-icon'            => $settings['prev_icon']['value'],
 				'data-r-arrow-v-position'   => $settings['r_arrow_v_position'] ,
@@ -1802,15 +1738,23 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 				'data-l-arrow-h-position'   => $settings['l_arrow_h_position'] ,
 				
 				'data-ls-fill-dt'  => esc_attr( $settings['dk_ls_images_view'] ),
-				'data-ls-fill-tablet' => esc_attr( $settings['dk_ls_images_view_tablet'] ),
-				'data-ls-fill-mob' => esc_attr( $settings['dk_ls_images_view_mobile'] ),
+				'data-ls-fill-tablet' => $settings['dk_ls_images_view_tablet'] !== '' ? esc_attr( $settings['dk_ls_images_view_tablet'] ) : esc_attr($settings['dk_ls_images_view']),
 
 				'data-pt-fill-dt'  => esc_attr( $settings['dk_pt_images_view']),
-				'data-pt-fill-tablet' => esc_attr( $settings['dk_pt_images_view_tablet']),
-				'data-pt-fill-mob' => esc_attr( $settings['dk_pt_images_view_mobile']),
+				'data-pt-fill-tablet' => $settings['dk_pt_images_view_tablet'] !== '' ? esc_attr( $settings['dk_pt_images_view_tablet']) : esc_attr($settings['dk_pt_images_view']),
 			],
 		] );
 
+		if ( ! empty( $settings['dk_pt_images_view_tablet'])) {
+			$data['data-pt-fill-mob'] = $settings['dk_pt_images_view_mobile'] !== '' ? esc_attr( $settings['dk_pt_images_view_mobile'] ): esc_attr($settings['dk_pt_images_view_tablet']);
+		}else{
+			$data['data-pt-fill-mob'] = $settings['dk_pt_images_view_mobile'] !== '' ? esc_attr( $settings['dk_pt_images_view_mobile'] ): esc_attr($settings['dk_pt_images_view']);
+		}
+		if ( ! empty( $settings['dk_ls_images_view_tablet'])) {
+			$data['data-ls-fill-mob'] = $settings['dk_ls_images_view_mobile'] !== '' ? esc_attr( $settings['dk_ls_images_view_mobile'] ): esc_attr($settings['dk_ls_images_view_tablet']);
+		}else{
+			$data['data-ls-fill-mob'] = $settings['dk_ls_images_view_mobile'] !== '' ? esc_attr( $settings['dk_ls_images_view_mobile'] ): esc_attr($settings['dk_ls_images_view']);
+		}
 		$data['data-padding-top'] = $settings['scroller_padding']['top'] !== '' ? absint( $settings['scroller_padding']['top']) : 0;
 		$data['data-padding-bottom'] = $settings['scroller_padding']['bottom'] !== '' ? absint( $settings['scroller_padding']['bottom']) : 0;
 		$data['data-padding-side'] = $settings['scroller_padding']['right'] !== '' ? absint( $settings['scroller_padding']['right']) : 0;
@@ -1863,27 +1807,6 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 
 		if ('inside-hidden' === $settings['thumb_position'] ) {
 			$this->add_render_attribute( 'scroller-wrapper', 'class', 'hide-thumbs' );
-		}
-		if ( 'y' === $settings['arrow_icon_border'] ) {
-
-			$this->add_render_attribute( 'scroller-wrapper', 'class', 'dt-arrow-border-on' );
-		}
-		if ( 'y' === $settings['arrow_icon_border_hover'] ) {
-			
-			$this->add_render_attribute( 'scroller-wrapper', 'class', 'dt-arrow-hover-border-on' );
-		}
-		if ( 'y' === $settings['arrows_bg_show'] ) {
-
-			$this->add_render_attribute( 'scroller-wrapper', 'class', 'arrows-bg-on' );
-		}
-		if ( 'y' === $settings['arrows_bg_hover_show'] ) {
-			
-			$this->add_render_attribute( 'scroller-wrapper', 'class', 'arrows-hover-bg-on' );
-		}
-
-		if ( 'reposition-arrows' === $settings['arrow_responsiveness'] ) {
-			
-			$this->add_render_attribute( 'scroller-wrapper', 'class', 'reposition-arrows' );
 		}
 		
 
@@ -1948,23 +1871,105 @@ class The7_Elementor_Photo_Scroller_Widget extends The7_Elementor_Widget_Base {
 			$less_vars->add_pixel_number( "elementor-{$size}-breakpoint", $value );
 		}
 
-		$less_vars->add_keyword( 'arrow-right-v-position', $settings['r_arrow_v_position'] );
-		$less_vars->add_keyword( 'arrow-right-h-position', $settings['r_arrow_h_position'] );
+	// 	$less_vars->add_keyword( 'arrow-right-v-position', $settings['r_arrow_v_position'] );
+	// 	$less_vars->add_keyword( 'arrow-right-h-position', $settings['r_arrow_h_position'] );
 
-		$less_vars->add_pixel_number( 'r-arrow-v-position', $settings['r_arrow_v_offset']['size'] !== '' ? $settings['r_arrow_v_offset'] : 0 );
-		$less_vars->add_pixel_number( 'r-arrow-h-position', $settings['r_arrow_h_offset']['size'] !== '' ? $settings['r_arrow_h_offset'] : 10 );
+	// 	$less_vars->add_pixel_number( 'r-arrow-v-position', $settings['r_arrow_v_offset']['size'] !== '' ? $settings['r_arrow_v_offset'] : 0 );
+	// 	$less_vars->add_pixel_number( 'r-arrow-h-position', $settings['r_arrow_h_offset']['size'] !== '' ? $settings['r_arrow_h_offset'] : 10 );
 
-		$less_vars->add_keyword( 'arrow-left-v-position', $settings['l_arrow_v_position'] );
-		$less_vars->add_keyword( 'arrow-left-h-position', $settings['l_arrow_h_position'] );
-	//	$less_vars->add_pixel_number( 'l-arrow-v-position', $settings['l_arrow_v_offset'] );
+	// 	$less_vars->add_keyword( 'arrow-left-v-position', $settings['l_arrow_v_position'] );
+	// 	$less_vars->add_keyword( 'arrow-left-h-position', $settings['l_arrow_h_position'] );
+	// //	$less_vars->add_pixel_number( 'l-arrow-v-position', $settings['l_arrow_v_offset'] );
 
-		$less_vars->add_pixel_number( 'l-arrow-h-position', $settings['l_arrow_h_offset']['size'] !== '' ? $settings['l_arrow_h_offset'] : 10 );
-		$less_vars->add_pixel_number( 'l-arrow-v-position', $settings['l_arrow_v_offset']['size'] !== '' ? $settings['l_arrow_v_offset'] : 0 );
+	// 	$less_vars->add_pixel_number( 'l-arrow-h-position', $settings['l_arrow_h_offset']['size'] !== '' ? $settings['l_arrow_h_offset'] : 10 );
+	// 	$less_vars->add_pixel_number( 'l-arrow-v-position', $settings['l_arrow_v_offset']['size'] !== '' ? $settings['l_arrow_v_offset'] : 0 );
 
-		$less_vars->add_pixel_number( 'hide-arrows-switch', $settings['hide_arrows_mobile_switch_width'] !== '' ? $settings['hide_arrows_mobile_switch_width'] : 778 );
-		$less_vars->add_pixel_number( 'reposition-arrows-switch', $settings['reposition_arrows_mobile_switch_width'] !== '' ? $settings['reposition_arrows_mobile_switch_width'] : 778 );
-		$less_vars->add_pixel_number( 'arrow-left-h-position-mobile', $settings['l_arrows_mobile_h_position']['size'] !== '' ? $settings['l_arrows_mobile_h_position'] : 10 );
-		$less_vars->add_pixel_number( 'arrow-right-h-position-mobile', $settings['r_arrows_mobile_h_position']['size'] !== '' ? $settings['r_arrows_mobile_h_position'] : 10 );
+
+		if ( ! empty( $settings['arrows']) || ! empty( $settings['arrows_tablet']) || ! empty( $settings['arrows_mobile'])) {
+			$less_vars->add_keyword( 'arrow-right-v-position', $settings['r_arrow_v_position'] ? $settings['r_arrow_v_position'] : 'center' );
+			$less_vars->add_keyword( 'arrow-right-v-position-tablet',  $settings['r_arrow_v_position_tablet'] ?  $settings['r_arrow_v_position_tablet'] :  $settings['r_arrow_v_position'] );
+			if ( ! empty( $settings['r_arrow_v_position_tablet'])) {
+				$less_vars->add_keyword( 'arrow-right-v-position-mobile', $settings['r_arrow_v_position_mobile'] ? $settings['r_arrow_v_position_mobile'] : $settings['r_arrow_v_position_tablet'] );
+			}else{
+				$less_vars->add_keyword( 'arrow-right-v-position-mobile', $settings['r_arrow_v_position_mobile'] ? $settings['r_arrow_v_position_mobile'] : $settings['r_arrow_v_position'] );
+			}
+
+			$less_vars->add_keyword( 'arrow-right-h-position', $settings['r_arrow_h_position'] ? $settings['r_arrow_h_position'] : 'right' );
+			$less_vars->add_keyword( 'arrow-right-h-position-tablet', $settings['r_arrow_h_position_tablet'] ? $settings['r_arrow_h_position_tablet'] : $settings['r_arrow_h_position'] );
+			if ( ! empty( $settings['r_arrow_h_position_tablet'])) {
+				$less_vars->add_keyword( 'arrow-right-h-position-mobile', $settings['r_arrow_h_position_mobile'] ? $settings['r_arrow_h_position_mobile'] : $settings['r_arrow_h_position_tablet'] );
+			}else {
+				$less_vars->add_keyword( 'arrow-right-h-position-mobile', $settings['r_arrow_h_position_mobile'] ? $settings['r_arrow_h_position_mobile'] : $settings['r_arrow_h_position'] );
+			}
+
+			$r_arrow_v_offset       = array_merge( [ 'size' => 0 ], array_filter( $settings['r_arrow_v_offset'] ) );
+			$r_arrow_v_offset_tablet = array_merge(
+				$r_arrow_v_offset,
+				$this->unset_empty_value( $settings['r_arrow_v_offset_tablet'] )
+			);
+			$r_arrow_v_offset_mobile = array_merge(
+				$r_arrow_v_offset_tablet,
+				$this->unset_empty_value( $settings['r_arrow_v_offset_mobile'] )
+			);
+
+			$less_vars->add_pixel_or_percent_number( 'r-arrow-v-position', $r_arrow_v_offset );
+			$less_vars->add_pixel_or_percent_number( 'r-arrow-v-position-tablet', $r_arrow_v_offset_tablet );
+			$less_vars->add_pixel_or_percent_number( 'r-arrow-v-position-mobile', $r_arrow_v_offset_mobile );
+
+			$r_arrow_h_offset       = array_merge( [ 'size' => 0 ], array_filter( $settings['r_arrow_h_offset'] ) );
+			$r_arrow_h_offset_tablet = array_merge(
+				$r_arrow_h_offset,
+				$this->unset_empty_value( $settings['r_arrow_h_offset_tablet'] )
+			);
+			$r_arrow_h_offset_mobile = array_merge(
+				$r_arrow_h_offset_tablet,
+				$this->unset_empty_value( $settings['r_arrow_h_offset_mobile'] )
+			);
+			$less_vars->add_pixel_or_percent_number( 'r-arrow-h-position', $r_arrow_h_offset );
+			$less_vars->add_pixel_or_percent_number( 'r-arrow-h-position-tablet', $r_arrow_h_offset_tablet );
+			$less_vars->add_pixel_or_percent_number( 'r-arrow-h-position-mobile', $r_arrow_h_offset_mobile );
+
+			$less_vars->add_keyword( 'arrow-left-v-position', $settings['l_arrow_v_position'] ? $settings['l_arrow_v_position'] : 'center' );
+			$less_vars->add_keyword( 'arrow-left-v-position-tablet', $settings['l_arrow_v_position_tablet'] ? $settings['l_arrow_v_position_tablet'] : $settings['l_arrow_v_position'] );
+			if ( ! empty( $settings['l_arrow_v_position_tablet'])) {
+				$less_vars->add_keyword( 'arrow-left-v-position-mobile', $settings['l_arrow_v_position_mobile'] ? $settings['l_arrow_v_position_mobile'] : $settings['l_arrow_v_position_tablet'] );
+			}else{
+				$less_vars->add_keyword( 'arrow-left-v-position-mobile', $settings['l_arrow_v_position_mobile'] ? $settings['l_arrow_v_position_mobile'] : $settings['l_arrow_v_position'] );
+			}
+
+			$less_vars->add_keyword( 'arrow-left-h-position', $settings['l_arrow_h_position'] ? $settings['l_arrow_h_position'] : 'left' );
+			$less_vars->add_keyword( 'arrow-left-h-position-tablet', $settings['l_arrow_h_position_tablet'] ? $settings['l_arrow_h_position_tablet'] : $settings['l_arrow_h_position'] );
+			if ( ! empty( $settings['l_arrow_h_position_tablet'])) {
+				$less_vars->add_keyword( 'arrow-left-h-position-mobile', $settings['l_arrow_h_position_mobile'] ? $settings['l_arrow_h_position_mobile'] : $settings['l_arrow_h_position_tablet'] );
+			}else{
+				$less_vars->add_keyword( 'arrow-left-h-position-mobile', $settings['l_arrow_h_position_mobile'] ? $settings['l_arrow_h_position_mobile'] : $settings['l_arrow_h_position'] );
+			}
+
+			$l_arrow_v_offset       = array_merge( [ 'size' => 0 ], array_filter( $settings['l_arrow_v_offset'] ) );
+			$l_arrow_v_offset_tablet = array_merge(
+				$l_arrow_v_offset,
+				$this->unset_empty_value( $settings['l_arrow_v_offset_tablet'] )
+			);
+			$l_arrow_v_offset_mobile = array_merge(
+				$l_arrow_v_offset_tablet,
+				$this->unset_empty_value( $settings['l_arrow_v_offset_mobile'] )
+			);
+			$less_vars->add_pixel_or_percent_number( 'l-arrow-v-position', $l_arrow_v_offset );
+			$less_vars->add_pixel_or_percent_number( 'l-arrow-v-position-tablet', $l_arrow_v_offset_tablet );
+			$less_vars->add_pixel_or_percent_number( 'l-arrow-v-position-mobile', $l_arrow_v_offset_mobile );
+
+			$l_arrow_h_offset       = array_merge( [ 'size' => 0 ], array_filter( $settings['l_arrow_h_offset'] ) );
+			$l_arrow_h_offset_tablet = array_merge(
+				$l_arrow_h_offset,
+				$this->unset_empty_value( $settings['l_arrow_h_offset_tablet'] )
+			);
+			$l_arrow_h_offset_mobile = array_merge(
+				$l_arrow_h_offset_tablet,
+				$this->unset_empty_value( $settings['l_arrow_h_offset_mobile'] )
+			);
+			$less_vars->add_pixel_or_percent_number( 'l-arrow-h-position', $l_arrow_h_offset );
+			$less_vars->add_pixel_or_percent_number( 'l-arrow-h-position-tablet', $l_arrow_h_offset_tablet );
+			$less_vars->add_pixel_or_percent_number( 'l-arrow-h-position-mobile', $l_arrow_h_offset_mobile );
+		}
 	}
-
 }

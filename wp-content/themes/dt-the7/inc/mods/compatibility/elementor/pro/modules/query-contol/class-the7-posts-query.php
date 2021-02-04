@@ -369,7 +369,7 @@ class The7_Post_Query {
 	/**
 	 * @param \WP_Query $query
 	 */
-	public function fix_query_offset( &$query ) {
+	public function fix_query_offset( $query ) {
 		$offset = $this->get_widget_settings( 'offset' );
 
 		if ( $offset && $query->is_paged ) {

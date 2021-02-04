@@ -27,6 +27,9 @@ if ( ! function_exists( 'presscore_register_scripts' ) ) :
 			),
 		);
 
+		if ( the7_is_light_mode() ) {
+			$register_styles['dt-main']  =  [ 'src' => PRESSCORE_THEME_URI . '/css-lite/main'];
+		}
 		foreach ( $register_styles as $name => $props ) {
 			the7_register_style( $name, $props['src'] );
 		}
@@ -43,7 +46,7 @@ if ( ! function_exists( 'presscore_register_scripts' ) ) :
 			),
 			'dt-main'       => array(
 				'src'       => PRESSCORE_THEME_URI . '/js/main',
-				'deps'      => array( 'jquery' ),
+				'deps'      => array( 'jquery'),
 				'in_footer' => true,
 			),
 			'dt-legacy'     => array(
@@ -54,10 +57,23 @@ if ( ! function_exists( 'presscore_register_scripts' ) ) :
 
 			'dt-photo-scroller'     => array(
 				'src'       => PRESSCORE_THEME_URI . '/js/photo-scroller',
-				'deps'      => array( 'jquery' ),
+				'deps'      => array( 'dt-main' ),
 				'in_footer' => true,
 			),
 		);
+
+		if ( the7_is_light_mode() ) {
+		    foreach ($register_scripts as $key => $script ) {
+			    $script['src'] = str_replace('/js/', '/js-lite/', $script['src']);
+			    $register_scripts[$key] = $script;
+		    }
+
+			$register_scripts['dt-woocommerce'] = array(
+				'src'       =>  PRESSCORE_THEME_URI . '/js-lite/compatibility/woocommerce/woocommerce',
+				'deps'      => array( 'jquery' ),
+				'in_footer' => false,
+			);
+		}
 
 		foreach ( $register_scripts as $name => $props ) {
 			the7_register_script( $name, $props['src'], $props['deps'], false, $props['in_footer'] );
@@ -353,7 +369,7 @@ if ( ! function_exists( 'presscore_print_beautiful_loading_scripts_in_footer' ) 
 			return;
 		}
 		?>
-<script type="text/javascript">
+<script type="text/javascript" id="the7-loader-script">
 document.addEventListener("DOMContentLoaded", function(event) { 
 	var load = document.getElementById("load");
 	if(!load.classList.contains('loader-removed')){
@@ -903,11 +919,12 @@ if ( ! function_exists( 'presscore_enqueue_web_fonts' ) ) :
 				$font_family = of_get_option( $option['id'] );
 			}
 
-			if ( in_array( $font_family, $websafe_fonts ) ) {
+			$font_obj = new The7_Web_Font( $font_family );
+
+			if ( in_array( $font_obj->get_family(), $websafe_fonts, true ) ) {
 				continue;
 			}
 
-			$font_obj = new The7_Web_Font( $font_family );
 			$font_obj->add_weight( '400' );
 			$font_obj->add_weight( '600' );
 			$font_obj->add_weight( '700' );

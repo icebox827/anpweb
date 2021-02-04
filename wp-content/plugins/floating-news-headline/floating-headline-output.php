@@ -45,7 +45,7 @@ jQuery( document ).ready(function() {
 		close: <?php echo $fh_close_btn; ?>, 							// show or hide close button - true/false
 		speed: <?php echo $fh_speed; ?>, 								// speed of runing headline
 		//bottom: 70, 													// show headline position from bottom of current screen
-		color: '<?php echo $fh_font_color; ?>', 						// headline color
+		color: '<?php echo $fh_headline_text_color; ?>', 						// headline color
 		old_ie_color: '#000000', 										// headline color for Internet Explorer browser
 	}
 	

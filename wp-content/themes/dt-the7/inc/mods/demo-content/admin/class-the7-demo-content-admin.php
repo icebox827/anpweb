@@ -135,7 +135,7 @@ class The7_Demo_Content_Admin {
 			),
 			'action_error'                       => esc_html__( 'Error. Cannot complete following action', 'the7mk2' ),
 			'go_back_with_error' => sprintf(
-				'<a href="' . esc_url( the7_demo_content()->admin_url() ) . '">' . esc_html_x( 'Import another demo.', 'admin', 'the7mk2' ) . '</a>'
+				'<a href="' . esc_url( the7_demo_content()->admin_url() ) . '">' . esc_html_x( 'Back to Pre-made Websites', 'admin', 'the7mk2' ) . '</a>'
 			),
 		];
 
@@ -262,23 +262,27 @@ class The7_Demo_Content_Admin {
 				break;
 
 			case 'import_post_types':
+				$import_manager->import_woocommerce_attributes();
 				$import_manager->import_post_types();
 				$import_manager->import_wp_settings();
 				$import_manager->import_vc_settings();
 				$import_manager->import_the7_fontawesome();
+				$import_manager->import_woocommerce_settings();
 
-				if ( class_exists( 'WooCommerce', false ) ) {
-					$import_manager->import_woocommerce_settings();
-				}
-
-				$content_tracker->add( 'post_types', true);
+				$content_tracker->add( 'post_types', true );
 				break;
 
 			case 'import_attachments':
 				$content_tracker->track_imported_items();
-				$retval = $import_manager->import_attachments( $demo->include_attachments );
+				$retval = $import_manager->import_attachments( $demo->include_attachments, $demo->attachments_batch );
+
+				if ( isset( $retval['imported'] ) ) {
+					$content_tracker->add( 'attachments_in_process', $retval['imported'] );
+				}
+
 				if ( isset( $retval['left'] ) && $retval['left'] === 0 ) {
 					$content_tracker->add( 'attachments', $demo->include_attachments ? 'original' : 'placeholders' );
+					$content_tracker->remove( 'attachments_imported' );
 				}
 				break;
 

@@ -565,6 +565,19 @@ function presscore_action_add_less_vars( The7_Less_Vars_Manager_Interface $less_
 	}
 	unset( $conditional_color_map, $first_color, $gradient, $opacity, $test_opt, $color_opt, $gradient_opt );
 
+	// Buttons colors for Elementor with the 'disabled' case handled.
+	$ele_button_normal_color = $less_vars->get_var( 'dt-btn-bg-color' );
+	if ( of_get_option( 'buttons-color_mode' ) === 'disabled' ) {
+		$ele_button_normal_color = 'none';
+	}
+	$less_vars->add_keyword( 'button-normal-bg-color', $ele_button_normal_color );
+
+	$ele_button_hover_color = $less_vars->get_var( 'dt-btn-hover-bg-color' );
+	if ( of_get_option( 'buttons-hover_color_mode' ) === 'disabled' ) {
+		$ele_button_hover_color = 'none';
+	}
+	$less_vars->add_keyword( 'button-hover-db-color', $ele_button_hover_color );
+
 	// Microwidget search.
 	$search_typography = The7_Option_Field_Typography::sanitize( of_get_option( 'microwidgets-search-typography' ) );
 	$less_vars->add_font(
@@ -1346,18 +1359,21 @@ function presscore_action_add_less_vars( The7_Less_Vars_Manager_Interface $less_
 		'base-font-style',
 	), of_get_option( 'fonts-font_family' ) );
 
-	$less_vars->add_pixel_number( 'base-line-height', of_get_option( 'fonts-normal_size_line_height', '20' ) );
+	$font = The7_Option_Field_Font_Sizes::sanitize( of_get_option( 'fonts-normal_size' ) );
+	$less_vars->add_number( 'base-font-size', $font['font_size'] );
+	$less_vars->add_number( 'base-line-height', $font['line_height'] );
 
-	$less_vars->add_pixel_number( 'text-small-line-height', of_get_option( 'fonts-small_size_line_height', '20' ) );
+	$font = The7_Option_Field_Font_Sizes::sanitize( of_get_option( 'fonts-big_size' ) );
+	$less_vars->add_number( 'text-big', $font['font_size'] );
+	$less_vars->add_number( 'text-big-line-height', $font['line_height'] );
 
-	$less_vars->add_pixel_number( 'text-big-line-height', of_get_option( 'fonts-big_size_line_height', '20' ) );
+	$font = The7_Option_Field_Font_Sizes::sanitize( of_get_option( 'fonts-small_size' ) );
+	$less_vars->add_number( 'text-small', $font['font_size'] );
+	$less_vars->add_number( 'text-small-line-height', $font['line_height'] );
 
-	$less_vars->add_pixel_number( 'base-font-size', of_get_option( 'fonts-normal_size', '13' ) );
-
-	$less_vars->add_pixel_number( 'text-small', of_get_option( 'fonts-small_size', '11' ) );
-
-	$less_vars->add_pixel_number( 'text-big', of_get_option( 'fonts-big_size', '15' ) );
-
+	the7_less_add_responsive_font($less_vars,"fonts-widget-content", "widget-content");
+	the7_less_add_responsive_font($less_vars,"fonts-widget-title", "widget-title");
+	$less_vars->add_pixel_number( 'widget-gap', of_get_option( 'widget_gap' ) );
 	/**
 	 * Sidebar.
 	 */
@@ -1576,15 +1592,7 @@ function presscore_action_add_less_vars( The7_Less_Vars_Manager_Interface $less_
 	$less_vars->add_hex_color( 'title-color', of_get_option( 'content-headers_color' ) );
 
 	for ( $id = 1; $id <= 6; $id++ ) {
-		$header_typography = The7_Option_Field_Typography::sanitize( of_get_option( "fonts-h{$id}-typography" ) );
-		$less_vars->add_font( array(
-			"h{$id}-font-family",
-			"h{$id}-font-weight",
-			"h{$id}-font-style",
-		), $header_typography['font_family'] );
-		$less_vars->add_pixel_number( "h{$id}-font-size", $header_typography['font_size'] );
-		$less_vars->add_pixel_number( "h{$id}-line-height", $header_typography['line_height'] );
-		$less_vars->add_keyword( "h{$id}-text-transform", $header_typography['text_transform'] );
+		the7_less_add_responsive_font($less_vars,"fonts-h{$id}-typography", "h{$id}");
 		$less_vars->add_hex_color( "h{$id}-color", of_get_option( 'content-headers_color' ) );
 	}
 
@@ -2020,6 +2028,9 @@ function presscore_action_add_less_vars( The7_Less_Vars_Manager_Interface $less_
 	$less_vars->add_pixel_number( 'wc-grid-product-gap', of_get_option( 'woocommerce_shop_template_gap' ) );
 	$less_vars->add_pixel_number( 'wc-grid-product-min-width', of_get_option( 'woocommerce_shop_template_column_min_width' ) );
 
+	the7_less_add_responsive_font($less_vars,"fonts-woo-content", "woo-content");
+	the7_less_add_responsive_font($less_vars,"fonts-woo-title", "woo-title");
+
 	/**
 	 * Stripes.
 	 */
@@ -2058,6 +2069,16 @@ function presscore_action_add_less_vars( The7_Less_Vars_Manager_Interface $less_
 
 		}
 
+	}
+
+	if ( the7_elementor_is_active() ) {
+		foreach ( \Elementor\Core\Responsive\Responsive::get_breakpoints() as $size => $value ) {
+			$less_vars->add_pixel_number( "elementor-{$size}-breakpoint", $value );
+			$less_vars->add_pixel_number( "{$size}-breakpoint", $value );
+		}
+	} else {
+		$less_vars->add_pixel_number( 'lg-breakpoint', (int) of_get_option( 'header-mobile-first_switch-after' ) + 1 );
+		$less_vars->add_pixel_number( 'md-breakpoint', (int) of_get_option( 'header-mobile-second_switch-after' ) + 1 );
 	}
 }
 

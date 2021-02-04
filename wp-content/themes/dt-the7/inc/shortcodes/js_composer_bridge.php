@@ -424,7 +424,7 @@ vc_lean_map( 'dt_icon_text', null, dirname( __FILE__ ) . '/vc-bridges/the7-text-
 vc_lean_map( 'dt_gallery_masonry', null, dirname( __FILE__ ) . '/vc-bridges/the7-media-gallery-masonry-bridge.php' );
 vc_lean_map( 'dt_media_gallery_carousel', null, dirname( __FILE__ ) . '/vc-bridges/the7-media-gallery-carousel-bridge.php' );
 
-if ( dt_is_woocommerce_enabled() ) {
+if ( the7_is_woocommerce_enabled() ) {
 	vc_lean_map( 'dt_products_carousel', null, dirname( __FILE__ ) . '/vc-bridges/the7-products-carousel-bridge.php' );
 	vc_lean_map( 'dt_products_masonry', null, dirname( __FILE__ ) . '/vc-bridges/the7-products-masonry-bridge.php' );
 }

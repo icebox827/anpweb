@@ -37,7 +37,12 @@ class The7_Option_Field_Select extends The7_Option_Field_Abstract {
 				$selected = ' selected="selected"';
 			}
 
-			$output .= '<option class="' . $option_class . '" value="' . esc_attr( $option_value ) . '"' . $selected . $attr . '>' . esc_html( $option_name ) . '</option>';
+			$class_output = '';
+			if ($option_class){
+				$class_output = ' class="' . $option_class . '"';
+			}
+
+			$output .= '<option' . $class_output . ' value="' . esc_attr( $option_value ) . '"' . $selected . $attr . '>' . esc_html( $option_name ) . '</option>';
 		}
 		$output .= '</select>';
 

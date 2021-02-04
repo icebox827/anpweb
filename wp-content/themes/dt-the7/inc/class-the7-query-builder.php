@@ -56,19 +56,15 @@ class The7_Query_Builder {
 	public function with_categorizaition( The7_Categorization_Request $request ) {
 		if ( $request->not_empty() ) {
 			$this->query_args['order']   = $request->order;
-			$this->query_args['orderby'] = $request->orderby;
+			$this->query_args['orderby'] = $request->orderby === 'name' ? 'title' : $request->orderby;
 
 			$request_term = $request->get_first_term();
 			if ( $request_term && $this->requested_taxonomy ) {
-				$tax_query = wp_parse_args(
-					$this->tax_query,
-					array(
-						'taxonomy' => $this->requested_taxonomy,
-						'field'    => 'term_id',
-					)
-				);
-				$tax_query['terms'] = array( $request_term );
-				$this->tax_query = $tax_query;
+				$this->tax_query = [
+					'taxonomy' => $this->requested_taxonomy,
+					'field'    => is_numeric( $request_term ) ? 'term_id' : 'slug',
+					'terms'    => [ $request_term ],
+				];
 			}
 		}
 
@@ -117,7 +113,7 @@ class The7_Query_Builder {
 	 *
 	 * @since 1.15.0
 	 */
-	public function add_offset( &$query ) {
+	public function add_offset( $query ) {
 		$offset  = (int) $this->query_args['posts_offset'];
 		$ppp     = (int) $query->query_vars['posts_per_page'];
 		$current = (int) $query->query_vars['paged'];

@@ -84,7 +84,7 @@
 }
 .team-author p {
   color: #333333;
-  font:   bold 14px / 24px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   text-transform: none;
 }
 .dt-team-shortcode .team-author p {
@@ -175,12 +175,12 @@
   color: #333333;
 }
 .dt-testimonials-shortcode .testimonial-vcard .text-primary {
-  font: normal  normal 20px / 30px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font: normal  normal  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
 }
 .team-author-name,
 .team-author-name a {
   color: #333333;
-  font: normal  normal 20px / 30px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font: normal  normal  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
 }
 .content .team-author-name a:hover {
   color: #3b8ced;
@@ -198,7 +198,7 @@
 }
 .widget .team-author-name,
 .widget .team-author-name a {
-  font:   bold 16px / 26px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   text-transform: none;
   color: #333333;
 }
@@ -231,32 +231,32 @@
   color: #333333;
 }
 .rsTitle {
-  font:   bold 52px / 62px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   text-transform: none;
 }
 .rsDesc {
-  font:   bold 34px / 44px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+  font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   text-transform: none;
 }
 @media screen and (max-width: 1200px) {
   .rsTitle {
-    font:   bold 34px / 44px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+    font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   }
   .rsDesc {
-    font:   bold 24px / 34px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+    font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   }
 }
 @media screen and (max-width: 1024px) {
   .rsTitle {
-    font:   bold 24px / 34px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+    font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   }
   .rsDesc {
-    font:   bold 20px / 30px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+    font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   }
 }
 @media screen and (max-width: 800px) {
   .rsTitle {
-    font:   bold 16px / 26px "Roboto", Helvetica, Arial, Verdana, sans-serif;
+    font:   700  /  "Roboto", Helvetica, Arial, Verdana, sans-serif;
   }
   .rsDesc {
     font:    15px / 27px "Roboto", Helvetica, Arial, Verdana, sans-serif;

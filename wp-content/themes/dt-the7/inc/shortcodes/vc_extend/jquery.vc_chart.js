@@ -99,7 +99,7 @@
         },
         setResponsive: function() {
             var that = this;
-            $(window).resize(function(){
+            $(window).on("resize", function(){
                 if(that.animated === true) that.circle.stop();
                 that.draw(true);
             });

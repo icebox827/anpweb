@@ -244,7 +244,7 @@ class The7_Elementor_Elements_Woocommerce_Masonry_Widget extends The7_Elementor_
 			] );
 
 		$this->add_control( 'show_categories_filter', [
-				'label'        => __( 'Categories filter', 'the7mk2' ),
+				'label'        => __( 'Taxonomy filter', 'the7mk2' ),
 				'type'         => Controls_Manager::SWITCHER,
 				'label_on'     => __( 'Show', 'the7mk2' ),
 				'label_off'    => __( 'Hide', 'the7mk2' ),

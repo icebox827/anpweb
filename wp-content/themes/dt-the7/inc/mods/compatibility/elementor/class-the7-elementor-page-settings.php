@@ -193,6 +193,8 @@ class The7_Elementor_Page_Settings {
 
 		wp_enqueue_script( 'the7-elementor-page-settings', PRESSCORE_ADMIN_URI . '/assets/js/elementor/page-settings.js', [], THE7_VERSION, true );
 
+		presscore_enqueue_web_fonts();
+
 		$controls_ids = [];
 		$sections = $this->get_sections( null );
 		$controls = $this->get_sections_controls( $sections );
@@ -364,6 +366,7 @@ class The7_Elementor_Page_Settings {
 		}
 		if ( ! in_array( $document->get_name(), [ 'footer', 'section', 'widget' ], true ) ) {
 			$header_layout = of_get_option( 'header-layout' );
+
 			if ( $header_layout == 'side' || $header_layout == 'side_line' ) {
 				$header_name = '';
 				if ( $header_layout == 'side' ) {
@@ -392,6 +395,22 @@ class The7_Elementor_Page_Settings {
 						'condition'       => $val,
 					] );
 					$document->end_injection();
+				}
+			}
+			else if( $header_layout === 'disabled' ){
+				$elements = [
+					"the7_document_show_header",
+					"the7_document_disabled_header_heading",
+					"the7_document_disabled_header_style",
+					"the7_document_disabled_header_color_scheme",
+					"the7_document_disabled_header_top_bar_color",
+					"the7_document_disabled_header_backgraund_color",
+					"the7_document_header_heading",
+					"the7_document__background_below_slideshow",
+					"the7_document_fancy_header_style"
+				];
+				foreach ( $elements as $key ) {
+					$document->remove_control($key);
 				}
 			}
 		}
@@ -480,7 +499,7 @@ class The7_Elementor_Page_Settings {
 			$document_template_message = __( 'A <a href="%1$s" target="_blank">%2$s template</a>  is being applied to this page. To edit individual %2$s settings, please exclude this page from template display conditions.', 'the7mk2' );
 			if ( ! empty( $applied_header_template_id ) ) {
 				$document->start_injection( [
-					'of' => 'the7_document_title',
+					'of' => 'the7_document_show_header',
 					'at' => 'before',
 				] );
 				$document->add_control( 'the7_document_header_template_applied_message', [

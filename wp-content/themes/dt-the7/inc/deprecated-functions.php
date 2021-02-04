@@ -1193,3 +1193,13 @@ if ( ! function_exists( 'presscore_microsite_has_mobile_menu_filter' ) ) :
 	}
 
 endif;
+
+/**
+ * Determine if the WooCommerce plugin is active.
+ *
+ * @depreacted 9.6.1
+ * @return bool
+ */
+function dt_is_woocommerce_enabled() {
+	return class_exists( 'WooCommerce' );
+}

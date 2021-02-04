@@ -151,7 +151,7 @@ $fh_settings = unserialize(base64_decode(get_post_meta( $post->ID, 'awl_fh_setti
 	})( jQuery );
 	
 	jQuery(document).ajaxComplete(function() {
-		jQuery('#fh_font_color,#fh_font_bg_color').wpColorPicker();
+		jQuery('#fh_headline_text_color,#fh_font_bg_color').wpColorPicker();
 	});
 	
 	

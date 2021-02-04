@@ -34,14 +34,30 @@ form.mc4wp-form label {
 h3.gform_title,
 .gform_wrapper h3.gform_title {
 	color: @h3-color;
-	font: @h3-font-style @h3-font-variant @h3-font-weight @h3-font-size~"/"@h3-line-height @h3-font-family;
+	font: @h3-font-style @h3-font-variant @h3-font-weight @h3-font-size-desktop~"/"@h3-line-height-desktop @h3-font-family;
 	text-transform: @h3-text-transform;
+	@media (max-width: @lg-breakpoint - 1) {
+		font-size: @h3-font-size-tablet;
+		line-height: @h3-line-height-tablet;
+	}
+	@media (max-width: @md-breakpoint - 1) {
+		font-size: @h3-font-size-mobile;
+		line-height: @h3-line-height-mobile;
+	}
 }
 .gform_wrapper .gsection .gfield_label,
 .gform_wrapper h2.gsection_title {
 	color: @h4-color;
-	font: @h4-font-style @h4-font-variant @h4-font-weight @h4-font-size~"/"@h4-line-height @h4-font-family;
+	font: @h4-font-style @h4-font-variant @h4-font-weight @h4-font-size-desktop~"/"@h4-line-height-desktop @h4-font-family;
 	text-transform: @h4-text-transform;
+	@media (max-width: @lg-breakpoint - 1) {
+		font-size: @h4-font-size-tablet;
+		line-height: @h4-line-height-tablet;
+	}
+	@media (max-width: @md-breakpoint - 1) {
+		font-size: @h4-font-size-mobile;
+		line-height: @h4-line-height-mobile;
+	}
 }
 #main .gform_wrapper textarea,
 .gform_wrapper .top_label .gfield_label {
@@ -150,7 +166,8 @@ h3.gform_title,
 
 //CF 7
 .wpcf7-validation-errors,
-.wpcf7-mail-sent-ok {
+.wpcf7-mail-sent-ok,
+.wpcf7-response-output {
 	.popup-message-style & {
 		background-color: @accent-bg-color;
 	}
@@ -166,6 +183,14 @@ h3.gform_title,
 
 .asp_product_name {
 	color: @h3-color;
-	font: @h3-font-style @h3-font-variant @h3-font-weight @h3-font-size~"/"@h3-line-height @h3-font-family;
+	font: @h3-font-style @h3-font-variant @h3-font-weight @h3-font-size-desktop~"/"@h3-line-height-desktop @h3-font-family;
 	text-transform: @h3-text-transform;
+	@media (max-width: @lg-breakpoint - 1) {
+		font-size: @h3-font-size-tablet;
+		line-height: @h3-line-height-tablet;
+	}
+	@media (max-width: @md-breakpoint - 1) {
+		font-size: @h3-font-size-mobile;
+		line-height: @h3-line-height-mobile;
+	}
 }

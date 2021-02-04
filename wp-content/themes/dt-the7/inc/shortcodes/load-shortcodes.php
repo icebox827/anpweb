@@ -88,7 +88,7 @@ $presscore_shortcodes = array(
 	'year',
 );
 
-if ( dt_is_woocommerce_enabled() ) {
+if ( the7_is_woocommerce_enabled() ) {
 	$presscore_shortcodes[] = 'products-carousel';
 	$presscore_shortcodes[] = 'products-masonry';
 }

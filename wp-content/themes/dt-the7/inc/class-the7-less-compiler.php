@@ -49,7 +49,12 @@ class The7_Less_Compiler {
 		The7_Less_Functions::register_functions( $this->lessc );
 
 		if ( $import_dir === null ) {
-			$import_dir = array( PRESSCORE_THEME_DIR . '/css', PRESSCORE_THEME_DIR . '/css/dynamic-less' );
+			if (the7_is_light_mode()){
+				$import_dir = array( PRESSCORE_THEME_DIR . '/css-lite', PRESSCORE_THEME_DIR . '/css-lite/dynamic-less' );
+			}
+			else {
+				$import_dir = array( PRESSCORE_THEME_DIR . '/css', PRESSCORE_THEME_DIR . '/css/dynamic-less' );
+			}
 		}
 
 		$this->lessc->setImportDir( $import_dir );

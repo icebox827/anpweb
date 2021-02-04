@@ -136,10 +136,24 @@ class The7_Install {
 		'8.9.0'   => [
 			'the7_update_890_elementor_the7_elements',
 		],
-		'9.1.2' => [
+		'9.1.2'   => [
 			'the7_update_912_elementor_the7_elements',
 		],
 		'9.2.0'   => [],
+		'9.3.1'   => [
+			'the7_update_931_elementor_the7_photo_scroller',
+		],
+		'9.4.0' => [
+			'the7_update_940_theme_options',
+			'the7_update_940_elementor_the7_posts_masonry',
+		],
+		'9.4.0.2' => [
+			'the7_update_9402_theme_options',
+		],
+		'9.6.0' => [
+			'the7_update_9600_theme_options',
+			'the7_update_960_elementor_the7_posts_carousel',
+		]
 	];
 
     public static function init() {
@@ -177,8 +191,9 @@ class The7_Install {
 	 * Init background updates
 	 */
 	public static function init_background_updater() {
-		include_once( dirname( __FILE__ ) . '/class-the7-background-updater.php' );
-		include_once( dirname( __FILE__ ) . '/the7-update-functions.php' );
+		require_once __DIR__ . '/patches/interface-the7-db-patch.php';
+		require_once __DIR__ . '/class-the7-background-updater.php';
+		require_once __DIR__ . '/the7-update-functions.php';
 
 		self::$background_updater = new The7_Background_Updater();
 	}
@@ -217,15 +232,15 @@ class The7_Install {
 	}
 
 	public static function update_notice() {
-		include( dirname( __FILE__ ) . '/views/html-notice-update.php' );
+		include( __DIR__ . '/views/html-notice-update.php' );
 	}
 
 	public static function updating_notice() {
-		include( dirname( __FILE__ ) . '/views/html-notice-updating.php' );
+		include( __DIR__ . '/views/html-notice-updating.php' );
 	}
 
 	public static function updated_notice() {
-		include( dirname( __FILE__ ) . '/views/html-notice-updated.php' );
+		include( __DIR__ . '/views/html-notice-updated.php' );
 	}
 
 	private static function get_update_callbacks() {
@@ -329,8 +344,7 @@ class The7_Install {
 			return;
 		}
 
-		$patches_dir = trailingslashit( trailingslashit( dirname( __FILE__ ) ) . 'patches' );
-		require_once( $patches_dir . 'interface-the7-db-patch.php' );
+		$patches_dir = trailingslashit( trailingslashit( __DIR__ ) . 'patches' );
 
 		$patches = array(
 			'3.5.0' => 'The7_DB_Patch_030500',
@@ -379,9 +393,10 @@ class The7_Install {
 			$update_options = true;
 		}
 
+		The7_Options_Backup::store_options();
+
 		if ( $update_options ) {
-			The7_Options_Backup::store_options();
-			update_option( optionsframework_get_options_id(), $options );
+			of_save_unsanitized_options( $options );
 			_optionsframework_delete_defaults_cache();
 		}
 	}

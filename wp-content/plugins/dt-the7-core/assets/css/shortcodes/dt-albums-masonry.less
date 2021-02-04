@@ -477,11 +477,16 @@ article {
 		}
 	}
 }
-
+.drop-double-width (@a) when (@a < 2) {
+  	grid-column: span 1;
+}
 @media screen and (max-width: 767px){
 	.dt-css-grid {
 		.@{unique-shortcode-class-name}.resize-by-browser-width & {
 			grid-template-columns: repeat(@phone-columns-num, 1fr);
+			& .double-width {
+				 .drop-double-width (@phone-columns-num);
+			}
 			.cssgridlegacy.no-cssgrid &,
 	  		.no-cssgridlegacy.no-cssgrid & {
 		  		& .wf-cell {

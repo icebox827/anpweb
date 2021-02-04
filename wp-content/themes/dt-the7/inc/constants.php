@@ -11,14 +11,14 @@ define( 'THE7_VERSION', wp_get_theme( get_template() )->get( 'Version' ) );
 define( 'PRESSCORE_THEME_NAME', 'the7' );
 
 if ( ! defined( 'PRESSCORE_DB_VERSION' ) ) {
-	define( 'PRESSCORE_DB_VERSION', '9.2.0' );
+	define( 'PRESSCORE_DB_VERSION', '9.6.0' );
 }
 
 if ( ! defined( 'PRESSCORE_STYLESHEETS_VERSION' ) ) {
-	define( 'PRESSCORE_STYLESHEETS_VERSION', '9.2.2' );
+	define( 'PRESSCORE_STYLESHEETS_VERSION', '9.7.0' );
 }
 
-define( 'THE7_CORE_COMPATIBLE_VERSION', '2.5.0.2' );
+define( 'THE7_CORE_COMPATIBLE_VERSION', '2.5.5' );
 
 /**
  * Important! Remember to remove trailing slash.

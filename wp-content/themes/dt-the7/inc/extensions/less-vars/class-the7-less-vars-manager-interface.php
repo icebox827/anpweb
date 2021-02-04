@@ -77,6 +77,13 @@ interface The7_Less_Vars_Manager_Interface {
 	 * @param      $value
 	 * @param null $wrap
 	 */
+	public function add_unitized_number( $var, $value, $wrap = null );
+
+	/**
+	 * @param      $var
+	 * @param      $value
+	 * @param null $wrap
+	 */
 	public function add_number( $var, $value, $wrap = null );
 
 	/**
@@ -101,7 +108,7 @@ interface The7_Less_Vars_Manager_Interface {
 	 * @param string|null $wrap
 	 * @param string      $units
 	 */
-	public function add_paddings( $vars, $value, $units = 'px', $wrap = null );
+	public function add_paddings( $vars, $value, $units = '', $wrap = null );
 
 	/**
 	 * Register less var in pixels or percents.

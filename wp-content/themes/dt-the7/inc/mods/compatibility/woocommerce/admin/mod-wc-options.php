@@ -112,6 +112,17 @@ $options['woocommerce_display_product_info'] = array(
 	),
 );
 
+$options['woocommerce_display_align'] = array(
+	'id'      => 'woocommerce_display_align',
+	'name'    => _x( 'Alignment', 'theme-options', 'the7mk2' ),
+	'std'     => 'center',
+	'type'    => 'radio',
+	'options' => array(
+		'left' => _x( 'Left', 'theme-options', 'the7mk2' ),
+		'center'    => _x( 'Center', 'theme-options', 'the7mk2' ),
+	),
+);
+
 $options['woocommerce_add_to_cart_icon'] = array(
 	'name'       => _x( 'Add to cart icon', 'theme-options', 'the7mk2' ),
 	'id'         => 'woocommerce_add_to_cart_icon',
@@ -320,6 +331,28 @@ $options['woocommerce_show_product_titles'] = array(
 	'options' => $en_dis_options,
 );
 
+$options['woocommerce_product_title_gap']        = array(
+	'id'         => 'woocommerce_product_title_gap',
+	'name'       => _x( 'Gap above product title in masonry/grid', 'theme-options', 'the7mk2' ),
+	'std'        => '15px',
+	'type'       => 'number',
+	'units'      => 'px',
+	'dependency' => array(
+		array(
+			array(
+				'field'    => 'woocommerce_show_product_titles',
+				'operator' => '==',
+				'value'    => '1',
+			),
+			array(
+				'field'    => 'wc_view_mode',
+				'operator' => '!=',
+				'value'    => 'list',
+			),
+		),
+	),
+);
+
 $options[] = array( 'type' => 'divider' );
 
 $options['woocommerce_show_product_price'] = array(
@@ -328,6 +361,23 @@ $options['woocommerce_show_product_price'] = array(
 	'std'     => 1,
 	'type'    => 'radio',
 	'options' => $en_dis_options,
+);
+
+$options['woocommerce_product_price_gap']        = array(
+	'id'         => 'woocommerce_product_price_gap',
+	'name'       => _x( 'Gap above product price', 'theme-options', 'the7mk2' ),
+	'std'        => '5px',
+	'type'       => 'number',
+	'units'      => 'px',
+	'dependency' => array(
+		array(
+			array(
+				'field'    => 'woocommerce_show_product_price',
+				'operator' => '==',
+				'value'    => '1',
+			),
+		),
+	),
 );
 
 $options[] = array( 'type' => 'divider' );
@@ -340,20 +390,27 @@ $options['woocommerce_show_product_rating'] = array(
 	'options' => $en_dis_options,
 );
 
-$options[] = array( 'type' => 'divider' );
-
-$options['woocommerce_show_cart_icon'] = array(
-	'name'    => _x( "'Add to cart' button", 'theme-options', 'the7mk2' ),
-	'id'      => 'woocommerce_show_cart_icon',
-	'std'     => 1,
-	'type'    => 'radio',
-	'options' => $en_dis_options,
+$options['woocommerce_product_rating_gap']        = array(
+	'id'         => 'woocommerce_product_rating_gap',
+	'name'       => _x( 'Gap above product rating', 'theme-options', 'the7mk2' ),
+	'std'        => '10px',
+	'type'       => 'number',
+	'units'      => 'px',
+	'dependency' => array(
+		array(
+			array(
+				'field'    => 'woocommerce_show_product_rating',
+				'operator' => '==',
+				'value'    => '1',
+			),
+		),
+	),
 );
 
-$options[] = array( 'type' => 'js_hide_begin', 'class' => 'wc_view_mode masonry_show_desc' );
 
 $options[] = array( 'type' => 'divider' );
 
+$options[] = array( 'type' => 'js_hide_begin', 'class' => 'wc_view_mode masonry_show_desc' );
 $options['woocommerce_show_masonry_desc'] = array(
 	'name'    => _x( 'Product short description in masonry/grid layout', 'theme-options', 'the7mk2' ),
 	'id'      => 'woocommerce_show_masonry_desc',
@@ -366,8 +423,6 @@ $options[] = array( 'type' => 'js_hide_end' );
 
 $options[] = array( 'type' => 'js_hide_begin', 'class' => 'wc_view_mode list_show_desc' );
 
-$options[] = array( 'type' => 'divider' );
-
 $options['woocommerce_show_list_desc'] = array(
 	'name'    => _x( 'Product short description in list layout', 'theme-options', 'the7mk2' ),
 	'id'      => 'woocommerce_show_list_desc',
@@ -377,6 +432,114 @@ $options['woocommerce_show_list_desc'] = array(
 );
 
 $options[] = array( 'type' => 'js_hide_end' );
+
+$options['woocommerce_product_desc_gap']        = array(
+	'id'         => 'woocommerce_product_desc_gap',
+	'name'       => _x( 'Gap above description', 'theme-options', 'the7mk2' ),
+	'std'        => '15px',
+	'type'       => 'number',
+	'units'      => 'px',
+	'dependency' => array(
+		array(
+			array(
+				'field'    => 'woocommerce_show_list_desc',
+				'operator' => '==',
+				'value'    => '1',
+			),
+			array(
+				'field'    => 'wc_view_mode',
+				'operator' => 'IN',
+				'value'    => array('list','view_mode'),
+			),
+		),
+		array(
+			array(
+				'field'    => 'woocommerce_show_masonry_desc',
+				'operator' => '==',
+				'value'    => '1',
+			),
+			array(
+				'field'    => 'wc_view_mode',
+				'operator' => 'IN',
+				'value'    => array('masonry_grid','view_mode'),
+			),
+		),
+	),
+);
+
+$options[] = array( 'type' => 'divider' );
+
+$options['woocommerce_show_cart_icon'] = array(
+	'name'    => _x( "'Add to cart' button", 'theme-options', 'the7mk2' ),
+	'id'      => 'woocommerce_show_cart_icon',
+	'std'     => 1,
+	'type'    => 'radio',
+	'options' => $en_dis_options,
+);
+
+$options['woocommerce_product_cart_gap']        = array(
+	'id'         => 'woocommerce_product_cart_gap',
+	'name'       => _x( "Gap above product 'Add to cart' button", 'theme-options', 'the7mk2' ),
+	'std'        => '25px',
+	'type'       => 'number',
+	'units'      => 'px',
+	'dependency' => array(
+		array(
+			array(
+				'field'    => 'woocommerce_show_cart_icon',
+				'operator' => '==',
+				'value'    => '1',
+			),
+		),
+	),
+);
+
+$options[] = array(
+	'name' => _x( 'Font settings', 'theme-options', 'the7mk2' ),
+	'type' => 'block',
+);
+
+$options[] = array(
+	'name' => _x( 'Title', 'theme-options', 'the7mk2' ),
+	'type' => 'title',
+);
+
+$options['fonts-woo-title'] = array(
+	'id'   => 'fonts-woo-title',
+	'type' => 'typography',
+	'std'  => array(
+		'font_family'    => 'Open Sans',
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
+		'text_transform' => 'none',
+	),
+);
+
+$options[] = array( 'type' => 'divider' );
+
+$options[] = array(
+	'name' => _x( 'Content', 'theme-options', 'the7mk2' ),
+	'type' => 'title',
+);
+
+$options['fonts-woo-content'] = array(
+	'id'   => 'fonts-woo-content',
+	'type' => 'typography',
+	'std'        => array(
+		'font_family'    => 'Open Sans',
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
+		'text_transform' => 'none',
+	),
+);
 
 $options[] = array(
 	'name' => _x( 'Product page', 'theme-options', 'the7mk2' ),

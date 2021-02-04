@@ -53,7 +53,7 @@
                                 $this.find('a').removeClass('act');
                             
                             }else{
-                               openIcon.attr('class', iconDataAct);
+                               openIcon.attr('class', itemLink.find('.next-level-button').attr('data-icon'));
 
                                 $this.siblings().find(" .vertical-sub-nav").stop(true, true).slideUp(400);
                                 subMenu.stop(true, true).slideDown(500);

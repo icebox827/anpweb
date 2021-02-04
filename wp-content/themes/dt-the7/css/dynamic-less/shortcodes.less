@@ -29,37 +29,29 @@
             .arrows-bg-on& {
                 &:before {
                    background-color: @accent-bg-color;
+                   .background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
                 }
             }
-            .accent-gradient .arrows-bg-on& {
-            	&:before {
-					.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
-				}
-			}
 
             .arrows-hover-bg-on& {
                 &:after {
                    background-color: @accent-bg-color;
+					.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
                 }
             }
-            .accent-gradient .arrows-hover-bg-on& {
-            	 &:after {
-					.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
-				}
-			}
 		}
 		& i,
 		& i:before {
 			color: @accent-bg-color;
-			.accent-gradient & {
+			//.accent-gradient & {
 				.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
-			}
+			//}
 		}
 		& a:hover i {
 			color: @accent-bg-color;
-			.accent-gradient & {
+			//.accent-gradient & {
 				.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
-			}
+			//}
 		}
 	}
 }
@@ -130,4 +122,21 @@
 	  		}
 
 	  	} 
+}
+.dt-owl-item-icon i {
+	color: @accent-bg-color;
+}
+.text-and-icon-carousel .owl-nav i,
+.text-and-icon-carousel .owl-nav a:hover i,
+.text-and-icon-carousel .owl-nav i:before {
+	background: none;
+	color: @accent-bg-color;
+}
+.dt-owl-item-icon:before,
+.dt-owl-item-icon:after,
+.text-and-icon-carousel .owl-nav a,
+.text-and-icon-carousel .owl-nav a:hover,
+.testimonials-carousel .owl-nav a,
+.testimonials-carousel .owl-nav a:hover {
+  border-color: @accent-bg-color;
 }

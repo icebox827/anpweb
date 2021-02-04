@@ -152,7 +152,7 @@ class Presscore_Inc_Widgets_Portfolio extends WP_Widget {
 		$instance['orderby'] = apply_filters('dt_sanitize_orderby', $new_instance['orderby'] );
 		$instance['select'] = in_array( $new_instance['select'], array('all', 'only', 'except') ) ? $new_instance['select'] : 'all';
 		$instance['show'] = absint($new_instance['show']);
-		$instance['cats'] = (array) $new_instance['cats'];
+		$instance['cats'] = isset( $new_instance['cats'] ) ? $new_instance['cats'] : [];
 		$instance['max_width'] = absint( $new_instance['max_width'] );
 
 		return $instance;

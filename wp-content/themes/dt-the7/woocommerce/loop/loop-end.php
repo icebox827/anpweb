@@ -30,5 +30,8 @@ if ( presscore_config()->get( 'full_width' ) ) {
 	echo '</div>';
 }
 
+// See loop-start.php
+remove_filter( 'woocommerce_short_description', '__return_empty_string' );
+
 do_action( 'presscore_after_loop' );
 do_action( 'dt_wc_loop_end' );

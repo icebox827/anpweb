@@ -33,7 +33,7 @@ if ( ! empty( $error ) ) {
 			) . '</a>';
 		echo ' | ';
 		echo '<a href="' . esc_url( the7_demo_content()->admin_url() ) . '">' . esc_html_x(
-				'Import another demo',
+				'Back to Pre-made Websites',
 				'admin',
 				'the7mk2'
 			) . '</a>';

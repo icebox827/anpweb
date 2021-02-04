@@ -18,14 +18,21 @@ class The7_Less_Vars_Value_Number extends The7_Less_Vars_Builder {
 		$this->val = 0;
 		$this->suffix = '';
 
-		preg_match( '/([-0-9]*)(.*)/', $val, $matches );
-		if ( ! empty( $matches[1] ) ) {
-			$this->val = intval( $matches[1] );
+		if (is_array($val)){
+			$this->val = isset($val['val']);
+			$this->suffix = isset($val['units']);
+		}
+		else{
+			preg_match( '/(-?\d+\.?\d*)(.*)/', $val, $matches );
+			if ( ! empty( $matches[1] ) ) {
+				$this->val = floatval( $matches[1] );
+			}
+
+			if ( ! empty( $matches[2] ) ) {
+				$this->suffix = $matches[2];
+			}
 		}
 
-		if ( ! empty( $matches[2] ) ) {
-			$this->suffix = $matches[2];
-		}
 	}
 
 	public function get() {

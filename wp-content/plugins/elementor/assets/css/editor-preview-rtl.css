@@ -1,4 +1,4 @@
-/*! elementor - v3.0.11 - 30-09-2020 */
+/*! elementor - v3.1.1 - 31-01-2021 */
 @charset "UTF-8";
 .elementor-control-unit-1 {
   width: 27px; }
@@ -255,6 +255,7 @@
   margin-top: 20px; }
 
 .elementor-control {
+  --control-title-size: 12px;
   background-color: #fff;
   position: relative;
   padding: 0 20px 15px; }
@@ -276,7 +277,7 @@
         -ms-flex-direction: column;
             flex-direction: column; }
   .elementor-control .elementor-control-title {
-    font-size: 12px;
+    font-size: var(--control-title-size);
     line-height: 1;
     margin-left: 5px; }
   .elementor-control .elementor-control-spinner {
@@ -466,12 +467,13 @@
           transform: rotate(180deg); }
 
 .elementor-control-responsive-switchers {
-  margin-left: 5px;
   --selected-option: 0;
   --pointer-position: var(--selected-option);
   position: relative;
   width: 2em;
-  height: 2em; }
+  height: 2em;
+  margin: calc( -2em + var(--control-title-size)) 0;
+  margin-left: 5px; }
   .elementor-control-responsive-switchers__holder {
     position: absolute;
     width: 100%;
@@ -909,8 +911,7 @@ a.elementor-responsive-switcher {
   display: none; }
 
 .elementor-control-type-gallery.elementor-control-dynamic .elementor-control-gallery-clear {
-  border: solid #d5dadf;
-  border-width: 0 1px; }
+  border-right: 1px solid #d5dadf; }
 
 .elementor-control-type-gallery .elementor-control-gallery-clear {
   cursor: pointer;
@@ -928,9 +929,10 @@ a.elementor-responsive-switcher {
           border-radius: 3px 0 0 0; }
 
 .e-global__popover {
-  width: 270px;
+  width: 288px;
   z-index: 1;
-  font-size: 12px; }
+  font-size: 12px;
+  padding-right: 10px; }
   .e-global__popover-toggle {
     border: 1px solid #d5dadf;
     border-left: 0;
@@ -2084,9 +2086,6 @@ a.elementor-responsive-switcher {
 
 .elementor-control-type-wp_widget .quicktags-toolbar input {
   width: auto; }
-
-.elementor-control-type-wysiwyg.elementor-rich-editing-disabled .wp-editor-container {
-  margin-top: 10px; }
 
 .elementor-control-type-wysiwyg * {
   -webkit-box-sizing: content-box;

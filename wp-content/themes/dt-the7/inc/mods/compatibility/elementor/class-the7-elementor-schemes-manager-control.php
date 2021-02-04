@@ -50,12 +50,6 @@ class The7_Schemes_Manager_Control {
 		return 'yes' === get_option( 'elementor_' . self::SETTING_USE_THE7_SCHEME, 'no' );
 	}
 
-	public static function is_elementor_schemes_disabled() {
-		$custom_colors_disabled = get_option( 'elementor_disable_color_schemes' );
-		$typography_schemes_disabled = get_option( 'elementor_disable_typography_schemes' );
-		return $custom_colors_disabled && $typography_schemes_disabled;
-	}
-
 	public function replace_elementor_schemes() {
 		self::load_the7_schemes();
 

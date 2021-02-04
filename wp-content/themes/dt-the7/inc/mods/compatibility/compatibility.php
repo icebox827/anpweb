@@ -55,3 +55,9 @@ if ( the7_elementor_is_active() ) {
 	require_once $path . '/elementor/class-the7-elementor-compatibility.php';
 	The7_Elementor_Compatibility::instance();
 }
+
+if ( the7_fvm_is_active() && of_get_option( 'advanced-fvm_enable_integration' ) ) {
+	require_once $path . '/class-the7-fvm-compatibility.php';
+	$fvm_adapter = new The7_FVM_Compatibility();
+	$fvm_adapter->bootstrap();
+}

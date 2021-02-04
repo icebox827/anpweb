@@ -61,18 +61,6 @@
                 $(".preload-me", $isoContainer).heightHack();
                 $isoContainer.isotope("layout");
             });
-
-            $(window).off("debouncedresize.The7Elements", calculateColumnsOnResize).on("debouncedresize.The7Elements", calculateColumnsOnResize);
-
-            $isoContainer.on("IsoLayout.The7Elements", function () {
-                calculateColumns($dataAttrContainer, $dataAttrContainer.find(".iso-container"));
-            });
-
-            calculateColumns($dataAttrContainer, $isoContainer);
-
-            setTimeout(function () {
-                $isoContainer.isotope("layout");
-            }, 600);
         } else if ($dataAttrContainer.hasClass("jquery-filter")) {
             if ($dataAttrContainer.hasClass("dt-css-grid-wrap")) {
                 // Filter active item class handling since it's not included in filtrade.
@@ -109,6 +97,13 @@
 
         elementorFrontend.hooks.addAction("frontend/element_ready/the7_elements.default", the7ElementsWidgetHandler);
         elementorFrontend.hooks.addAction("frontend/element_ready/the7-elements-woo-masonry.default", the7ElementsWidgetHandler);
+
+        elementorFrontend.hooks.addAction("frontend/element_ready/the7-elements-woo-masonry.default", function($scope, $) {
+            var $isoContainer = $scope.find(".iso-container");
+            if ($isoContainer.length) {
+                the7ApplyColumns($scope.attr("data-id"), $isoContainer, the7GetMasonryColumnsConfig);
+            }
+        });
 
         elementorEditorAddOnChangeHandler("the7_elements:overlay_background_background", toggleDefaultImageOverlay);
         elementorEditorAddOnChangeHandler("the7_elements:overlay_hover_background_background", toggleDefaultImageOverlay);

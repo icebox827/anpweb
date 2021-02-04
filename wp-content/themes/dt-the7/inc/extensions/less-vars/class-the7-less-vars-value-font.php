@@ -46,8 +46,20 @@ class The7_Less_Vars_Value_Font extends The7_Less_Vars_Builder {
 		);
 	}
 
+	public function get_family(){
+		return $this->family;
+	}
+
+	public function get_style(){
+		return $this->style;
+	}
+
+	public function get_weight(){
+		return $this->weight;
+	}
+
 	protected function init( $font ) {
-		preg_match( '/^([\w\s-]+):?(\d*)(\w*)/', $font, $matches );
+		preg_match( '/^([\w\s-]+):?(bold|normal|\d*)(\w*)/', $font, $matches );
 
 		for ( $i = 0; $i < 4; $i++ ) {
 			$matches[ $i ] = ( isset( $matches[ $i ] ) ? $matches[ $i ] : '' );
@@ -61,16 +73,16 @@ class The7_Less_Vars_Value_Font extends The7_Less_Vars_Builder {
 	protected function sanitize_weight( $weight ) {
 		if ( ! $weight ) {
 			return '~""';
-		} else if ( '700' == $weight ) {
-			return 'bold';
-		} else if( '400' == $weight ) {
-			return 'normal';
 		}
 
 		return $weight;
 	}
 
 	protected function sanitize_style( $style ) {
-		return 'italic' === $style ? $style : '~""';
+		$known_styles = array('normal', 'italic', 'oblique');
+		if (in_array($style, $known_styles)){
+			return $style;
+		}
+		return  '~""';
 	}
 }

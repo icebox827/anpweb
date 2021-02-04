@@ -49,6 +49,7 @@ $options['content-links_color'] = array(
 $options[] = array(
 	'name' => _x( 'Basic font', 'theme-options', 'the7mk2' ),
 	'type' => 'block',
+	'class' => 'basic-font-block'
 );
 
 $options['fonts-font_family'] = array(
@@ -61,33 +62,25 @@ $options['fonts-font_family'] = array(
 
 $font_sizes = array(
 	'big_size'    => array(
-		'font_std'  => 15,
+		'font_std'  => '15px',
 		'font_desc' => _x( 'Large font size', 'theme-options', 'the7mk2' ),
-		'lh_std'    => 20,
+		'lh_std'    => '20px',
 		'lh_desc'   => _x( 'Large line-height', 'theme-options', 'the7mk2' ),
 		'msg'       => _x( 'Default font for content area & most shortcodes.', 'theme-options', 'the7mk2' ),
 	),
 	'normal_size' => array(
-		'font_std'  => 13,
+		'font_std'  => '13px',
 		'font_desc' => _x( 'Medium font size', 'theme-options', 'the7mk2' ),
-		'lh_std'    => 20,
+		'lh_std'    => '20px',
 		'lh_desc'   => _x( 'Medium line-height', 'theme-options', 'the7mk2' ),
-		'msg'       => _x(
-			'Default font for widgets in side bar & bottom bar. Can be chosen for some shortcodes.',
-			'theme-options',
-			'the7mk2'
-		),
+		'msg'       => _x( 'Default font for widgets in side bar & bottom bar. Can be chosen for some shortcodes.', 'theme-options', 'the7mk2' ),
 	),
 	'small_size'  => array(
-		'font_std'  => 11,
+		'font_std'  => '11px',
 		'font_desc' => _x( 'Small font size', 'theme-options', 'the7mk2' ),
-		'lh_std'    => 20,
+		'lh_std'    => '20px',
 		'lh_desc'   => _x( 'Small line-height', 'theme-options', 'the7mk2' ),
-		'msg'       => _x(
-			'Default font for bottom bar, breadcrumbs, some meta information etc. Can be chosen for some shortcodes.',
-			'theme-options',
-			'the7mk2'
-		),
+		'msg'       => _x( 'Default font for bottom bar, breadcrumbs, some meta information etc. Can be chosen for some shortcodes.', 'theme-options', 'the7mk2' ),
 	),
 );
 
@@ -100,30 +93,20 @@ foreach ( $font_sizes as $id => $data ) {
 		'desc' => $data['msg'],
 	);
 
-	$options[ 'fonts-' . $id ] = array(
-		'name'     => $data['font_desc'],
-		'id'       => 'fonts-' . $id,
-		'std'      => $data['font_std'],
-		'type'     => 'slider',
-		'options'  => array(
-			'min' => 1,
-			'max' => 120,
+	$options['fonts-'  . $id] = array(
+		'name'  => _x( 'Preview', 'theme-options', 'the7mk2' ),
+		'id'    => 'fonts-'  . $id,
+		'type'  => 'font_sizes',
+		'std'  => array(
+			'font_preview'   => 'Open Sans',
+			'font_size'      => $data['font_std'],
+			'line_height'    => $data['lh_std'],
 		),
-		'sanitize' => 'font_size',
-	);
-
-	$options[ 'fonts-' . $id . '_line_height' ] = array(
-		'name'     => $data['lh_desc'],
-		'id'       => 'fonts-' . $id . '_line_height',
-		'std'      => $data['lh_std'],
-		'type'     => 'slider',
-		'options'  => array(
-			'min' => 1,
-			'max' => 120,
+		'names'  => array(
+			'font_size'      => $data['font_desc'],
+			'line_height'    => $data['lh_desc'],
 		),
-		'sanitize' => 'font_size',
 	);
-
 }
 
 $options[] = array(
@@ -173,10 +156,14 @@ $options['fonts-h1-typography'] = array(
 	'id'   => 'fonts-h1-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Open Sans',
-		'font_size'      => 44,
-		'line_height'    => 50,
-		'text_transform' => 'none',
+		'font_family'            => 'Open Sans',
+		'responsive_font_size'   => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '44px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '50px',
+		),
+		'text_transform'         => 'none',
 	),
 );
 
@@ -192,8 +179,12 @@ $options['fonts-h2-typography'] = array(
 	'type' => 'typography',
 	'std'  => array(
 		'font_family'    => 'Open Sans',
-		'font_size'      => 26,
-		'line_height'    => 30,
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '26px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '30px',
+		),
 		'text_transform' => 'none',
 	),
 );
@@ -210,8 +201,12 @@ $options['fonts-h3-typography'] = array(
 	'type' => 'typography',
 	'std'  => array(
 		'font_family'    => 'Open Sans',
-		'font_size'      => 22,
-		'line_height'    => 30,
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '22px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '30px',
+		),
 		'text_transform' => 'none',
 	),
 );
@@ -224,11 +219,7 @@ $options[] = array(
 );
 
 $options[] = array(
-	'desc' => _x(
-		'Default font for post titles in masonry, grid, list layouts and scrollers.',
-		'theme-options',
-		'the7mk2'
-	),
+	'desc' => _x( 'Default font for post titles in masonry, grid, list layouts and scrollers.', 'theme-options', 'the7mk2' ),
 	'type' => 'info',
 );
 
@@ -237,8 +228,12 @@ $options['fonts-h4-typography'] = array(
 	'type' => 'typography',
 	'std'  => array(
 		'font_family'    => 'Open Sans',
-		'font_size'      => 18,
-		'line_height'    => 20,
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '18px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
 		'text_transform' => 'none',
 	),
 );
@@ -250,18 +245,17 @@ $options[] = array(
 	'type' => 'title',
 );
 
-$options[] = array(
-	'desc' => _x( 'Default font for widget titles in sidebar & footer.', 'theme-options', 'the7mk2' ),
-	'type' => 'info',
-);
-
 $options['fonts-h5-typography'] = array(
 	'id'   => 'fonts-h5-typography',
 	'type' => 'typography',
 	'std'  => array(
 		'font_family'    => 'Open Sans',
-		'font_size'      => 15,
-		'line_height'    => 20,
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
 		'text_transform' => 'none',
 	),
 );
@@ -278,8 +272,70 @@ $options['fonts-h6-typography'] = array(
 	'type' => 'typography',
 	'std'  => array(
 		'font_family'    => 'Open Sans',
-		'font_size'      => 12,
-		'line_height'    => 20,
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '12px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
 		'text_transform' => 'none',
 	),
 );
+
+
+
+$options[] = array(
+	'name' => _x( 'Widget fonts', 'theme-options', 'the7mk2' ),
+	'type' => 'block',
+);
+
+$options[] = array(
+	'name' => _x( 'Widget title', 'theme-options', 'the7mk2' ),
+	'type' => 'title',
+);
+
+$options['fonts-widget-title'] = array(
+	'id'   => 'fonts-widget-title',
+	'type' => 'typography',
+	'std'  => array(
+		'font_family'    => 'Open Sans',
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
+		'text_transform' => 'none',
+	),
+);
+
+$options['widget_gap']        = array(
+	'id'         => 'widget_gap',
+	'name'       => _x( 'Gap below widget title', 'theme-options', 'the7mk2' ),
+	'std'        => '15px',
+	'type'       => 'number',
+	'units'      => 'px',
+);
+
+$options[] = array( 'type' => 'divider' );
+
+$options[] = array(
+	'name' => _x( 'Widget content', 'theme-options', 'the7mk2' ),
+	'type' => 'title',
+);
+
+$options['fonts-widget-content'] = array(
+	'id'   => 'fonts-widget-content',
+	'type' => 'typography',
+	'std'        => array(
+		'font_family'    => 'Open Sans',
+		'responsive_font_size'      => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '13px',
+		),
+		'responsive_line_height'    => array(
+			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
+		),
+		'text_transform' => 'none',
+	),
+);
+
